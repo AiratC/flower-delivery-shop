@@ -73,9 +73,9 @@ CREATE TABLE Flowers (
    flower_id SERIAL PRIMARY KEY,
    title VARCHAR(255) NOT NULL,          -- Заголовок
    description TEXT,                     -- Описание
-   composition JSONB DEFAULT '[]',                   -- Состав (массив строк для списка)
+   composition JSONB DEFAULT '[]',       -- Состав (массив строк для списка)
    delivery_info TEXT,                   -- Доставка и оплата
-   images JSONB DEFAULT '[]',                        -- Массив ссылок на фото (основное + миниатюры)
+   images JSONB DEFAULT '[]',            -- Массив ссылок на фото (основное + миниатюры)
    is_new BOOLEAN DEFAULT FALSE,         -- Новинка
    is_sale BOOLEAN DEFAULT FALSE,        -- Акция
    is_active BOOLEAN DEFAULT TRUE,
@@ -147,7 +147,11 @@ CREATE TABLE Orders (
 CREATE TABLE Order_Items (
    order_item_id SERIAL PRIMARY KEY,
    order_id INT REFERENCES Orders(order_id) ON DELETE CASCADE NOT NULL,
-   flower_id INT REFERENCES Flowers(flower_id) ON DELETE RESTRICT NOT NULL,
+
+   -- Указываем тип, чтобы знать из какой таблицы брать инфо
+   item_type VARCHAR(50) NOT NULL, -- 'flower' или 'addon'
+   item_id INT NOT NULL, -- ID из таблицы Flowers или Addons
+
    selected_size VARCHAR(50), -- Добавил, чтобы знать какой размер купили
    quantity INT NOT NULL CHECK (quantity > 0),
    price_at_purchase DECIMAL(10, 2) NOT NULL -- Фиксируем цену на момент покупки!
@@ -183,15 +187,16 @@ CREATE TABLE Cart (
    user_id INT REFERENCES Users(user_id) ON DELETE CASCADE,
    guest_token VARCHAR(255), 
    
-   flower_id INT REFERENCES Flowers(flower_id) ON DELETE CASCADE NOT NULL,
-   selected_size VARCHAR(50), -- Важно! В корзине должен быть размер
+   item_id INT NOT NULL, 
+   item_type VARCHAR(50) NOT NULL, -- 'flower' или 'addon'
+   selected_size VARCHAR(50), 
    quantity INT DEFAULT 1 CHECK (quantity > 0),
    
    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
    
-   -- Ограничение: один и тот же букет одного размера не должен дублироваться строками
-   CONSTRAINT unique_user_cart_item UNIQUE (user_id, flower_id, selected_size),
-   CONSTRAINT unique_guest_cart_item UNIQUE (guest_token, flower_id, selected_size)
+   -- Исправленные ограничения: заменили flower_id на item_id и добавили item_type
+   CONSTRAINT unique_user_cart_item UNIQUE (user_id, item_id, item_type, selected_size),
+   CONSTRAINT unique_guest_cart_item UNIQUE (guest_token, item_id, item_type, selected_size)
 );
 
 -- Таблица избранного
@@ -200,10 +205,11 @@ CREATE TABLE Favorites (
    user_id INT REFERENCES Users(user_id) ON DELETE CASCADE,
    guest_token VARCHAR(255),
    
-   flower_id INT REFERENCES Flowers(flower_id) ON DELETE CASCADE NOT NULL,
+   item_id INT NOT NULL, 
+   item_type VARCHAR(50) NOT NULL, -- 'flower' или 'addon'
    
-   CONSTRAINT unique_user_favorite UNIQUE (user_id, flower_id),
-   CONSTRAINT unique_guest_favorite UNIQUE (guest_token, flower_id)
+   CONSTRAINT unique_user_favorite UNIQUE (user_id, item_id, item_type),
+   CONSTRAINT unique_guest_favorite UNIQUE (guest_token, item_id, item_type)
 );
 
 CREATE TABLE Ask_Question (
@@ -220,10 +226,26 @@ CREATE TABLE Ask_Question (
 
 -- Создаем таблицу акций
 CREATE TABLE Stock (
-   stoсk_id SERIAL PRIMARY KEY,
+   stock_id SERIAL PRIMARY KEY,
    title VARCHAR(400),
    description TEXT,
-   stoсk_images JSONB,
+   stock_images JSONB,
    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
    updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()
+);
+
+-- ТАБЛИЦА ДОПОЛНИТЬ ЗАКАЗ
+CREATE TABLE Addons (
+   addon_id SERIAL PRIMARY KEY,
+   title VARCHAR(255) NOT NULL, -- Напр: 'Шок. конфеты "Лучшей маме"'
+   price DECIMAL(10, 2) NOT NULL,
+   image JSONB DEFAULT '[]',
+   is_available BOOLEAN DEFAULT TRUE,
+   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE Product_Recommendations (
+   flower_id INT REFERENCES Flowers(flower_id) ON DELETE CASCADE,
+   addon_id INT REFERENCES Addons(addon_id) ON DELETE CASCADE,
+   PRIMARY KEY (flower_id, addon_id)
 );
