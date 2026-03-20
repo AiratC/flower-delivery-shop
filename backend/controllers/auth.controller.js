@@ -199,3 +199,22 @@ export const getMe = async (req, res) => {
       res.status(500).json({ message: 'Ошибка сервера', error: true });
    }
 };
+
+// !!! Выход
+export const logoutUser = async (req, res) => {
+   try {
+      // Очищаем куку с тем же именем 'token'
+      res.clearCookie('token', {
+         httpOnly: true,
+         secure: process.env.NODE_ENV === 'production',
+         sameSite: 'strict'
+      });
+
+      return res.status(200).json({
+         success: true,
+         message: 'Вы успешно вышли из системы'
+      });
+   } catch (error) {
+      return res.status(500).json({ message: 'Ошибка при выходе', error: true });
+   }
+};

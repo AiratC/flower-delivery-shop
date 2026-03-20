@@ -1,5 +1,8 @@
-import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Flower2, ShoppingCart, Settings, Users } from 'lucide-react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { LayoutDashboard, Flower2, ShoppingCart, Settings, Users, LogOut } from 'lucide-react';
+import { useDispatch } from 'react-redux';
+import fetchAxios from '../api/axios';
+import { logout } from '../redux/slices/authSlice';
 
 const menuItems = [
    { icon: LayoutDashboard, label: 'Дашборд', path: '/' },
@@ -10,15 +13,35 @@ const menuItems = [
 ];
 
 export default function Sidebar() {
+   const dispatch = useDispatch();
+   const navigate = useNavigate();
+
+   const handleLogout = async () => {
+      try {
+         // 1. Сообщаем бэкенду, что выходим (он удалит куку)
+         await fetchAxios.post('/auth/logout');
+
+         // 2. Чистим Redux
+         dispatch(logout());
+
+         // 3. Перекидываем на логин
+         navigate('/login');
+      } catch (error) {
+         console.error("Ошибка при выходе:", error);
+      }
+   };
+
    return (
       <div className="w-64 bg-white border-r border-gray-200 flex flex-col h-screen sticky top-0">
-         <div className="p-6">
-            <h2 className="text-xl font-bold text-blue-600 flex items-center gap-2">
-               <Flower2 className="w-6 h-6" /> Admin
+         <div className="p-6 text-center border-b border-gray-50">
+            <h2 className="text-xl font-bold text-blue-600 flex items-center justify-center gap-2">
+               <Flower2 className="w-6 h-6" />
+               <span>Admin Panel</span>
             </h2>
          </div>
 
-         <nav className="flex-1 px-4 space-y-1">
+         {/* Основное меню */}
+         <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
             {menuItems.map((item) => (
                <NavLink
                   key={item.label}
@@ -35,6 +58,17 @@ export default function Sidebar() {
                </NavLink>
             ))}
          </nav>
+
+         {/* Футер сайдбара с кнопкой выхода */}
+         <div className="p-4 border-t border-gray-100">
+            <button
+               onClick={handleLogout}
+               className="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-xl transition-colors font-medium group"
+            >
+               <LogOut size={20} className="group-hover:-translate-x-1 transition-transform" />
+               <span>Выйти</span>
+            </button>
+         </div>
       </div>
    );
 }

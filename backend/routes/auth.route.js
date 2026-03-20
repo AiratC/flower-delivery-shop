@@ -1,5 +1,5 @@
 import express from 'express';
-import { getMe, loginUser, registerUser } from '../controllers/auth.controller.js';
+import { getMe, loginUser, logoutUser, registerUser } from '../controllers/auth.controller.js';
 import { protectAdmin } from '../middleware/authMiddleware.js';
 
 const authRouter = express.Router();
@@ -9,6 +9,9 @@ authRouter.post('/register', registerUser);
 
 // Вход
 authRouter.post('/login', loginUser);
+
+// Выход
+authRouter.post('/logout', logoutUser);
 
 // Проверка меня
 authRouter.get('/me', protectAdmin, getMe);
