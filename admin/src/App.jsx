@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import Login from './pages/Login';
 import ProtectedRoute from './components/ProtectedRoute';
-import { useSelector } from 'react-redux';
 
 // Временные компоненты (позже вынесем в отдельные файлы в src/pages)
 const Dashboard = () => (
