@@ -2,6 +2,7 @@ import pool from "./config/db.js";
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import authRouter from "./routes/auth.route.js";
 
 const app = express();
 
@@ -20,6 +21,9 @@ app.use(express.json());
 
 // 3. Парсинг кук
 app.use(cookieParser());
+
+
+app.use('/api/auth', authRouter);
 
 
 // Запуск сервера с обработкой ошибок

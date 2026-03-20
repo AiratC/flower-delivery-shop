@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
+import Login from './pages/Login';
+import { useSelector } from 'react-redux';
 
 // Временные компоненты (позже вынесем в отдельные файлы в src/pages)
 const Dashboard = () => (
@@ -17,10 +19,13 @@ const Catalog = () => (
 );
 
 function App() {
+   const { user } = useSelector(state => state.auth);
+
    return (
       <BrowserRouter>
          <Routes>
-            <Route path="/" element={<Layout />}>
+            <Route path='/login' element={<Login/>}></Route>
+            <Route path="/" element={user?.role_name === 'Админ' ? <Layout /> : <Login/>}>
                <Route index element={<Dashboard />} />
                <Route path="catalog" element={<Catalog />} />
                <Route path="orders" element={<div>Заказы</div>} />
