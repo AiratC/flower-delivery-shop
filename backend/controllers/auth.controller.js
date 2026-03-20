@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt'
 import { query } from '../config/db.js';
+import jwt from 'jsonwebtoken';
 
 // ! Регистрация пользователя
 export const registerUser = async (req, res) => {
@@ -84,3 +85,86 @@ export const registerUser = async (req, res) => {
       });
    };
 };
+
+// !!! Вход
+export const loginUser = async (req, res) => {
+   const { userEmail, password } = req.body;
+
+   // 1. Предварительная обработка email
+   if(!userEmail.trim() || !password.trim()) {
+      return res.status(400).json({
+         message: 'Введите email и пароль',
+         error: true,
+         success: false
+      })
+   };
+
+   const email = userEmail.toLowerCase().trim();
+
+   try {
+      // 2. Ищем пользователя и сразу подтягиваем название его роли (Админ/Пользователь)
+      // Мы используем JOIN, чтобы на фронтенде сразу знать, пускать ли юзера в админку
+      const sql = `
+            SELECT u.*, r.name as role_name 
+            FROM "Users" u 
+            JOIN "Roles" r ON u.role_id = r.role_id 
+            WHERE u.email = $1
+      `;
+      const result = await query(sql, [email]);
+
+      if (result.rows.length === 0) {
+            return res.status(401).json({ 
+               message: 'Неверный email или пароль', 
+               error: true,
+               success: false
+            });
+      };
+
+      const user = result.rows[0];
+
+      // 3. Проверяем хэш пароля
+      const isMatch = await bcrypt.compare(password, user.password_hash);
+
+      if(!isMatch) {
+         return res.status(401).json({
+            message: 'Неверный email или пароль',
+            success: false,
+            error: true
+         });
+      };
+
+      // 4. Генерируем JWT-токен
+      // В полезную нагрузку (payload) кладем id и роль
+      const token = jwt.sign(
+         { userId: user.user_id, role: user.role_name },
+         process.env.JWT_SECRET,
+         { expiresIn: '24h' }
+      );
+
+      // 5. Отправляем токен в HTTP-Only куки
+      // Это самый безопасный способ: фронтенд-скрипты не смогут украсть этот токен
+      res.cookie('token', token, {
+         httpOnly: true,
+         secure: process.env.NODE_ENV === 'production', // true только если есть HTTPS (на продакшене)
+         sameSite: 'strict',
+         maxAge: 24 * 60 * 60 * 1000 // 24 часа
+      });
+
+      // Получаем все кроме пароля
+      const { password_hash, ...userData } = user;
+
+      // 6. Отправляем ответ без пароля
+      return res.status(200).json({
+         success: true,
+         message: `С возвращением, ${user.name}!`,
+         user: userData
+      });
+
+   } catch (error) {
+      return res.status(500).json({
+         message: 'Ошибка при входе на сервере',
+         error: true,
+         success: false
+      })
+   }
+}
