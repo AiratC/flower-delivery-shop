@@ -2,30 +2,48 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import Login from './pages/Login';
 import ProtectedRoute from './components/ProtectedRoute';
-
-// Временные компоненты (позже вынесем в отдельные файлы в src/pages)
-const Dashboard = () => (
-   <div>
-      <h1 className="text-2xl font-bold mb-4">Дашборд</h1>
-      <p className="text-gray-500">Статистика продаж и активности.</p>
-   </div>
-);
-
-const Catalog = () => (
-   <div>
-      <h1 className="text-2xl font-bold mb-4">Каталог цветов</h1>
-      <p className="text-gray-500">Здесь будет список ваших букетов.</p>
-   </div>
-);
+import { useDispatch } from 'react-redux';
+import { useEffect, useState } from 'react';
+import fetchAxios from './api/axios';
+import { setUser } from './redux/slices/authSlice';
+import { Loader2 } from 'lucide-react';
 
 function App() {
+   const dispatch = useDispatch();
+   const [isChecking, setIsChecking] = useState(true);
+
+   useEffect(() => {
+      const checkAuth = async () => {
+         try {
+            const response = await fetchAxios.get('/auth/me');
+            if (response.data.success) {
+               dispatch(setUser(response.data.user));
+            }
+         } catch (err) {
+            console.log(err)
+            console.log("Не авторизован");
+         } finally {
+            setIsChecking(false);
+         }
+      };
+      checkAuth();
+   }, [dispatch]);
+
+   // КРИТИЧНО: Пока идет проверка, ничего не рендерим (или показываем спиннер)
+   if (isChecking) {
+      return (
+         <div className="h-screen flex items-center justify-center bg-slate-50">
+            <Loader2 className="animate-spin text-blue-600 w-10 h-10" />
+         </div>
+      );
+   }
 
    return (
       <BrowserRouter>
          <Routes>
             <Route path='/login' element={<Login />}></Route>
 
-            <Route element={<ProtectedRoute/>}>
+            <Route element={<ProtectedRoute />}>
                <Route path="/" element={<Layout />}>
                   <Route index element={<Dashboard />} />
                   <Route path="catalog" element={<Catalog />} />

@@ -4,7 +4,7 @@ export const protectAdmin = (req, res, next) => {
    const token = req.cookies.token; // Берем токен из кук
 
    if (!token) {
-      return res.status(401).json({ message: 'Нет авторизации, доступ запрещен' });
+      return res.status(200).json({ message: 'Нет авторизации, доступ запрещен' });
    }
 
    try {

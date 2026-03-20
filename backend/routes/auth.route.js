@@ -1,5 +1,6 @@
 import express from 'express';
-import { loginUser, registerUser } from '../controllers/auth.controller.js';
+import { getMe, loginUser, registerUser } from '../controllers/auth.controller.js';
+import { protectAdmin } from '../middleware/authMiddleware.js';
 
 const authRouter = express.Router();
 
@@ -8,5 +9,8 @@ authRouter.post('/register', registerUser);
 
 // Вход
 authRouter.post('/login', loginUser);
+
+// Проверка меня
+authRouter.get('/me', protectAdmin, getMe);
 
 export default authRouter;

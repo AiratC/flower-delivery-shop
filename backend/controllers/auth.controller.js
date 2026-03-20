@@ -26,7 +26,7 @@ export const registerUser = async (req, res) => {
       }
 
       // Проверка на согласие обработку персональных данных
-      if(!agree) {
+      if (!agree) {
          return res.status(400).json({
             message: 'Подтвердите согласие на обработку данных',
             error: true,
@@ -91,7 +91,7 @@ export const loginUser = async (req, res) => {
    const { userEmail, password } = req.body;
 
    // 1. Предварительная обработка email
-   if(!userEmail.trim() || !password.trim()) {
+   if (!userEmail.trim() || !password.trim()) {
       return res.status(400).json({
          message: 'Введите email и пароль',
          error: true,
@@ -113,11 +113,11 @@ export const loginUser = async (req, res) => {
       const result = await query(sql, [email]);
 
       if (result.rows.length === 0) {
-            return res.status(401).json({ 
-               message: 'Неверный email или пароль', 
-               error: true,
-               success: false
-            });
+         return res.status(401).json({
+            message: 'Неверный email или пароль',
+            error: true,
+            success: false
+         });
       };
 
       const user = result.rows[0];
@@ -125,7 +125,7 @@ export const loginUser = async (req, res) => {
       // 3. Проверяем хэш пароля
       const isMatch = await bcrypt.compare(password, user.password_hash);
 
-      if(!isMatch) {
+      if (!isMatch) {
          return res.status(401).json({
             message: 'Неверный email или пароль',
             success: false,
@@ -167,4 +167,35 @@ export const loginUser = async (req, res) => {
          success: false
       })
    }
-}
+};
+
+// !!! Проверка меня
+export const getMe = async (req, res) => {
+   try {
+      // Пользователь уже прикреплен к req через middleware protectAdmin (который мы писали раньше)
+      const userId = req.user.userId;
+
+      const sql = `
+      SELECT u.*, r.name as role_name 
+      FROM "Users" u 
+      JOIN "Roles" r ON u.role_id = r.role_id 
+      WHERE u.user_id = $1
+   `;
+      const result = await query(sql, [userId]);
+
+      if (result.rows.length === 0) {
+         return
+      }
+
+      // Получаем все кроме пароля
+      const { password_hash, ...userData } = result.rows[0];
+
+      res.status(200).json({
+         success: true,
+         user: userData
+      });
+      
+   } catch (error) {
+      res.status(500).json({ message: 'Ошибка сервера', error: true });
+   }
+};
