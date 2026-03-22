@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import authRouter from "./routes/auth.route.js";
+import dictRouter from "./routes/referenceBooks.route.js";
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use(cookieParser());
 
 
 app.use('/api/auth', authRouter);
+app.use('/api/dicts', dictRouter);
 
 
 // Запуск сервера с обработкой ошибок
