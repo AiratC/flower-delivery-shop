@@ -13,6 +13,8 @@ export default function AddFlowerForm() {
       species: []
    });
 
+   const [isSubmitting, setIsSubmitting] = useState(false);
+
    // Состояние формы
    const [formData, setFormData] = useState({
       title: '',
@@ -22,6 +24,7 @@ export default function AddFlowerForm() {
       is_new: false,
       is_sale: false,
       images: [],
+      raw_files: [],
       selected_species: [], // Для таблицы Flower_To_Species
       variants: [{ size_name: 'Малый', price_old: '', price_new: '', is_default: true }]
    });
@@ -38,7 +41,7 @@ export default function AddFlowerForm() {
                fetchAxios.get('/dicts/packaging'),
                fetchAxios.get('/dicts/species')
             ]);
-            console.log({ palettes: palettes.data, packaging: packaging.data, species: species.data })
+
             setDictionaries({ palettes: palettes.data, packaging: packaging.data, species: species.data });
          } catch { console.error("Ошибка загрузки справочников"); }
       };
@@ -62,18 +65,25 @@ export default function AddFlowerForm() {
    };
 
    // Хендлер для выбора файлов
-   const handleImageUpload = async (e) => {
+   const handleImageUpload = (e) => {
       const files = Array.from(e.target.files);
+      const newPreviews = files.map(f => URL.createObjectURL(f));
 
-      // Пока сделаем временные превью (Local URL), чтобы увидеть результат
-      const newImages = files.map(file => URL.createObjectURL(file));
-      setFormData(prev => ({ ...prev, images: [...prev.images, ...newImages] }));
+      setFormData(prev => ({
+         ...prev,
+         raw_files: [...(prev.raw_files || []), ...files], // Храним файлы
+         images: [...prev.images, ...newPreviews]        // Храним превью
+      }));
    };
 
    const removeImage = (index) => {
+      // Освобождаем память
+      URL.revokeObjectURL(formData.images[index]);
+
       setFormData(prev => ({
          ...prev,
-         images: prev.images.filter((_, i) => i !== index)
+         images: prev.images.filter((_, i) => i !== index),
+         raw_files: prev.raw_files.filter((_, i) => i !== index) // Обязательно удаляем и файл!
       }));
    };
 
@@ -87,18 +97,78 @@ export default function AddFlowerForm() {
 
    const handleSubmit = async (e) => {
       e.preventDefault();
+
+      if (isSubmitting) return; // Защита от двойного клика
+
+      setIsSubmitting(true);
+
+      const data = new FormData();
+
+      const paletteId = formData.palette_id ? Number(formData.palette_id) : null;
+      const packagingId = formData.packaging_id ? Number(formData.packaging_id) : null;
+
+      // 1. Простые поля (строки, числа, булевы)
+      data.append('title', formData.title);
+      data.append('description', formData.description);
+      data.append('palette_id', paletteId);
+      data.append('packaging_id', packagingId);
+      data.append('is_new', formData.is_new);
+      data.append('is_sale', formData.is_sale);
+
+      // 2. Сложные данные (ОБЯЗАТЕЛЬНО через stringify)
+      // Сервер должен будет сделать JSON.parse() для этих полей
+      data.append('selected_species', JSON.stringify(formData.selected_species));
+      data.append('variants', JSON.stringify(formData.variants.map(v => ({
+         ...v,
+         price_new: Number(v.price_new),
+         price_old: v.price_old ? Number(v.price_old) : null
+      }))));
+
+      // 3. Изображения (отправляем именно файлы, а не blob-ссылки)
+      // Находим инпут в DOM или храним сами файлы в state
+      if (formData.raw_files && formData.raw_files.length > 0) {
+         formData.raw_files.forEach((file) => {
+            data.append('images', file);
+         });
+      }
+
       try {
-         await fetchAxios.post('/flowers', formData);
+         // Axios сам выставит нужный 'Content-Type: multipart/form-data'
+         await fetchAxios.post('/flowers', data);
          alert('Букет успешно добавлен!');
-      } catch { alert('Ошибка при сохранении'); }
+
+         // ОЧИСТКА:
+         formData.images.forEach(url => URL.revokeObjectURL(url)); // Освобождаем память
+         setFormData({
+            title: '',
+            description: '',
+            palette_id: '',
+            packaging_id: '',
+            is_new: false,
+            is_sale: false,
+            images: [],
+            raw_files: [],
+            selected_species: [],
+            variants: [{ size_name: 'Малый', price_old: '', price_new: '', is_default: true }]
+         });
+      } catch (error) {
+         console.error("Ошибка при отправке:", error.response?.data || error.message);
+         alert('Ошибка при сохранении');
+      } finally {
+         setIsSubmitting(false);
+      }
    };
 
    return (
       <form onSubmit={handleSubmit} className="max-w-5xl mx-auto p-6 space-y-8 bg-white rounded-2xl shadow-sm border border-slate-100">
          <div className="flex justify-between items-center border-b pb-4">
             <h2 className="text-xl font-bold text-slate-800">Добавление нового букета</h2>
-            <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded-xl flex items-center gap-2 hover:bg-blue-700 transition-all">
-               <Save size={18} /> Сохранить букет
+            <button
+               type="submit"
+               disabled={isSubmitting}
+               className={`${isSubmitting ? 'bg-slate-400' : 'bg-blue-600 hover:bg-blue-700'} text-white px-6 py-2 rounded-xl flex items-center gap-2 transition-all`}
+            >
+               {isSubmitting ? 'Сохранение...' : <><Save size={18} /> Сохранить букет</>}
             </button>
          </div>
 
@@ -129,6 +199,7 @@ export default function AddFlowerForm() {
                   <div>
                      <label className="block text-sm font-medium text-slate-700 mb-1">Цветовая гамма</label>
                      <select
+                        required
                         className="w-full px-4 py-2 bg-slate-50 border rounded-lg outline-none"
                         value={formData.palette_id}
                         onChange={e => setFormData({ ...formData, palette_id: e.target.value })}
@@ -140,6 +211,7 @@ export default function AddFlowerForm() {
                   <div>
                      <label className="block text-sm font-medium text-slate-700 mb-1">Тип упаковки</label>
                      <select
+                        required
                         className="w-full px-4 py-2 bg-slate-50 border rounded-lg outline-none"
                         value={formData.packaging_id}
                         onChange={e => setFormData({ ...formData, packaging_id: e.target.value })}
@@ -157,7 +229,7 @@ export default function AddFlowerForm() {
                   <label className="block text-sm font-medium text-slate-700 mb-2">Состав (какие цветы в букете)</label>
                   <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto p-3 border rounded-lg bg-slate-50">
                      {dictionaries.species.map(species => (
-                        <div key={species.species_id} className="flex items-center gap-2 text-sm cursor-pointer">
+                        <div key={species.id} className="flex items-center gap-2 text-sm cursor-pointer">
                            <label htmlFor={species.id}>
                               <input
                                  id={species.id}
