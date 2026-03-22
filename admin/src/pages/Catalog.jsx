@@ -72,12 +72,12 @@ export default function Catalog() {
             )}
 
             {view === 'dicts' && (
-               <Settings />
+               <Settings onSuccess={() => setView('list')} />
             )}
 
             {
                view === 'addons' && (
-                  <AddAddonsForm/>
+                  <AddAddonsForm onSuccess={() => setView('list')}/>
                )
             }
 
