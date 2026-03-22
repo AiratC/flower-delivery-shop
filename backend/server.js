@@ -4,6 +4,8 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import authRouter from "./routes/auth.route.js";
 import dictRouter from "./routes/referenceBooks.route.js";
+import flowerRouter from "./routes/flower.route.js";
+import addonRouter from "./routes/addon.route.js";
 
 const app = express();
 
@@ -23,9 +25,12 @@ app.use(express.json());
 // 3. Парсинг кук
 app.use(cookieParser());
 
+app.use('/uploads', express.static('uploads'));
 
 app.use('/api/auth', authRouter);
 app.use('/api/dicts', dictRouter);
+app.use('/api/flowers', flowerRouter);
+app.use('/api/addons', addonRouter);
 
 
 // Запуск сервера с обработкой ошибок

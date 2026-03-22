@@ -25,6 +25,7 @@ export default function AddFlowerForm() {
       is_sale: false,
       images: [],
       raw_files: [],
+      compositions: [],
       selected_species: [], // Для таблицы Flower_To_Species
       variants: [{ size_name: 'Малый', price_old: '', price_new: '', is_default: true }]
    });
@@ -88,12 +89,23 @@ export default function AddFlowerForm() {
    };
 
    const handleClickCompositionFlowers = (event, species) => {
-      const val = species.id;
-      const newSpecies = event.target.checked
-         ? [...formData.selected_species, val]
-         : formData.selected_species.filter(id => id !== val);
-      setFormData({ ...formData, selected_species: newSpecies });
-   }
+      const isChecked = event.target.checked;
+      const speciesId = species.id;
+      const speciesName = species.name;
+
+      setFormData(prev => ({
+         ...prev,
+         // Обновляем ID для базы данных
+         selected_species: isChecked
+            ? [...prev.selected_species, speciesId]
+            : prev.selected_species.filter(id => id !== speciesId),
+
+         // Обновляем названия для отображения состава
+         compositions: isChecked
+            ? [...prev.compositions, speciesName]
+            : prev.compositions.filter(name => name !== speciesName)
+      }));
+   };
 
    const handleSubmit = async (e) => {
       e.preventDefault();
@@ -118,6 +130,7 @@ export default function AddFlowerForm() {
       // 2. Сложные данные (ОБЯЗАТЕЛЬНО через stringify)
       // Сервер должен будет сделать JSON.parse() для этих полей
       data.append('selected_species', JSON.stringify(formData.selected_species));
+      data.append('compositions', JSON.stringify(formData.compositions));
       data.append('variants', JSON.stringify(formData.variants.map(v => ({
          ...v,
          price_new: Number(v.price_new),
@@ -134,7 +147,7 @@ export default function AddFlowerForm() {
 
       try {
          // Axios сам выставит нужный 'Content-Type: multipart/form-data'
-         await fetchAxios.post('/flowers', data);
+         await fetchAxios.post('/flowers/add-flowers', data);
          alert('Букет успешно добавлен!');
 
          // ОЧИСТКА:
@@ -149,6 +162,7 @@ export default function AddFlowerForm() {
             images: [],
             raw_files: [],
             selected_species: [],
+            compositions: [],
             variants: [{ size_name: 'Малый', price_old: '', price_new: '', is_default: true }]
          });
       } catch (error) {
