@@ -7,18 +7,12 @@ import { useEffect, useState } from 'react';
 import fetchAxios from './api/axios';
 import { setUser } from './redux/slices/authSlice';
 import { Loader2 } from 'lucide-react';
+import Catalog from './pages/Catalog';
 
 const Dashboard = () => (
    <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Дашборд</h1>
       <p className="text-gray-500">Добро пожаловать в панель управления цветами!</p>
-   </div>
-);
-
-const Catalog = () => (
-   <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Каталог товаров</h1>
-      <p className="text-gray-500">Здесь вы будете управлять списком букетов.</p>
    </div>
 );
 
