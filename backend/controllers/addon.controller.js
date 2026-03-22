@@ -13,7 +13,7 @@ export const createAddon = async (req, res) => {
       const imageJson = JSON.stringify(imageUrl ? [imageUrl] : []);
 
       const result = await pool.query(
-         `INSERT INTO Addons (title, price, image, is_available) 
+         `INSERT INTO "Addons" (title, price, image, is_available) 
          VALUES ($1, $2, $3, $4) RETURNING addon_id`,
          [title, price, imageJson, is_available === 'true']
       );

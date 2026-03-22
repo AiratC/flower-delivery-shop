@@ -36,7 +36,7 @@ export default function AddAddonsForm({ onSuccess }) {
       }
 
       try {
-         await fetchAxios.post('/addons', data);
+         await fetchAxios.post('/addons/add-addons', data);
          if (preview) URL.revokeObjectURL(preview);
 
          // Сброс формы
