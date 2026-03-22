@@ -11,6 +11,11 @@ export default function Catalog() {
    const [items, setItems] = useState([]);
    const [loading, setLoading] = useState(true);
 
+   // Состояние пагинации
+   const [currentPage, setCurrentPage] = useState(1);
+   const [totalPages, setTotalPages] = useState(1);
+   const limit = 8; // Кол-во элементов на странице
+
    const loadFlowers = async () => {
       setLoading(true);
       try {
