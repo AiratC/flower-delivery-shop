@@ -1,5 +1,5 @@
 import express from 'express';
-import * as dictController from '../controllers/dictController.js';
+import * as dictController from '../controllers/dict.controller.js';
 
 const dictRouter = express.Router();
 

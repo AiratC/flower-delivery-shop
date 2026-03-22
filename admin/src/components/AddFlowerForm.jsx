@@ -23,19 +23,23 @@ export default function AddFlowerForm() {
       is_sale: false,
       images: [],
       selected_species: [], // Для таблицы Flower_To_Species
-      variants: [{ size_name: 'Стандарт', price_old: '', price_new: '', is_default: true }]
+      variants: [{ size_name: 'Малый', price_old: '', price_new: '', is_default: true }]
    });
 
    // 1. Загрузка справочников
    useEffect(() => {
       const fetchDicts = async () => {
          try {
-            const [p, pack, s] = await Promise.all([
+            // !!! palettes - цветовая гамма
+            // !!! packaging - упаковано
+            // !!! species - "Букет с..." (Типы цветов)
+            const [palettes, packaging, species] = await Promise.all([
                fetchAxios.get('/dicts/palettes'),
                fetchAxios.get('/dicts/packaging'),
                fetchAxios.get('/dicts/species')
             ]);
-            setDictionaries({ palettes: p.data, packaging: pack.data, species: s.data });
+            console.log({ palettes: palettes.data, packaging: packaging.data, species: species.data })
+            setDictionaries({ palettes: palettes.data, packaging: packaging.data, species: species.data });
          } catch { console.error("Ошибка загрузки справочников"); }
       };
       fetchDicts();
@@ -61,11 +65,6 @@ export default function AddFlowerForm() {
    const handleImageUpload = async (e) => {
       const files = Array.from(e.target.files);
 
-      // Здесь обычно идет отправка на бэкенд через FormData
-      // const data = new FormData();
-      // files.forEach(file => data.append('photos', file));
-      // const res = await fetchAxios.post('/upload', data);
-
       // Пока сделаем временные превью (Local URL), чтобы увидеть результат
       const newImages = files.map(file => URL.createObjectURL(file));
       setFormData(prev => ({ ...prev, images: [...prev.images, ...newImages] }));
@@ -77,6 +76,14 @@ export default function AddFlowerForm() {
          images: prev.images.filter((_, i) => i !== index)
       }));
    };
+
+   const handleClickCompositionFlowers = (event, species) => {
+      const val = species.id;
+      const newSpecies = event.target.checked
+         ? [...formData.selected_species, val]
+         : formData.selected_species.filter(id => id !== val);
+      setFormData({ ...formData, selected_species: newSpecies });
+   }
 
    const handleSubmit = async (e) => {
       e.preventDefault();
@@ -127,7 +134,7 @@ export default function AddFlowerForm() {
                         onChange={e => setFormData({ ...formData, palette_id: e.target.value })}
                      >
                         <option value="">Выберите...</option>
-                        {dictionaries.palettes.map(p => <option key={p.palette_id} value={p.palette_id}>{p.name}</option>)}
+                        {dictionaries.palettes.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                      </select>
                   </div>
                   <div>
@@ -138,7 +145,7 @@ export default function AddFlowerForm() {
                         onChange={e => setFormData({ ...formData, packaging_id: e.target.value })}
                      >
                         <option value="">Выберите...</option>
-                        {dictionaries.packaging.map(p => <option key={p.packaging_id} value={p.packaging_id}>{p.name}</option>)}
+                        {dictionaries.packaging.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                      </select>
                   </div>
                </div>
@@ -149,20 +156,17 @@ export default function AddFlowerForm() {
                <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">Состав (какие цветы в букете)</label>
                   <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto p-3 border rounded-lg bg-slate-50">
-                     {dictionaries.species.map(s => (
-                        <label key={s.species_id} className="flex items-center gap-2 text-sm cursor-pointer">
-                           <input
-                              type="checkbox"
-                              checked={formData.selected_species.includes(s.species_id)}
-                              onChange={(e) => {
-                                 const val = s.species_id;
-                                 const newSpecies = e.target.checked
-                                    ? [...formData.selected_species, val]
-                                    : formData.selected_species.filter(id => id !== val);
-                                 setFormData({ ...formData, selected_species: newSpecies });
-                              }}
-                           /> {s.name}
-                        </label>
+                     {dictionaries.species.map(species => (
+                        <div key={species.species_id} className="flex items-center gap-2 text-sm cursor-pointer">
+                           <label htmlFor={species.id}>
+                              <input
+                                 id={species.id}
+                                 type="checkbox"
+                                 checked={formData.selected_species.includes(species.id)}
+                                 onChange={(e) => handleClickCompositionFlowers(e, species)}
+                              /> {species.name}
+                           </label>
+                        </div>
                      ))}
                   </div>
                </div>
@@ -243,6 +247,7 @@ export default function AddFlowerForm() {
                            className="w-full px-3 py-1.5 border rounded-md outline-none"
                         />
                      </div>
+
                      <div>
                         <label className="block text-xs text-slate-500 mb-1">Старая цена</label>
                         <input
@@ -251,6 +256,7 @@ export default function AddFlowerForm() {
                            className="w-full px-3 py-1.5 border rounded-md outline-none"
                         />
                      </div>
+
                      <div>
                         <label className="block text-xs text-slate-500 mb-1">Новая цена (Актуальная)</label>
                         <input
@@ -259,6 +265,7 @@ export default function AddFlowerForm() {
                            className="w-full px-3 py-1.5 border rounded-md outline-none"
                         />
                      </div>
+
                      <div className="flex items-center gap-4">
                         <label className="flex items-center gap-2 text-xs">
                            <input

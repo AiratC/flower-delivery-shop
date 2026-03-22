@@ -21,7 +21,7 @@ export const getAll = async (req, res) => {
 
    try {
       const result = await query(
-         `SELECT ${config.id} as id, name FROM ${config.table} ORDER BY name ASC`
+         `SELECT ${config.id} as id, name FROM "${config.table}" ORDER BY name ASC`
       );
 
       return res.status(200).json(result.rows)
@@ -49,12 +49,13 @@ export const create = async (req, res) => {
 
    try {
       const result = await query(
-         `INSERT INTO ${config.table} (name) VALUES ($1) RETURNING ${config.id} as id, name`,
+         `INSERT INTO "${config.table}" (name) VALUES ($1) RETURNING ${config.id} as id, name`,
          [name]
       );
 
       return res.status(201).json(result.rows[0]);
    } catch (error) {
+      console.log(error)
       return res.status(500).json({
          message: 'Ошибка сервера',
          error: true,
@@ -76,7 +77,7 @@ export const remove = async (req, res) => {
    };
 
    try {
-      await query(`DELETE FROM ${config.table} WHERE ${config.id} = $1`, [id]);
+      await query(`DELETE FROM "${config.table}" WHERE ${config.id} = $1`, [id]);
       return res.json({ success: true });
    } catch (error) {
       res.status(500).json({
