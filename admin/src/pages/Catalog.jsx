@@ -3,6 +3,7 @@ import { Plus, BookOpen, Package, LayoutGrid, AlertCircle, Loader2 } from 'lucid
 import fetchAxios from '../api/axios';
 import AddFlowerForm from '../components/AddFlowerForm'; // Тот, что мы писали с фото и ценами
 import Settings from '../components/Settings'; // Твой менеджер справочников
+import AddAddonsForm from '../components/AddAddonsForm';
 
 export default function Catalog() {
    const [view, setView] = useState('list'); // 'list', 'add-flower', 'dicts'
@@ -36,6 +37,15 @@ export default function Catalog() {
 
             <div className="flex gap-3">
                <button
+                  onClick={() => setView(view === 'addons' ? 'list' : 'addons')}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-all ${view === 'addons' ? 'bg-slate-800 text-white' : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+                     }`}
+               >
+                  <BookOpen size={18} />
+                  {view === 'addons' ? 'Назад в каталог' : 'Дополнительно'}
+               </button>
+
+               <button
                   onClick={() => setView(view === 'dicts' ? 'list' : 'dicts')}
                   className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-all ${view === 'dicts' ? 'bg-slate-800 text-white' : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
                      }`}
@@ -64,6 +74,12 @@ export default function Catalog() {
             {view === 'dicts' && (
                <Settings />
             )}
+
+            {
+               view === 'addons' && (
+                  <AddAddonsForm/>
+               )
+            }
 
             {view === 'list' && (
                <>
