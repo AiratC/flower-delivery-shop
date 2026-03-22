@@ -8,7 +8,7 @@ import AddAddonsForm from '../components/AddAddonsForm';
 export default function Catalog() {
    const [view, setView] = useState('list'); // 'list', 'add-flower', 'dicts'
    const [activeTab, setActiveTab] = useState('flowers');
-   const [flowers, setFlowers] = useState([]);
+   const [items, setItems] = useState([]);
    const [loading, setLoading] = useState(true);
 
    const loadFlowers = async () => {
