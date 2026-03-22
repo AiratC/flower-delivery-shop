@@ -119,7 +119,7 @@ function FlowerCard({ flower }) {
 
    return (
       <div className="bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-md transition-shadow group">
-         <div className="relative aspect-[4/5] overflow-hidden">
+         <div className="relative overflow-hidden">
             <img
                src={mainImage}
                alt={flower.title}
