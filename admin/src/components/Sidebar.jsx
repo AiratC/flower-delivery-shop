@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Flower2, ShoppingCart, Settings, Users, LogOut, Activity } from 'lucide-react';
+import { LayoutDashboard, Flower2, ShoppingCart, Settings, Users, LogOut, Activity, MessageCircleMore } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import fetchAxios from '../api/axios';
 import { logout } from '../redux/slices/authSlice';
@@ -8,6 +8,7 @@ const menuItems = [
    { icon: LayoutDashboard, label: 'Дашборд', path: '/' },
    { icon: Flower2, label: 'Каталог', path: '/catalog' },
    { icon: Activity, label: 'Акции', path: '/stocks' },
+   { icon: MessageCircleMore, label: 'Сообщения', path: '/messages' },
    { icon: ShoppingCart, label: 'Заказы', path: '/orders' },
    { icon: Users, label: 'Клиенты', path: '/users' },
    { icon: Settings, label: 'Настройки', path: '/settings' },
