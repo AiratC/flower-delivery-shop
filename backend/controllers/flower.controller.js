@@ -73,7 +73,7 @@ export const createFlower = async (req, res) => {
 
 // Получаем цветы
 export const getFlowers = async (req, res) => {
-   const { page = 1, limit = 8, search = '' } = req.params;
+   const { page = 1, limit = 8, search = '' } = req.query;
    const offset = (page - 1) * limit;
 
    // Подготовка поискового паттерна для SQL (например, "%роза%")

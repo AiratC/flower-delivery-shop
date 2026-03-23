@@ -29,7 +29,7 @@ export const createAddon = async (req, res) => {
 
 // Получаем доп товары
 export const getAddons = async (req, res) => {
-   const { page = 1, limit = 8, search = '' } = req.params;
+   const { page = 1, limit = 8, search = '' } = req.query;
    const offset = (page - 1) * limit;
    const searchPattern = `%${search}%`;
 
