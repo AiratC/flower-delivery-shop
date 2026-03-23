@@ -8,6 +8,7 @@ import fetchAxios from './api/axios';
 import { setUser } from './redux/slices/authSlice';
 import { Loader2 } from 'lucide-react';
 import Catalog from './pages/Catalog';
+import Stocks from './pages/Stocks';
 
 const Dashboard = () => (
    <div className="p-6">
@@ -55,6 +56,7 @@ function App() {
                <Route path="/" element={<Layout />}>
                   <Route index element={<Dashboard />} />
                   <Route path="catalog" element={<Catalog />} />
+                  <Route path='stocks' element={<Stocks/>}/>
                   <Route path="orders" element={<div>Заказы</div>} />
                   <Route path="users" element={<div>Пользователи</div>} />
                   <Route path="settings" element={<div>Настройки</div>} />
