@@ -40,6 +40,7 @@ export default function Catalog() {
    };
 
    useEffect(() => {
+      setLoading(true);
       if (view === 'list') {
          const delayDebounceFn = setTimeout(() => {
             loadData();
