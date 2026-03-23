@@ -11,6 +11,7 @@ const storage = multer.diskStorage({
       if(req.originalUrl.includes('flowers')) subFolder = 'flowers';
       if(req.originalUrl.includes('users')) subFolder = 'users';
       if(req.originalUrl.includes('stocks')) subFolder = 'stocks';
+      if(req.originalUrl.includes('reviews')) subFolder = 'reviews';
 
       const dir = `./uploads/${subFolder}`;
 
