@@ -11,31 +11,42 @@
 	box-sizing: border-box;
 }
 
+body {
+	font-family: 'Inter', sans-serif;
+}
+
 .container {
-  max-width: 1200px;
-  width: 100%;
-  margin: 0 auto;
-  background-color: green;
-  padding: 0 15px;
+	max-width: 1200px;
+	width: 100%;
+	margin: 0 auto;
+	padding: 0 15px;
 }
 
 /* Links */
 
-a, a:link, a:visited  {
-    text-decoration: none;
+a,
+a:link,
+a:visited {
+	text-decoration: none;
 }
 
-a:hover  {
-    text-decoration: none;
+a:hover {
+	text-decoration: none;
 }
 
 /* Common */
 
-aside, nav, footer, header, section, main {
+aside,
+nav,
+footer,
+header,
+section,
+main {
 	display: block;
 }
 
-ul, ul li {
+ul,
+ul li {
 	list-style: none;
 }
 
@@ -43,22 +54,26 @@ img {
 	vertical-align: top;
 }
 
-img, svg {
+img,
+svg {
 	max-width: 100%;
 	height: auto;
 }
 
 address {
-  font-style: normal;
+	font-style: normal;
 }
 
 /* Form */
 
-input, textarea, button, select {
+input,
+textarea,
+button,
+select {
 	font-family: inherit;
-    font-size: inherit;
-    color: inherit;
-    background-color: transparent;
+	font-size: inherit;
+	color: inherit;
+	background-color: transparent;
 }
 
 input::-ms-clear {
@@ -69,12 +84,13 @@ textarea {
 	resize: vertical;
 }
 
-button, input[type="submit"] {
-    display: inline-block;
-    box-shadow: none;
-    background-color: transparent;
-    background: none;
-    cursor: pointer;
+button,
+input[type="submit"] {
+	display: inline-block;
+	box-shadow: none;
+	background-color: transparent;
+	background: none;
+	cursor: pointer;
 }
 
 button::-moz-focus-inner {
