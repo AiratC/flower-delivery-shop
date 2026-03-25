@@ -1,0 +1,127 @@
+.section {
+   padding: 60px 0;
+   background-color: #fff;
+   width: 100%;
+}
+
+
+/* --- Обертка для списка (сам слайдер) --- */
+.track {
+   display: flex;
+   gap: 30px;
+   width: 100%;
+}
+
+/* --- Стилизация одного элемента --- */
+.item {
+   flex: 1;
+   /* На десктопе делят место поровну */
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   text-align: center;
+   min-width: 0;
+   /* Важно для flex-контейнеров */
+}
+
+/* Контейнер для иконки и венка */
+.iconWrapper {
+   position: relative;
+   width: 150px;
+   height: 77px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.wreathImg {
+   position: absolute;
+   width: 100%;
+   height: 100%;
+   object-fit: contain;
+   z-index: 1;
+}
+
+.iconImg {
+   width: 50px;
+   /* Размер самой иконки внутри */
+   height: 50px;
+   object-fit: contain;
+   z-index: 2;
+   position: relative;
+   top: -10px;
+   /* Легкое смещение вверх как на макете */
+}
+
+/* Стили текста */
+.text {
+   font-size: 16px;
+   line-height: 1.4;
+   color: #4a3f49;
+   /* Темный цвет */
+   font-weight: 600;
+   max-width: 200px;
+}
+
+.highlight {
+   color: #82b366;
+   /* Зеленый акцент */
+}
+
+/* --- Пагинация (скрыта по дефолту) --- */
+.dots {
+   display: none;
+}
+
+/* ===========================================
+   --- АДАПТИВ (CSS SCROLL SNAP СЛАЙДЕР) ---
+   =========================================== */
+
+@media (max-width: 1024px) {
+   .track {
+      gap: 0;
+      overflow-x: auto;
+      /* Включаем гориз. скролл */
+      scroll-snap-type: x mandatory;
+      /* Включаем прилипание */
+      scrollbar-width: none;
+      /* Скрываем скроллбар в Firefox */
+      padding-bottom: 30px;
+      /* Место под точки */
+   }
+
+   .track::-webkit-scrollbar {
+      display: none;
+      /* Скрываем скроллбар в Chrome/Safari */
+   }
+
+   .item {
+      min-width: 100%;
+      /* Один слайд занимает всю ширину */
+      scroll-snap-align: center;
+      /* Прилипание по центру */
+   }
+
+   /* Показываем пагинацию */
+   .dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: -10px;
+   }
+
+   .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 1px solid #4a3f49;
+      background: transparent;
+      padding: 0;
+      cursor: pointer;
+      transition: background 0.3s;
+   }
+
+   .activeDot {
+      background: #4a3f49;
+   }
+}
