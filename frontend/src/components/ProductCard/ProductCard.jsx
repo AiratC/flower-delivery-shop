@@ -21,7 +21,7 @@ const ProductCard = ({ data }) => {
          </div>
 
          <div className={styles.info}>
-            <h3 className={styles.title}>{data.title}</h3>
+            <h3 className={styles.title}>{data.title.slice(0, 28)}...</h3>
 
             <div className={styles.priceRow}>
                <span className={styles.priceLabel}>Стоимость:</span>
