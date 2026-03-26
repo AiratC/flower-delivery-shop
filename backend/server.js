@@ -7,6 +7,7 @@ import dictRouter from "./routes/referenceBooks.route.js";
 import flowerRouter from "./routes/flower.route.js";
 import addonRouter from "./routes/addon.route.js";
 import stocksRouter from "./routes/stocks.route.js";
+import directoryRouter from "./routes/directory.routes.js";
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use('/api/dicts', dictRouter);
 app.use('/api/flowers', flowerRouter);
 app.use('/api/addons', addonRouter);
 app.use('/api/stocks', stocksRouter);
+app.use('/api/directories', directoryRouter);
 
 
 // Запуск сервера с обработкой ошибок

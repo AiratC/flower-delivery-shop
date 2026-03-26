@@ -119,7 +119,7 @@ export const deleteFlower = async (req, res) => {
    try {
       // 1. Сначала найдем букет, чтобы получить пути к его картинкам
       const flowerRes = await pool.query('SELECT images FROM "Flowers" WHERE flower_id = $1', [id]);
-      
+
       if (flowerRes.rowCount === 0) {
          return res.status(404).json({ message: 'Букет не найден', success: false });
       }
@@ -144,8 +144,8 @@ export const deleteFlower = async (req, res) => {
       if (Array.isArray(images)) {
          for (const imgPath of images) {
             // Формируем полный путь к файлу (убедись, что путь корректный относительно корня проекта)
-            const fullPath = path.join(process.cwd(), imgPath); 
-            
+            const fullPath = path.join(process.cwd(), imgPath);
+
             try {
                await fs.unlink(fullPath);
                console.log(`Файл удален: ${fullPath}`);
@@ -165,5 +165,96 @@ export const deleteFlower = async (req, res) => {
       await pool.query('ROLLBACK');
       console.error("Ошибка удаления:", error);
       return res.status(500).json({ message: 'Ошибка сервера', success: false });
+   }
+};
+
+export const getFlowersCategory = async (req, res) => {
+   const {
+      page = 1,
+      limit = 6,
+      search = '',
+      species = '',
+      packaging = '',
+      palettes = '',
+      price = ''
+   } = req.query;
+
+   const offset = (page - 1) * limit;
+   const searchTrimmed = search ? search.trim() : '';
+
+   // 1. ПРАВИЛЬНЫЙ ПАРСИНГ ЦЕНЫ
+   // Используем null, если фильтр не активен, чтобы SQL это понял
+   let minPrice = null;
+   let maxPrice = null;
+
+   if (price && price.includes('-')) {
+      const [min, max] = price.split('-').map(Number);
+      minPrice = !isNaN(min) ? min : 0;
+      maxPrice = (max && max !== 0) ? max : 9999999;
+   }
+
+   const speciesIds = species ? species.split(',').map(Number).filter(n => !isNaN(n)) : [];
+   const packagingIds = packaging ? packaging.split(',').map(Number).filter(n => !isNaN(n)) : [];
+   const paletteIds = palettes ? palettes.split(',').map(Number).filter(n => !isNaN(n)) : [];
+
+   try {
+      const query = `
+            SELECT f.*, 
+                   v.price_new as price,
+                   v.price_old,
+                   v.size_name
+            FROM "Flowers" f
+            -- Присоединяем дефолтный вариант (Малый), чтобы забрать его цену для карточки
+            INNER JOIN "Flower_Variants" v ON f.flower_id = v.flower_id AND v.is_default = TRUE
+            WHERE f.is_active = TRUE
+               
+               -- 2. ИСПРАВЛЕННЫЙ ПОИСК
+               -- Если строка пустая, условие пропускает всё. Если нет — ищет по подстроке.
+               AND ($1 = '' OR (f.title ILIKE $12 OR f.description ILIKE $12))
+               
+               -- 3. ИСПРАВЛЕННЫЙ ФИЛЬТР ЦЕНЫ
+               -- Проверяем, есть ли У ЭТОГО БУКЕТА хотя бы один вариант (любого размера), 
+               -- попадающий в диапазон
+               AND ($10::numeric IS NULL OR EXISTS (
+                  SELECT 1 FROM "Flower_Variants" v2 
+                  WHERE v2.flower_id = f.flower_id 
+                  AND v2.price_new >= $10::numeric 
+                  AND v2.price_new <= $11::numeric
+               ))
+
+               -- ФИЛЬТРЫ КАТЕГОРИЙ
+               AND ($2 = 0 OR EXISTS (
+                     SELECT 1 FROM "Flower_To_Species" fs 
+                     WHERE fs.flower_id = f.flower_id 
+                     AND fs.species_id = ANY($3::int[])
+               ))
+               AND ($4 = 0 OR f.packaging_id = ANY($5::int[]))
+               AND ($6 = 0 OR f.palette_id = ANY($7::int[]))
+               
+            ORDER BY f.created_at DESC
+            LIMIT $8 OFFSET $9
+        `;
+
+      const values = [
+         searchTrimmed,       // $1 (чистая строка для проверки на пустоту)
+         speciesIds.length,   // $2
+         speciesIds,          // $3
+         packagingIds.length, // $4
+         packagingIds,        // $5
+         paletteIds.length,   // $6
+         paletteIds,          // $7
+         parseInt(limit),     // $8
+         parseInt(offset),    // $9
+         minPrice,            // $10
+         maxPrice,            // $11
+         `%${searchTrimmed}%` // $12 (строка с процентами специально для ILIKE)
+      ];
+
+      const result = await pool.query(query, values);
+      return res.status(200).json(result.rows);
+
+   } catch (error) {
+      console.error('Ошибка в getFlowersCategory:', error);
+      return res.status(500).json({ message: 'Ошибка сервера' });
    }
 };

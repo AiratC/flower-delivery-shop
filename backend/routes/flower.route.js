@@ -1,6 +1,6 @@
 import express from 'express';
 import { upload } from '../middleware/upload.js';
-import { createFlower, deleteFlower, getFlowers } from '../controllers/flower.controller.js';
+import { createFlower, deleteFlower, getFlowers, getFlowersCategory } from '../controllers/flower.controller.js';
 
 const flowerRouter = express.Router();
 
@@ -12,6 +12,9 @@ flowerRouter.get('/get-flowers', getFlowers);
 
 // Удаление букета
 flowerRouter.delete('/delete-flower/:id', deleteFlower);
+
+// Получаем все цветы с пагинацией показать ещё
+flowerRouter.get('/get-flowers-catalog', getFlowersCategory);
 
 
 export default flowerRouter;

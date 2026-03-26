@@ -1,0 +1,249 @@
+.catalogContainer {
+   max-width: 1400px;
+   margin: 0 auto;
+   padding: 40px 20px;
+   font-family: 'Inter', sans-serif;
+   /* Или твой основной шрифт */
+}
+
+.catalogLayout {
+   display: grid;
+   /* Основной контент слева (1fr), сайдбар справа (300px) */
+   grid-template-columns: 1fr 300px;
+   gap: 40px;
+   /* align-items: start; */
+}
+
+.main {
+   grid-column: 1;
+}
+
+/* Мобильная кнопка */
+.mobileFilterToggle {
+   display: none;
+   padding: 16px;
+   background: #ffffff;
+   border-radius: 12px;
+   margin-bottom: 20px;
+   cursor: pointer;
+   border: 1px solid #f0f0f0;
+   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+   font-size: 14px;
+   color: #555;
+}
+
+.aside {
+   grid-column: 2;
+   background: #ffffff;
+   padding: 24px;
+   border-radius: 20px;
+   border: 1px solid #f0f0f0;
+   position: sticky;
+   top: 20px;
+   height: 600px;
+   overflow-y: scroll;
+}
+
+/* Стилизация поиска */
+.searchBox {
+   position: relative;
+   margin-bottom: 30px;
+}
+
+.searchInput {
+   width: 100%;
+   padding: 14px 45px 14px 20px;
+   border: none;
+   border-radius: 12px;
+   background: #f7f7f7;
+   font-size: 15px;
+   transition: all 0.2s;
+}
+
+.searchInput:focus {
+   background: #fff;
+   outline: 2px solid #74a867;
+}
+
+.searchIcon {
+   position: absolute;
+   right: 18px;
+   top: 50%;
+   transform: translateY(-50%);
+   color: #bbb;
+}
+
+/* Группы фильтров */
+.filterBlock {
+   margin-bottom: 30px;
+   border-top: 1px solid #f0f0f0;
+   padding-top: 20px;
+}
+
+.filterBlock:first-of-type {
+   border-top: none;
+   padding-top: 0;
+}
+
+.filterTitle {
+   font-size: 13px;
+   text-transform: uppercase;
+   letter-spacing: 0.05em;
+   color: #999;
+   margin-bottom: 15px;
+   font-weight: 600;
+}
+
+.label {
+   display: flex;
+   align-items: center;
+   gap: 12px;
+   margin-bottom: 12px;
+   cursor: pointer;
+   font-size: 15px;
+   color: #444;
+   transition: color 0.2s;
+}
+
+.label:hover {
+   color: #74a867;
+}
+
+/* Стилизация чекбоксов и радио */
+.label input {
+   width: 18px;
+   height: 18px;
+   accent-color: #74a867;
+   /* Цвет бренда */
+   cursor: pointer;
+}
+
+.activeText {
+   color: #222;
+   font-weight: 700;
+}
+
+/* Сетка товаров */
+.grid {
+   display: grid;
+   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+   gap: 25px;
+}
+
+.loadMore {
+   display: block;
+   margin: 40px auto;
+   padding: 12px 35px;
+   background: none;
+   border: 2px solid #74a867;
+   color: #74a867;
+   border-radius: 50px;
+   font-weight: 600;
+   cursor: pointer;
+   transition: all 0.2s;
+}
+
+.loadMore:hover {
+   background: #74a867;
+   color: #fff;
+}
+
+.paginationWrapper {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   min-height: 100px;
+   /* Чтобы контент не прыгал при появлении лоадера */
+   margin-top: 20px;
+}
+
+.loader {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   gap: 10px;
+   color: #74a867;
+   font-weight: 500;
+}
+
+.spinner {
+   animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+   from {
+      transform: rotate(0deg);
+   }
+
+   to {
+      transform: rotate(360deg);
+   }
+}
+
+/* Скроем кнопку, если товаров изначально нет */
+.loadMore {
+   /* твои существующие стили */
+   display: block;
+}
+
+.empty {
+   font-size: 35px;
+   font-weight: 500;
+   color: #74a867;
+}
+
+/* Адаптивность под мобилки */
+@media (max-width: 1024px) {
+   .catalogLayout {
+      /* Отключаем грид, чтобы колонки не мешали */
+      display: flex !important;
+      flex-direction: column;
+      gap: 0;
+   }
+
+   .main {
+      /* Товары пойдут вторыми */
+      order: 2;
+      width: 100%;
+      grid-column: auto !important;
+      /* Сбрасываем десктопную привязку */
+   }
+
+   .aside {
+      /* Фильтры пойдут первыми (сразу под кнопкой) */
+      order: 1;
+      display: none;
+      position: static !important;
+      width: 100% !important;
+      grid-column: auto !important;
+      /* Сбрасываем десктопную привязку */
+
+      margin-bottom: 20px;
+      padding: 20px;
+      box-sizing: border-box;
+   }
+
+   .asideOpen {
+      display: block !important;
+   }
+
+   .grid {
+      /* На мобилках лучше 2 колонки, чтобы карточки не были огромными */
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+   }
+
+   .mobileFilterToggle {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+   }
+
+}
+
+@media (max-width: 550px) {
+   .grid {
+      grid-template-columns: repeat(1, 1fr);
+      gap: 15px;
+   }
+}
