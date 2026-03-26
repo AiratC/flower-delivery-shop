@@ -1,0 +1,182 @@
+.reviewsSection {
+   font-family: 'Inter', sans-serif;
+   /* Или любой стандартный шрифт вашего проекта */
+}
+
+.header {
+   display: flex;
+   justify-content: space-between;
+   align-items: baseline;
+   margin-bottom: 24px;
+   border-bottom: 2px solid #f0f0f0;
+   padding-bottom: 10px;
+}
+
+.title {
+   font-size: 24px;
+   font-weight: 700;
+   color: #333;
+   margin: 0;
+   letter-spacing: 0.05em;
+}
+
+.showAll {
+   color: #888;
+   text-decoration: none;
+   font-size: 14px;
+   transition: color 0.2s;
+}
+
+.showAll:hover {
+   color: #000;
+}
+
+/* Сетка карточек */
+.list {
+   display: grid;
+   grid-template-columns: repeat(3, 1fr);
+   /* 3 колонки по умолчанию */
+   gap: 20px;
+}
+
+.reviewItem {
+   background: #fff;
+   border: 1px solid #eaeaea;
+   border-radius: 8px;
+   padding: 20px;
+   display: flex;
+   flex-direction: column;
+   transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.reviewItem:hover {
+   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Контейнер одного слайда */
+.slide {
+   padding: 0 10px; /* Отступы между карточками */
+   box-sizing: border-box;
+}
+
+.text {
+   margin-top: 15px;
+   font-size: 14px;
+   line-height: 1.6;
+   color: #666;
+}
+
+.reviewHeader {
+   display: flex;
+   justify-content: space-between;
+   align-items: flex-start;
+   margin-bottom: 12px;
+}
+
+.userName {
+   margin: 0 0 4px 0;
+   font-size: 16px;
+   font-weight: 600;
+   color: #222;
+}
+
+.meta {
+   font-size: 12px;
+   color: #999;
+   display: block;
+}
+
+.rating {
+   display: flex;
+   gap: 2px;
+}
+
+.starFilled {
+   fill: #ffc107;
+   color: #ffc107;
+}
+
+.starEmpty {
+   fill: #e0e0e0;
+   color: #e0e0e0;
+}
+
+.text {
+   font-size: 14px;
+   line-height: 1.5;
+   color: #555;
+   margin: 0;
+   /* Ограничение текста (опционально, если отзыв слишком длинный) */
+   display: -webkit-box;
+   -webkit-line-clamp: 4;
+   -webkit-box-orient: vertical;
+   overflow: hidden;
+}
+
+.controls {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   margin-top: 10px;
+}
+
+.navButtons {
+   display: flex;
+   gap: 20px;
+}
+
+.navBtn {
+   background: #fff;
+   border: 1px solid #eee;
+   border-radius: 50%;
+   width: 40px;
+   height: 40px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   cursor: pointer;
+   transition: 0.3s;
+}
+
+.navBtn:hover {
+   border-color: #82b467;
+   color: #82b467;
+}
+
+/* Окно просмотра */
+.viewport {
+   width: 100%;
+   overflow: hidden;
+}
+
+/* Лента со слайдами */
+.track {
+   display: flex;
+   transition: transform 0.5s ease-in-out;
+   will-change: transform;
+}
+
+/* --- АДАПТИВ --- */
+
+/* Планшеты */
+@media (max-width: 992px) {
+   .list {
+      grid-template-columns: repeat(2, 1fr);
+   }
+}
+
+/* Мобильные устройства */
+@media (max-width: 600px) {
+   .list {
+      grid-template-columns: 1fr;
+   }
+
+   .header {
+      flex-direction: row;
+      align-items: center;
+   }
+
+   .title {
+      font-size: 20px;
+   }
+}
