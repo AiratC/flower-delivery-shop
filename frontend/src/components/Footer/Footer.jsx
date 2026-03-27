@@ -17,8 +17,6 @@ const Footer = () => {
       event.preventDefault();
    }, []);
 
-   console.log(formData)
-
    return (
       <footer className={styles.footer}>
          <div className={styles.container}>
