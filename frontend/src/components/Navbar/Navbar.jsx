@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { MapPin, Phone, ShoppingBag, Menu, X, ChevronDown, User } from 'lucide-react';
+import { MapPin, Phone, ShoppingBag, Menu, X, ChevronDown, User, Heart, ShoppingCart } from 'lucide-react';
 import mainLogo from '../../assets/images/main-logo.webp'; // Путь к вашему логотипу
 import styles from './Navbar.module.css'
 import MobileMenu from '../MobileMenu/MobileMenu';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
    const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -61,9 +62,25 @@ const Navbar = () => {
                      <div className={`${styles.informForClient}`}>
                         Информация для клиента <ChevronDown size={20} />
                      </div>
-                     <a href="/orders" className={`${styles.navLink} ${styles.myOrders}`}>
-                        <User size={18} />
-                     </a>
+
+                     <div>
+                        <Link to="/profile" className={`navLink`}>
+                           <User size={18} />
+                        </Link>
+                     </div>
+
+
+                     <div>
+                        <Link to={`/favorites`} className={`navLink`}>
+                           <Heart size={18} />
+                        </Link>
+                     </div>
+
+                     <div>
+                        <Link to={`/cart`} className={`navLink`}>
+                           <ShoppingCart size={18} />
+                        </Link>
+                     </div>
 
                      <div className={styles.currencySwitch}>
                         <span className={styles.currencyActive}>РУБ.</span>
