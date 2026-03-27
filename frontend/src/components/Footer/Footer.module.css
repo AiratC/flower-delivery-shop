@@ -1,0 +1,152 @@
+.footer {
+   background-color: #5b4d58;
+   color: #ffffff;
+   padding: 40px 20px 20px;
+   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.container {
+   max-width: 1200px;
+   margin: 0 auto;
+}
+
+/* Навигация */
+.navList {
+   list-style: none;
+   display: flex;
+   justify-content: space-between;
+   flex-wrap: wrap;
+   gap: 25px;
+   padding: 0;
+   margin: 0 0 30px 0;
+}
+
+.navList a {
+   color: #fff;
+   text-decoration: none;
+   font-size: 18px;
+   transition: opacity 0.2s;
+}
+
+.navList a:hover {
+   opacity: 0.7;
+}
+
+.divider {
+   border: 0;
+   border-top: 1px solid rgba(255, 255, 255, 0.15);
+   margin-bottom: 40px;
+}
+
+/* Сетка */
+.content {
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: space-between;
+   gap: 40px;
+}
+
+.column {
+   flex: 1;
+   min-width: 280px;
+}
+
+.title {
+   color: #72bc53;
+   font-size: 20px;
+   margin-bottom: 20px;
+   font-weight: 600;
+}
+
+/* Контакты */
+.contactItem,
+.workHours {
+   margin-bottom: 12px;
+   display: flex;
+   align-items: flex-start;
+   gap: 10px;
+   font-size: 18px;
+}
+
+.linkList {
+   list-style: none;
+   padding: 0;
+}
+
+.linkList li {
+   margin-bottom: 12px;
+}
+
+.linkList a {
+   color: #fff;
+   text-decoration: none;
+   font-size: 18px;
+}
+
+/* Форма */
+.form {
+   display: flex;
+   flex-direction: column;
+   gap: 12px;
+}
+
+.inputGroup {
+   display: flex;
+   gap: 12px;
+}
+
+.input,
+.textarea {
+   width: 100%;
+   padding: 12px;
+   border: none;
+   border-radius: 4px;
+   background: #fff;
+   font-size: 14px;
+}
+
+.submitBtn {
+   background-color: #72bc53;
+   color: white;
+   border: none;
+   padding: 12px 30px;
+   border-radius: 4px;
+   cursor: pointer;
+   align-self: flex-end;
+   font-weight: bold;
+   transition: background 0.3s;
+}
+
+.submitBtn:hover {
+   background-color: #5fa344;
+}
+
+.copyright {
+   text-align: center;
+   margin-top: 60px;
+   font-size: 13px;
+   color: rgba(255, 255, 255, 0.5);
+}
+
+/* Адаптив */
+@media (max-width: 992px) {
+   .content {
+      justify-content: flex-start;
+   }
+}
+
+@media (max-width: 768px) {
+   .inputGroup {
+      flex-direction: column;
+   }
+
+   .navList {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+   }
+
+   .submitBtn {
+      width: 100%;
+   }
+}
