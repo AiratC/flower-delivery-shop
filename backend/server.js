@@ -8,6 +8,7 @@ import flowerRouter from "./routes/flower.route.js";
 import addonRouter from "./routes/addon.route.js";
 import stocksRouter from "./routes/stocks.route.js";
 import directoryRouter from "./routes/directory.routes.js";
+import messageRouter from "./routes/message.route.js";
 
 const app = express();
 
@@ -35,6 +36,7 @@ app.use('/api/flowers', flowerRouter);
 app.use('/api/addons', addonRouter);
 app.use('/api/stocks', stocksRouter);
 app.use('/api/directories', directoryRouter);
+app.use('/api/messages', messageRouter);
 
 
 // Запуск сервера с обработкой ошибок
