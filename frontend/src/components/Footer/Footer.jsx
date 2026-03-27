@@ -1,7 +1,24 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import styles from './Footer.module.css';
 
 const Footer = () => {
+   const [formData, setFormData] = useState({
+      name: '',
+      email: '',
+      phone: '',
+      question: ''
+   });
+
+   const handleChange = (event) => {
+      setFormData(prev => ({ ...prev, [event.target.name]: event.target.value }))
+   }
+
+   const handleFormSubmit = useCallback(async (event) => {
+      event.preventDefault();
+   }, []);
+
+   console.log(formData)
+
    return (
       <footer className={styles.footer}>
          <div className={styles.container}>
@@ -56,12 +73,12 @@ const Footer = () => {
                {/* Форма */}
                <div className={`${styles.column} ${styles.formColumn}`}>
                   <h3 className={styles.title}>Возникли вопросы? Свяжитесь с нами</h3>
-                  <form className={styles.form}>
+                  <form onSubmit={handleFormSubmit} className={styles.form}>
                      <div className={styles.inputGroup}>
-                        <input type="text" placeholder="Ваше имя" className={styles.input} />
-                        <input type="text" placeholder="Моб. номер" className={styles.input} />
+                        <input onChange={handleChange} name='name' value={formData.name} type="text" placeholder="Ваше имя" className={styles.input} />
+                        <input onChange={handleChange} name='phone' value={formData.phone} type="text" placeholder="Моб. номер" className={styles.input} />
                      </div>
-                     <textarea placeholder="Ваше сообщение" className={styles.textarea} rows="3"></textarea>
+                     <textarea onChange={handleChange} name='question' value={formData.question} placeholder="Ваше сообщение" className={styles.textarea} rows="3"></textarea>
                      <button type="submit" className={styles.submitBtn}>Отправить</button>
                   </form>
                </div>
