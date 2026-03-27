@@ -49,9 +49,9 @@ const Navbar = () => {
                   </button>
 
                   <nav className={styles.nav}>
-                     <a href="/catalog" className={styles.navLink}>Каталог</a>
-                     <a href="/reviews" className={styles.navLink}>Отзывы</a>
-                     <a href="/contacts" className={styles.navLink}>Контакты</a>
+                     <Link to="/catalog" className={`navLink`}>Каталог</Link>
+                     <Link to="/reviews" className={`navLink`}>Отзывы</Link>
+                     <Link to="/contacts" className={`navLink`}>Контакты</Link>
                   </nav>
 
                   <div className={styles.logo}>
