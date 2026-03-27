@@ -129,6 +129,28 @@
    color: rgba(255, 255, 255, 0.5);
 }
 
+/* Footer.module.css */
+
+.spinner {
+   /* Применяем анимацию rotate, длительность 1с, линейно, бесконечно */
+   animation: rotate 1s linear infinite;
+
+   /* На всякий случай, чтобы вращение было ровным */
+   transform-origin: center;
+   display: inline-block;
+}
+
+/* Описываем саму анимацию */
+@keyframes rotate {
+   from {
+      transform: rotate(0deg);
+   }
+
+   to {
+      transform: rotate(360deg);
+   }
+}
+
 /* Адаптив */
 @media (max-width: 992px) {
    .content {

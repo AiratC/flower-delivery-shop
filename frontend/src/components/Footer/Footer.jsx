@@ -1,5 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import styles from './Footer.module.css';
+import fetchAxios from '../../api/axios';
+import { toast } from 'react-toastify';
+import { Loader2 } from 'lucide-react';
 
 const Footer = () => {
    const [formData, setFormData] = useState({
@@ -8,6 +11,7 @@ const Footer = () => {
       phone: '',
       question: ''
    });
+   const [isSubmitting, setIsSubmitting] = useState(false);
 
    const handleChange = (event) => {
       setFormData(prev => ({ ...prev, [event.target.name]: event.target.value }))
@@ -15,7 +19,33 @@ const Footer = () => {
 
    const handleFormSubmit = useCallback(async (event) => {
       event.preventDefault();
-   }, []);
+
+      // Простая проверка перед отправкой
+      if (!formData.name.trim() || !formData.phone.trim() || !formData.question.trim()) {
+         return toast.warning("Пожалуйста, заполните обязательные поля");
+      }
+
+      try {
+         setIsSubmitting(true);
+         const response = await fetchAxios.post(`/messages/send-message`, formData);
+         if (response.data.success) {
+            toast.success(response.data.message);
+            // Очищаем форму после успеха
+            setFormData({
+               name: '',
+               email: '',
+               phone: '',
+               question: ''
+            });
+         }
+      } catch (error) {
+         // Добавляем опциональную цепочку на случай, если сервера нет или ответа нет
+         const errorMessage = error.response?.data?.message || "Ошибка при отправке";
+         toast.error(errorMessage);
+      } finally {
+         setIsSubmitting(false)
+      }
+   }, [formData]);
 
    return (
       <footer className={styles.footer}>
@@ -72,13 +102,50 @@ const Footer = () => {
                <div className={`${styles.column} ${styles.formColumn}`}>
                   <h3 className={styles.title}>Возникли вопросы? Свяжитесь с нами</h3>
                   <form onSubmit={handleFormSubmit} className={styles.form}>
-                     <div className={styles.inputGroup}>
-                        <input onChange={handleChange} name='name' value={formData.name} type="text" placeholder="Ваше имя" className={styles.input} />
-                        <input onChange={handleChange} name='phone' value={formData.phone} type="text" placeholder="Моб. номер" className={styles.input} />
+               <div className={styles.inputGroup}>
+                  <input 
+                     onChange={handleChange} 
+                     name='name' 
+                     value={formData.name} 
+                     type="text" 
+                     placeholder="Ваше имя" 
+                     className={styles.input} 
+                     disabled={isSubmitting} // Блокируем ввод при отправке
+                  />
+                  <input 
+                     onChange={handleChange} 
+                     name='phone' 
+                     value={formData.phone} 
+                     type="text" 
+                     placeholder="Моб. номер" 
+                     className={styles.input} 
+                     disabled={isSubmitting}
+                  />
+               </div>
+               <textarea 
+                  onChange={handleChange} 
+                  name='question' 
+                  value={formData.question} 
+                  placeholder="Ваше сообщение" 
+                  className={styles.textarea} 
+                  rows="3"
+                  disabled={isSubmitting}
+               ></textarea>
+               
+               <button 
+                  type="submit" 
+                  className={styles.submitBtn} 
+                  disabled={isSubmitting} // Блокируем кнопку
+               >
+                  {isSubmitting ? (
+                     <div className={styles.loaderContent}>
+                        <Loader2 className={styles.spinner} size={18} />
                      </div>
-                     <textarea onChange={handleChange} name='question' value={formData.question} placeholder="Ваше сообщение" className={styles.textarea} rows="3"></textarea>
-                     <button type="submit" className={styles.submitBtn}>Отправить</button>
-                  </form>
+                  ) : (
+                     "Отправить"
+                  )}
+               </button>
+            </form>
                </div>
             </div>
 
