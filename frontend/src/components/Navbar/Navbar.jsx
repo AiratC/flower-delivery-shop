@@ -54,9 +54,9 @@ const Navbar = () => {
                      <Link to="/contacts" className={`navLink`}>Контакты</Link>
                   </nav>
 
-                  <div className={styles.logo}>
+                  <Link to={`/`} className={styles.logo}>
                      <img src={mainLogo} alt="Цветочная Лавка" className={styles.logoImg} />
-                  </div>
+                  </Link>
 
                   <nav className={styles.nav}>
                      <div className={`${styles.informForClient}`}>

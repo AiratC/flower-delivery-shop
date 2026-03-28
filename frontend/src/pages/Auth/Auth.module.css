@@ -1,0 +1,143 @@
+.authWrapper {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   min-height: 80vh;
+   background-color: #f9f9f9;
+}
+
+.authContainer {
+   display: flex;
+   background: #fff;
+   border-radius: 15px;
+   overflow: hidden;
+   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+   width: 100%;
+}
+
+/* Стили для картинки */
+.imageSide {
+   flex: 1.2;
+   position: relative;
+}
+
+.imageSide img {
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+   display: block;
+}
+
+/* Стили для формы */
+.formSide {
+   padding: 10px 40px;
+   display: flex;
+   flex-direction: column;
+}
+
+.tabs {
+   display: flex;
+   border-bottom: 1px solid #eee;
+   margin-bottom: 30px;
+}
+
+.tab,
+.activeTab {
+   flex: 1;
+   padding: 12px;
+   border: none;
+   background: none;
+   cursor: pointer;
+   font-size: 15px;
+   font-weight: 500;
+   color: #999;
+   transition: 0.3s;
+}
+
+.activeTab {
+   color: #333;
+   border-bottom: 2px solid #82b467;
+   background: #fdfdfd;
+}
+
+.form {
+   display: flex;
+   flex-direction: column;
+   gap: 20px;
+}
+
+.inputField {
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+}
+
+.inputField label {
+   font-size: 14px;
+   font-weight: 600;
+   color: #444;
+}
+
+.inputField input {
+   padding: 12px 15px;
+   border: 1px solid #eee;
+   border-radius: 8px;
+   background: #fcfcfc;
+   outline: none;
+   transition: 0.2s;
+}
+
+.inputField input:focus {
+   border-color: #82b467;
+   background: #fff;
+}
+
+.submitBtn {
+   margin-top: 10px;
+   padding: 14px;
+   background-color: #82b467;
+   color: white;
+   border: none;
+   border-radius: 8px;
+   font-size: 16px;
+   font-weight: 600;
+   cursor: pointer;
+   transition: 0.3s;
+}
+
+.submitBtn:hover {
+   background-color: #6e9e54;
+}
+
+/* --- АДАПТИВ --- */
+
+@media (max-width: 850px) {
+
+   /* На планшетах делаем форму чуть шире */
+   .authContainer {
+      max-width: 500px;
+   }
+
+   /* Скрываем картинку, чтобы не мешала на узких экранах */
+   .imageSide {
+      display: none;
+   }
+
+   .formSide {
+      padding: 30px;
+   }
+}
+
+@media (max-width: 480px) {
+   .authWrapper {
+      padding: 10px;
+   }
+
+   .formSide {
+      padding: 20px;
+   }
+
+   .submitBtn {
+      font-size: 15px;
+   }
+}
