@@ -24,7 +24,7 @@ const Profile = () => {
    });
 
    // 3. Динамический расчет скидки
-   const totalSum = user?.totalOrdersSum || 0;
+   const totalSum = user?.total_spent || 0;
 
    const discountData = useMemo(() => {
       if (totalSum >= 90000) return { percent: 7, next: null };
