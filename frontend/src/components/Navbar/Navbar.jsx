@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 
 const Navbar = () => {
    const [isMenuOpen, setIsMenuOpen] = useState(false);
+   const user = false;
 
    return (
       <>
@@ -64,9 +65,15 @@ const Navbar = () => {
                      </div>
 
                      <div>
-                        <Link to="/profile" className={`navLink`}>
-                           <User size={18} />
-                        </Link>
+                        {
+                           user ? (
+                              <span>User</span>
+                           ) : (
+                              <Link to="/auth" className={`navLink`}>
+                                 <User size={18} />
+                              </Link>
+                           )
+                        }
                      </div>
 
 

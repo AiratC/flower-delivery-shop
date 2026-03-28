@@ -5,9 +5,11 @@ import authImg from './../../assets/images/authImage.webp'
 const Auth = () => {
    const [isLogin, setIsLogin] = useState(true);
    const [formData, setFormData] = useState({
+      name: '',
       email: '',
       password: '',
-      confirmPassword: ''
+      repeatPassword: '',
+      agree: false
    });
 
    const handleChange = (e) => {
@@ -16,7 +18,28 @@ const Auth = () => {
 
    const handleSubmit = (e) => {
       e.preventDefault();
-      console.log('Данные формы:', formData);
+      let endpoint;
+      let newFormData;
+
+      if(isLogin) {
+         endpoint = `/auth/login`;
+         newFormData = { userEmail: formData.email, password: formData.password };
+      } else {
+         endpoint = `/auth/register`;
+         newFormData = { 
+            name: formData.name, 
+            userEmail: formData.email, 
+            password: formData.password, 
+            repeatPassword: formData.repeatPassword, 
+            agree: formData.agree 
+         };
+      }
+
+      try {
+         
+      } catch (error) {
+         
+      }
    };
 
    return (
