@@ -1,13 +1,31 @@
-import React, { useState } from 'react';
-import { MapPin, Phone, ShoppingBag, Menu, X, ChevronDown, User, Heart, ShoppingCart } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { MapPin, Phone, ShoppingBag, Menu, X, ChevronDown, User, Heart, ShoppingCart, CircleUserRound } from 'lucide-react';
 import mainLogo from '../../assets/images/main-logo.webp'; // Путь к вашему логотипу
 import styles from './Navbar.module.css'
 import MobileMenu from '../MobileMenu/MobileMenu';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const Navbar = () => {
    const [isMenuOpen, setIsMenuOpen] = useState(false);
-   const user = false;
+   const { user } = useSelector((state) => state.auth);
+
+   useEffect(() => {
+      if (isMenuOpen) {
+         document.body.style.overflow = 'hidden';
+      } else {
+         document.body.style.overflow = 'auto'; // 'auto' лучше чем 'scroll', чтобы не было пустой полосы
+      }
+
+      // На всякий случай возвращаем скролл при размонтировании компонента
+      return () => {
+         document.body.style.overflow = 'auto';
+      };
+   }, [isMenuOpen])
+
+   const toggleMobileMenu = () => {
+      setIsMenuOpen(prev => !prev)
+   }
 
    return (
       <>
@@ -44,7 +62,7 @@ const Navbar = () => {
                   {/* Кнопка меню (только мобилки) */}
                   <button
                      className={styles.mobileMenuBtn}
-                     onClick={() => setIsMenuOpen(!isMenuOpen)}
+                     onClick={toggleMobileMenu}
                   >
                      {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
                   </button>
@@ -67,7 +85,23 @@ const Navbar = () => {
                      <div>
                         {
                            user ? (
-                              <span>User</span>
+                              <div>
+                                 {
+                                    user.avatar ? (
+                                       <Link to={`/profile`}>
+                                          <img 
+                                          src={`${import.meta.env.VITE_BACKEND_URL}${user.avatar}`} 
+                                          className={styles.userAvatar}
+                                          alt='avatar' 
+                                          />
+                                       </Link>
+                                    ) : (
+                                       <Link to={`/profile`}>
+                                          <CircleUserRound size={18} className={`navLink`} />
+                                       </Link>
+                                    )
+                                 }
+                              </div>
                            ) : (
                               <Link to="/auth" className={`navLink`}>
                                  <User size={18} />
