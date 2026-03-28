@@ -138,7 +138,7 @@ CREATE TABLE Orders (
    -- Оплата и статус
    total_price DECIMAL(10, 2) NOT NULL,
    payment_method VARCHAR(100) NOT NULL, -- 'Наличными при получении', 'Онлайн' и т.д.
-   status VARCHAR(50) DEFAULT 'Новый',
+   status VARCHAR(50) DEFAULT 'Новый', -- В обработке, Оплачен, Доставляется, Доставлено
    
    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );

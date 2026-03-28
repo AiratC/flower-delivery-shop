@@ -9,6 +9,7 @@ import addonRouter from "./routes/addon.route.js";
 import stocksRouter from "./routes/stocks.route.js";
 import directoryRouter from "./routes/directory.routes.js";
 import messageRouter from "./routes/message.route.js";
+import userRouter from "./routes/user.route.js";
 
 const app = express();
 
@@ -37,6 +38,7 @@ app.use('/api/addons', addonRouter);
 app.use('/api/stocks', stocksRouter);
 app.use('/api/directories', directoryRouter);
 app.use('/api/messages', messageRouter);
+app.use('/api/users', userRouter);
 
 
 // Запуск сервера с обработкой ошибок

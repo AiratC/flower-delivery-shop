@@ -1,0 +1,260 @@
+.profilePage {
+   background-color: #f8f8f8;
+   padding: 40px 0;
+   min-height: 100vh;
+}
+
+.layout {
+   display: grid;
+   grid-template-columns: 280px 1fr;
+   gap: 30px;
+   margin-top: 30px;
+}
+
+/* Sidebar */
+.sidebar {
+   background: white;
+   border-radius: 12px;
+   padding: 20px 0;
+   height: fit-content;
+}
+
+.sidebarTitle {
+   font-family: 'Comfortaa', cursive;
+   /* Или твой шрифт логотипа */
+   padding: 0 25px 20px;
+   font-size: 22px;
+   color: #4a3f48;
+}
+
+.sideLink {
+   width: 100%;
+   padding: 15px 25px;
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   border: none;
+   background: none;
+   font-weight: 600;
+   color: #555;
+   cursor: pointer;
+   border-bottom: 1px solid #f0f0f0;
+}
+
+.sideLink.active {
+   background-color: #f0f7ed;
+   color: #333;
+}
+
+/* Discount Card */
+.discountCard {
+   background: white;
+   border-radius: 12px;
+   padding: 30px;
+   margin-bottom: 25px;
+   position: relative;
+   text-align: center;
+}
+
+.discountBadge {
+   display: inline-block;
+   background-color: #82b467;
+   color: white;
+   padding: 8px 25px;
+   border-radius: 4px;
+   font-weight: 600;
+   margin-bottom: 40px;
+}
+
+.progressBar {
+   height: 10px;
+   background: #e0e0e0;
+   border-radius: 10px;
+   position: relative;
+   margin: 0 10px;
+}
+
+.progressFill {
+   height: 100%;
+   background: #82b467;
+   border-radius: 10px;
+   transition: width 0.5s ease;
+}
+
+.dot {
+   position: absolute;
+   top: 50%;
+   width: 14px;
+   height: 14px;
+   background: #bbb;
+   border: 3px solid white;
+   border-radius: 50%;
+   transform: translate(-50%, -50%);
+}
+
+.dot1 {
+   left: 33%;
+}
+
+.dot2 {
+   left: 66%;
+}
+
+.dot3 {
+   left: 100%;
+}
+
+.activeDot {
+   background: #ff9d00;
+}
+
+/* Цвет активной точки как на макете */
+
+.progressLabels {
+   display: flex;
+   justify-content: space-between;
+   margin-top: 15px;
+   font-size: 11px;
+   font-weight: 700;
+   color: #999;
+}
+
+.totalSumText {
+   margin-top: 25px;
+   font-size: 18px;
+   font-weight: 700;
+   color: #4a3f48;
+}
+
+.totalSumText span {
+   color: #82b467;
+}
+
+/* Info Card & Inputs */
+.infoCard {
+   background: white;
+   border-radius: 12px;
+   padding: 30px;
+}
+
+.formGrid {
+   display: grid;
+   grid-template-columns: 1fr 1fr;
+   gap: 20px;
+   margin-top: 20px;
+}
+
+.inputGroup label {
+   display: block;
+   font-size: 13px;
+   font-weight: 700;
+   color: #555;
+   margin-bottom: 8px;
+}
+
+.inputGroup input {
+   width: 100%;
+   padding: 12px 15px;
+   background: #f9f9f9;
+   border: 1px solid #eee;
+   border-radius: 6px;
+   color: #333;
+}
+
+.inputGroup input:disabled {
+   background: #fcfcfc;
+   cursor: not-allowed;
+}
+
+/* Основной контейнер адаптива */
+@media (max-width: 1024px) {
+   .layout {
+      grid-template-columns: 1fr;
+      /* Сайдбар и контент встают друг под друга */
+      gap: 20px;
+   }
+
+   .sidebar {
+      position: sticky;
+      top: 10px;
+      z-index: 10;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+   }
+
+   .sideNav {
+      display: flex;
+      /* Делаем меню горизонтальным на планшетах */
+      flex-direction: column;
+      overflow-x: auto;
+      padding: 0 10px;
+   }
+
+   .sideLink {
+      border-bottom: none;
+      border-right: 1px solid #f0f0f0;
+      white-space: nowrap;
+      justify-content: center;
+      gap: 8px;
+   }
+}
+
+@media (max-width: 768px) {
+   .profilePage {
+      padding: 20px 0;
+   }
+
+   /* Скрываем иконки в меню, если мало места */
+   .sideLink svg {
+      display: none;
+   }
+
+   /* Прогресс-бар: делаем подписи мельче */
+   .progressLabels {
+      flex-wrap: wrap;
+      /* Чтобы подписи не накладывались */
+      gap: 10px;
+   }
+
+   .labelGroup {
+      flex: 1 1 40%;
+      text-align: left;
+      margin-bottom: 5px;
+   }
+
+   /* Форма: делаем в одну колонку */
+   .formGrid {
+      grid-template-columns: 1fr;
+   }
+
+   .discountCard {
+      padding: 20px 15px;
+   }
+
+   .totalSumText {
+      font-size: 16px;
+   }
+}
+
+@media (max-width: 480px) {
+   .sidebarTitle {
+      font-size: 18px;
+      text-align: center;
+      padding: 0 0 15px 0;
+   }
+
+   .sideLink {
+      padding: 12px 15px;
+      font-size: 13px;
+   }
+
+   .discountBadge {
+      width: 100%;
+      font-size: 14px;
+   }
+
+   /* На очень маленьких экранах прячем промежуточные цифры прогресса, оставляя только важные */
+   .milestone {
+      display: block;
+      font-size: 9px;
+   }
+}

@@ -34,7 +34,6 @@ const Auth = () => {
 
       if (!isLogin && !formData.agree) {
          toast.warning("Необходимо согласие на обработку данных");
-
          return;
       }
 
@@ -51,12 +50,12 @@ const Auth = () => {
 
       try {
          const response = await dispatch(fetchAuth({ formData: payload, endpoint })).unwrap();
-         navigate('/')
-         toast.success(response.message)
+         toast.success(response.message);
+         navigate('/profile');
       } catch (error) {
          toast.error(error);
       }
-      
+
    };
 
    return (
