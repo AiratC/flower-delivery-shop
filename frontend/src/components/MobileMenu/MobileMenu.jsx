@@ -1,9 +1,13 @@
 import React from 'react';
 import styles from './MobileMenu.module.css';
-import { ChevronDown, User } from 'lucide-react';
+import { ChevronDown, CircleUserRound, Heart, ShoppingCart, User } from 'lucide-react';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 
 const MobileMenu = ({ isOpen, onClose }) => {
+   const { user } = useSelector((state) => state.auth);
+
    if (!isOpen) return null;
 
    return (
@@ -13,9 +17,9 @@ const MobileMenu = ({ isOpen, onClose }) => {
             {/* Список навигации */}
             <nav className={styles.navList}>
                <div>
-                  <a href="/catalog" className={styles.navItem}>Каталог</a>
-                  <a href="/reviews" className={styles.navItem}>Отзывы</a>
-                  <a href="/contacts" className={styles.navItem}>Контакты</a>
+                  <Link to="/catalog" className={styles.navItem}>Каталог</Link>
+                  <Link to="/reviews" className={styles.navItem}>Отзывы</Link>
+                  <Link to="/contacts" className={styles.navItem}>Контакты</Link>
                   <div className={styles.navItem}>
                      Информация для клиента
                      <ChevronDown size={18} />
@@ -24,10 +28,48 @@ const MobileMenu = ({ isOpen, onClose }) => {
 
 
                {/* Футер меню */}
-               <a href="/orders" className={styles.footer}>
-                  <User size={20} />
-                  Мои заказы
-               </a>
+               <div className={styles.footer}>
+                  <div>
+                     {
+                        user ? (
+                           <div>
+                              {
+                                 user.avatar ? (
+                                    <Link onClick={onClose} to={`/profile`}>
+                                       <img
+                                          src={`${import.meta.env.VITE_BACKEND_URL}${user.avatar}`}
+                                          className={styles.userAvatar}
+                                          alt='avatar'
+                                       />
+                                    </Link>
+                                 ) : (
+                                    <Link onClick={onClose} to={`/profile`}>
+                                       <CircleUserRound size={25} className={`navLink`} />
+                                    </Link>
+                                 )
+                              }
+                           </div>
+                        ) : (
+                           <Link onClick={onClose} to="/auth" className={`navLink`}>
+                              <User size={25} />
+                           </Link>
+                        )
+                     }
+                  </div>
+
+
+                  <div>
+                     <Link onClick={onClose} to={`/favorites`} className={`navLink`}>
+                        <Heart size={25} />
+                     </Link>
+                  </div>
+
+                  <div>
+                     <Link onClick={onClose} to={`/cart`} className={`navLink`}>
+                        <ShoppingCart size={25} />
+                     </Link>
+                  </div>
+               </div>
             </nav>
 
 
