@@ -139,7 +139,7 @@ const Footer = () => {
                >
                   {isSubmitting ? (
                      <div className={styles.loaderContent}>
-                        <Loader2 className={styles.spinner} size={18} />
+                        <Loader2 className={`spinner`} size={18} />
                      </div>
                   ) : (
                      "Отправить"

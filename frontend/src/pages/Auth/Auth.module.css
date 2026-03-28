@@ -109,6 +109,33 @@
    background-color: #6e9e54;
 }
 
+.agreeWrapper {
+   margin-top: 10px;
+   margin-bottom: 5px;
+}
+
+.checkboxLabel {
+   display: flex;
+   align-items: center;
+   gap: 10px;
+   cursor: pointer;
+   user-select: none;
+}
+
+.checkbox {
+   width: 18px;
+   height: 18px;
+   cursor: pointer;
+   accent-color: #82b467;
+   /* Твой фирменный зеленый */
+}
+
+.agreeText {
+   font-size: 13px;
+   color: #666;
+   line-height: 1.2;
+}
+
 /* --- АДАПТИВ --- */
 
 @media (max-width: 850px) {

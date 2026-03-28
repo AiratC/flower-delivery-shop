@@ -154,7 +154,7 @@ const Catalog = () => {
                <div className={styles.paginationWrapper}>
                   {isLoading ? (
                      <div className={styles.loader}>
-                        <Loader2 className={styles.spinner} size={32} />
+                        <Loader2 className={`spinner`} size={32} />
                         <span>Загружаем букеты...</span>
                      </div>
                   ) : (
