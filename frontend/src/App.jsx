@@ -3,6 +3,7 @@ import Layout from './components/Layout/Layout';
 import Home from './pages/Home/Home';
 import { ToastContainer } from 'react-toastify';
 import Auth from './pages/Auth/Auth';
+import PageNotFound from './components/PageNotFound/PageNotFound';
 
 function App() {
 
@@ -14,6 +15,8 @@ function App() {
                <Route path='/' element={<Layout />}>
                   <Route index element={<Home/>}/>
                   <Route path='auth' element={<Auth/>}/>
+
+                  <Route path="*" element={<PageNotFound />} />
                </Route>
             </Routes>
          </BrowserRouter>
