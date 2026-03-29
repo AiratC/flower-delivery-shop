@@ -45,10 +45,13 @@
 
 .new {
    background-color: #82b366;
+   left: 12px;
+   right: auto;
 }
 
 .sale {
    background-color: #f19c53;
+   right: 12px;
 }
 
 .info {

@@ -258,3 +258,28 @@ export const getFlowersCategory = async (req, res) => {
       return res.status(500).json({ message: 'Ошибка сервера' });
    }
 };
+
+// Получаем конкретный букет по id
+export const getOneFlower = async (req, res) => {
+   try {
+      const { id } = req.params;
+      const flowerQuery = await pool.query(`
+            SELECT 
+               f.*,
+               (SELECT jsonb_agg(v ORDER BY v.variant_id) 
+               FROM "Flower_Variants" v 
+               WHERE v.flower_id = f.flower_id) as variants
+            FROM "Flowers" f
+            WHERE f.flower_id = $1 AND f.is_active = TRUE
+      `, [id]);
+
+      if (flowerQuery.rows.length === 0) {
+         return res.status(404).json({ message: "Букет не найден" });
+      }
+
+      res.json(flowerQuery.rows[0]);
+   } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Ошибка сервера" });
+   }
+};

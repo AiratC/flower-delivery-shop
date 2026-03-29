@@ -1,0 +1,236 @@
+.productPage {
+   padding: 40px 0;
+   background-color: #fff;
+   font-family: 'Inter', sans-serif;
+}
+
+.containerFlowerCard {
+   display: flex;
+   gap: 40px;
+   align-items: flex-start;
+}
+
+/* --- Левая часть: Фото --- */
+.imageSection {
+   flex: 1;
+   position: relative;
+}
+
+.badgeNew {
+   position: absolute;
+   top: 20px;
+   left: 20px;
+   background: #77b567;
+   color: white;
+   padding: 6px 16px;
+   border-radius: 8px;
+   font-weight: 600;
+   font-size: 14px;
+}
+
+.mainImage {
+   width: 100%;
+   border-radius: 20px;
+   object-fit: cover;
+   aspect-ratio: 1 / 1;
+}
+
+.thumbnails {
+   display: flex;
+   gap: 12px;
+   margin-top: 20px;
+   overflow-x: auto;
+}
+
+.thumbnails img {
+   width: 70px;
+   height: 70px;
+   border-radius: 12px;
+   cursor: pointer;
+   object-fit: cover;
+   transition: opacity 0.2s;
+}
+
+.thumbnails img:hover {
+   opacity: 0.7;
+}
+
+/* --- Правая часть: Контент --- */
+.infoSection {
+   flex: 1.2;
+}
+
+.title {
+   font-size: 32px;
+   color: #4a3f44;
+   margin-bottom: 24px;
+   font-weight: 700;
+}
+
+.sizeSelector p {
+   font-weight: 600;
+   margin-bottom: 12px;
+   color: #4a3f44;
+}
+
+.variantsGrid {
+   display: grid;
+   grid-template-columns: repeat(3, 1fr);
+   gap: 16px;
+   margin-bottom: 30px;
+}
+
+.variantBtn {
+   background: #fff;
+   border: 1px solid #e2e2e2;
+   border-radius: 12px;
+   padding: 12px;
+   display: flex;
+   flex-direction: column;
+   align-items: flex-start;
+   cursor: pointer;
+   transition: all 0.2s;
+   text-align: left;
+}
+
+.variantBtn.active {
+   border-color: #77b567;
+   background-color: #f9fff7;
+}
+
+.sizeName {
+   font-weight: 600;
+   font-size: 14px;
+   color: #4a3f44;
+}
+
+.sizePrice {
+   color: #888;
+   font-size: 13px;
+   margin-top: 4px;
+}
+
+/* --- Табы и Состав --- */
+.tabs {
+   display: flex;
+   gap: 30px;
+   border-bottom: 1px solid #eee;
+   margin-bottom: 20px;
+}
+
+.tabs button {
+   background: none;
+   border: none;
+   padding-bottom: 10px;
+   cursor: pointer;
+   color: #888;
+   font-size: 16px;
+   position: relative;
+}
+
+.tabs button.activeTab {
+   color: #4a3f44;
+   font-weight: 600;
+}
+
+.tabs button.activeTab::after {
+   content: '';
+   position: absolute;
+   bottom: -1px;
+   left: 0;
+   width: 100%;
+   height: 2px;
+   background: #4a3f44;
+}
+
+.compositionList {
+   list-style: none;
+   padding: 0;
+   margin-bottom: 40px;
+}
+
+.compositionList li {
+   color: #666;
+   margin-bottom: 8px;
+   padding-left: 20px;
+   position: relative;
+}
+
+.compositionList li::before {
+   content: "•";
+   color: #77b567;
+   position: absolute;
+   left: 0;
+}
+
+/* --- Футер карточки (Цена и Кнопка) --- */
+.footerAction {
+   display: flex;
+   align-items: center;
+   background: #fdfdfd;
+   padding: 20px;
+   border-radius: 16px;
+   gap: 20px;
+}
+
+.counter {
+   display: flex;
+   align-items: center;
+   background: #eee;
+   border-radius: 8px;
+   overflow: hidden;
+}
+
+.counter button {
+   border: none;
+   background: none;
+   padding: 8px 12px;
+   cursor: pointer;
+   font-size: 18px;
+}
+
+.counter span {
+   padding: 0 10px;
+   font-weight: 600;
+}
+
+.totalPrice {
+   font-size: 18px;
+   color: #4a3f44;
+}
+
+.totalPrice span {
+   font-weight: 700;
+   color: #4a3f44;
+}
+
+.addToCart {
+   margin-left: auto;
+   background: #77b567;
+   color: white;
+   border: none;
+   padding: 14px 30px;
+   border-radius: 12px;
+   font-weight: 600;
+   cursor: pointer;
+   display: flex;
+   align-items: center;
+   gap: 10px;
+   transition: background 0.2s;
+}
+
+.addToCart:hover {
+   background: #66a356;
+}
+
+/* Адаптив */
+@media (max-width: 992px) {
+   .containerFlowerCard {
+      flex-direction: column;
+   }
+
+   .imageSection,
+   .infoSection {
+      width: 100%;
+   }
+}

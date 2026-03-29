@@ -9,6 +9,7 @@ import Profile from './pages/Profile/Profile';
 import { useEffect } from 'react';
 import { fetchUserStats } from './redux/slices/authSlice';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
+import FlowerCard from './pages/FlowerCard/FlowerCard';
 
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
                   <Route index element={<Home/>}/>
                   <Route path='auth' element={<Auth/>}/>
                   <Route path='profile' element={<ProtectedRoute><Profile/></ProtectedRoute>}/>
+                  <Route path='flower-card/:flowerId' element={<FlowerCard/>}/>
 
                   <Route path="*" element={<PageNotFound />} />
                </Route>
