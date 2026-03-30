@@ -109,3 +109,72 @@
 .button:hover {
    background-color: #71a155;
 }
+
+/* Анимация пульсации */
+@keyframes pulse {
+   0% {
+      background-color: #f0f0f0;
+   }
+   50% {
+      background-color: #e0e0e0;
+   }
+   100% {
+      background-color: #f0f0f0;
+   }
+}
+
+/* Общие стили для всех скелетонов */
+.imageSkeleton,
+.titleSkeleton,
+.priceSkeleton,
+.buttonSkeleton {
+   animation: pulse 1.5s ease-in-out infinite;
+   background-color: #f0f0f0;
+   border-radius: 4px;
+}
+
+/* Стили для скелетона картинки */
+.imageSkeleton {
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   z-index: 1;
+   border-radius: 20px;
+}
+
+/* Контроль видимости самой картинки */
+.imageHidden {
+   opacity: 0;
+}
+
+.imageVisible {
+   opacity: 1;
+   transition: opacity 0.3s ease;
+}
+
+/* Стили для скелетонов текста */
+.titleSkeleton {
+   height: 18px;
+   width: 80%;
+   margin-bottom: 15px;
+}
+
+.priceSkeleton {
+   height: 16px;
+   width: 50%;
+   margin-bottom: 20px;
+}
+
+.buttonSkeleton {
+   height: 44px;
+   width: 100%;
+   border-radius: 10px;
+}
+
+/* Опционально: стиль для самой карточки, когда она в режиме загрузки */
+.isLoading {
+   pointer-events: none;
+   cursor: default;
+}

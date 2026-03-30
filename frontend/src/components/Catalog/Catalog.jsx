@@ -143,7 +143,7 @@ const Catalog = () => {
                <div className={styles.grid}>
                   {flowers.length > 0 ? (
                      flowers.map(item => (
-                        <ProductCard key={item.flower_id} data={item} />
+                        <ProductCard key={item.flower_id} data={item} isLoading={isLoading} />
                      ))
                   ) : (
                      !isLoading && <p className={styles.empty}>Букеты не найдены</p>
