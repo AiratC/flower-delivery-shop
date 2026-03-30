@@ -27,7 +27,6 @@ const Catalog = () => {
    const [directories, setDirectories] = useState({ species: [], packaging: [], palettes: [] });
    const [selectedFilters, setSelectedFilters] = useState({ species: [], packaging: [], palettes: [], priceRange: '' });
 
-   // useScrollRestoration(isLoading);
    const isInitialMount = useRef(true);
 
    const loadFlowers = useCallback(async (targetPage, isAppend = false, shouldScrollTop = false) => {
