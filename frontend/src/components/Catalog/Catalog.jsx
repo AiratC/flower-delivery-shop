@@ -4,7 +4,6 @@ import styles from './Catalog.module.css';
 import fetchAxios from '../../api/axios';
 import { Loader2, Search, SlidersHorizontal, X } from 'lucide-react';
 import ProductCard from '../ProductCard/ProductCard';
-import useScrollRestoration from '../../hooks/useScrollRestoration';
 
 const priceRanges = [
    { id: '0-2500', name: 'до 2500 руб.' },
@@ -23,16 +22,18 @@ const Catalog = () => {
    const [hasMore, setHasMore] = useState(true);
    const [isReady, setIsReady] = useState(false);
 
+   const gridRef = useRef(null);
+
    const [directories, setDirectories] = useState({ species: [], packaging: [], palettes: [] });
    const [selectedFilters, setSelectedFilters] = useState({ species: [], packaging: [], palettes: [], priceRange: '' });
 
-   useScrollRestoration(isLoading);
+   // useScrollRestoration(isLoading);
    const isInitialMount = useRef(true);
 
-   const loadFlowers = useCallback(async (targetPage, isAppend = false) => {
+   const loadFlowers = useCallback(async (targetPage, isAppend = false, shouldScrollTop = false) => {
       if (isLoading) return;
       setIsLoading(true);
-      
+
       try {
          const params = {
             page: targetPage,
@@ -59,12 +60,19 @@ const Catalog = () => {
 
          setHasMore(newItems.length === 6);
          setPage(targetPage);
+
+         if (shouldScrollTop) {
+            // Используем setTimeout, чтобы дождаться отрисовки DOM
+            setTimeout(() => {
+               gridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 0);
+         }
       } catch (error) {
          console.error("Ошибка загрузки:", error);
       } finally {
          setIsLoading(false);
       }
-   }, [selectedFilters, search, isLoading]);
+   }, [selectedFilters, search]);
 
    useEffect(() => {
       const init = async () => {
@@ -99,7 +107,7 @@ const Catalog = () => {
       // 2. Если это самый первый маунт компонента
       if (isInitialMount.current) {
          isInitialMount.current = false;
-         
+
          // КРИТИЧЕСКИЙ МОМЕНТ: 
          // Если в стейте уже есть цветы (из кэша), 
          // мы ПРЕРЫВАЕМ эффект, чтобы не сбрасывать пагинацию к 1 странице.
@@ -107,14 +115,14 @@ const Catalog = () => {
             console.log("Восстановлено из кэша: блокируем сброс пагинации");
             return;
          }
-      }
+      };
 
       // 3. Если мы дошли сюда, значит либо кэша не было, 
       // либо пользователь изменил фильтры/поиск вручную.
       console.log("Фильтры изменились: сброс на 1 страницу");
-      loadFlowers(1, false);
+      loadFlowers(1, false, true);
 
-   }, [search, selectedFilters, isReady]);
+   }, [search, JSON.stringify(selectedFilters), isReady]);
 
    // 4. Сохранение в кэш
    useEffect(() => {
@@ -124,6 +132,8 @@ const Catalog = () => {
          sessionStorage.setItem('catalog_cache', JSON.stringify(stateToSave));
       }
    }, [flowers, page, hasMore, selectedFilters, search, isReady]);
+
+   // -----------------------------------------------------------------------------------------
 
    // Дебаунс поиска
    useEffect(() => {
@@ -160,7 +170,7 @@ const Catalog = () => {
 
          <div className={styles.catalogLayout}>
             <main className={styles.main}>
-               <div className={styles.grid}>
+               <div className={styles.grid} ref={gridRef}>
                   {flowers.map(item => (
                      <ProductCard key={`${item.flower_id}-${item.name}`} data={item} isLoading={isLoading} />
                   ))}
