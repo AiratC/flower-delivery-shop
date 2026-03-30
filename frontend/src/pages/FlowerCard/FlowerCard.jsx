@@ -16,7 +16,6 @@ const FlowerCard = () => {
          setFlower(response.data)
          const defaultVar = response.data.variants.find(v => v.is_default) || response.data.variants[0];
          setSelectedVariant(defaultVar);
-         console.log(response)
       } catch (error) {
          console.log(error)
       }

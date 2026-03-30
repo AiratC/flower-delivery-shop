@@ -10,10 +10,11 @@ import { useEffect } from 'react';
 import { fetchUserStats } from './redux/slices/authSlice';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import FlowerCard from './pages/FlowerCard/FlowerCard';
+import useScrollRestoration from './hooks/useScrollRestoration';
 
 
 function App() {
-
+   useScrollRestoration()
    const dispatch = useDispatch();
 
    useEffect(() => {
@@ -23,7 +24,6 @@ function App() {
    return (
       <>
          <ToastContainer/>
-         <BrowserRouter>
             <Routes>
                <Route path='/' element={<Layout />}>
                   <Route index element={<Home/>}/>
@@ -34,7 +34,6 @@ function App() {
                   <Route path="*" element={<PageNotFound />} />
                </Route>
             </Routes>
-         </BrowserRouter>
       </>
    )
 }

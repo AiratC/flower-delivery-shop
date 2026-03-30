@@ -1,15 +1,16 @@
-import React, { useCallback, useEffect, useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import styles from './Catalog.module.css';
 import fetchAxios from '../../api/axios';
 import { Loader2, Search, SlidersHorizontal, X } from 'lucide-react';
 import ProductCard from '../ProductCard/ProductCard';
+import useScrollRestoration from '../../hooks/useScrollRestoration';
 
-// Константы для цен
 const priceRanges = [
    { id: '0-2500', name: 'до 2500 руб.' },
    { id: '2500-4000', name: '2500 - 4000 руб.' },
    { id: '4000-6000', name: '4000 - 6000 руб.' },
-   { id: '6000-0', name: 'от 6000 руб.' }, // 0 значит без лимита сверху
+   { id: '6000-0', name: 'от 6000 руб.' },
 ];
 
 const Catalog = () => {
@@ -18,99 +19,121 @@ const Catalog = () => {
    const [searchTerm, setSearchTerm] = useState('');
    const [search, setSearch] = useState('');
    const [isMenuOpen, setIsMenuOpen] = useState(false);
-
    const [isLoading, setIsLoading] = useState(false);
    const [hasMore, setHasMore] = useState(true);
+   const [isReady, setIsReady] = useState(false);
 
-   // Справочники для фильтров
-   const [directories, setDirectories] = useState({
-      species: [],
-      packaging: [],
-      palettes: []
-   });
+   const [directories, setDirectories] = useState({ species: [], packaging: [], palettes: [] });
+   const [selectedFilters, setSelectedFilters] = useState({ species: [], packaging: [], palettes: [], priceRange: '' });
 
-   // Состояние выбранных фильтров
-   const [selectedFilters, setSelectedFilters] = useState({
-      species: [],
-      packaging: [],
-      palettes: [],
-      priceRange: ''
-   });
+   useScrollRestoration(isLoading);
+   const isInitialMount = useRef(true);
 
-   // Эффект для дебаунса (задержки) поиска
-   useEffect(() => {
-      const delayDebounceFn = setTimeout(() => {
-         setSearch(searchTerm);
-      }, 500);
-
-      return () => clearTimeout(delayDebounceFn)
-   }, [searchTerm]);
-
-   // Загрузка справочников при первом рендере
-   useEffect(() => {
-      const fetchDirectories = async () => {
-         try {
-            const [species, packaging, palettes] = await Promise.all([
-               fetchAxios.get(`/directories/species`),
-               fetchAxios.get(`/directories/packaging`),
-               fetchAxios.get(`/directories/palettes`)
-            ]);
-            setDirectories({ species: species.data, packaging: packaging.data, palettes: palettes.data });
-         } catch (error) {
-            console.log(error)
-         }
-      };
-
-      fetchDirectories();
-   }, []);
-
-   // Основная функция загрузки товаров
-   const loadFlowers = useCallback(async (currentPage, isAppend = false) => {
+   const loadFlowers = useCallback(async (targetPage, isAppend = false) => {
       if (isLoading) return;
-
+      setIsLoading(true);
+      
       try {
-         setIsLoading(true);
-
          const params = {
-            page: currentPage,
-            search,
+            page: targetPage,
+            limit: 6,
+            search: search, // Берем из актуального стейта
             species: selectedFilters.species.join(','),
             packaging: selectedFilters.packaging.join(','),
             palettes: selectedFilters.palettes.join(','),
             price: selectedFilters.priceRange
          };
-         const response = await fetchAxios.get('/flowers/get-flowers-catalog', { params });
 
+         const response = await fetchAxios.get('/flowers/get-flowers-catalog', { params });
          const newItems = response.data;
 
-         // Если пришло меньше товаров, чем размер страницы (например, 12), значит товаров больше нет
-         // Или если пришел пустой массив
-         if (newItems.length === 0 || newItems.length < 6) {
-            setHasMore(false);
-         } else {
-            setHasMore(true);
-         }
+         setFlowers(prev => {
+            if (isAppend) {
+               // Убираем возможные дубликаты по ID, если они проскочили
+               const existingIds = new Set(prev.map(f => f.flower_id));
+               const uniqueNew = newItems.filter(f => !existingIds.has(f.flower_id));
+               return [...prev, ...uniqueNew];
+            }
+            return newItems;
+         });
 
-         setFlowers(prev => isAppend ? [...prev, ...newItems] : newItems);
+         setHasMore(newItems.length === 6);
+         setPage(targetPage);
       } catch (error) {
-         console.log(error)
+         console.error("Ошибка загрузки:", error);
       } finally {
          setIsLoading(false);
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [selectedFilters, search]);
+   }, [selectedFilters, search, isLoading]);
 
    useEffect(() => {
-      setFlowers([]); // Очищаем список при смене фильтров
-      setPage(1);
-      setHasMore(true);
+      const init = async () => {
+         try {
+            const [s, pack, pal] = await Promise.all([
+               fetchAxios.get(`/directories/species`),
+               fetchAxios.get(`/directories/packaging`),
+               fetchAxios.get(`/directories/palettes`)
+            ]);
+            setDirectories({ species: s.data, packaging: pack.data, palettes: pal.data });
+         } catch (e) { console.error(e); }
+
+         const saved = sessionStorage.getItem('catalog_cache');
+         if (saved) {
+            const cache = JSON.parse(saved);
+            setFlowers(cache.flowers);
+            setPage(cache.page);
+            setHasMore(cache.hasMore);
+            setSelectedFilters(cache.filters);
+            setSearch(cache.search);
+            setSearchTerm(cache.search);
+         }
+         setIsReady(true); // Устанавливаем готовность в самом конце
+      };
+      init();
+   }, []);
+
+   useEffect(() => {
+      // 1. Ждем, пока отработает init()
+      if (!isReady) return;
+
+      // 2. Если это самый первый маунт компонента
+      if (isInitialMount.current) {
+         isInitialMount.current = false;
+         
+         // КРИТИЧЕСКИЙ МОМЕНТ: 
+         // Если в стейте уже есть цветы (из кэша), 
+         // мы ПРЕРЫВАЕМ эффект, чтобы не сбрасывать пагинацию к 1 странице.
+         if (flowers.length > 0) {
+            console.log("Восстановлено из кэша: блокируем сброс пагинации");
+            return;
+         }
+      }
+
+      // 3. Если мы дошли сюда, значит либо кэша не было, 
+      // либо пользователь изменил фильтры/поиск вручную.
+      console.log("Фильтры изменились: сброс на 1 страницу");
       loadFlowers(1, false);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [search, selectedFilters]);
 
+   }, [search, selectedFilters, isReady]);
+
+   // 4. Сохранение в кэш
    useEffect(() => {
-      if (page > 1) loadFlowers(page, true);
-   }, [page, loadFlowers]);
+      // Сохраняем всегда, когда данные изменились и компонент готов
+      if (isReady && flowers.length > 0) {
+         const stateToSave = { flowers, page, hasMore, filters: selectedFilters, search };
+         sessionStorage.setItem('catalog_cache', JSON.stringify(stateToSave));
+      }
+   }, [flowers, page, hasMore, selectedFilters, search, isReady]);
+
+   // Дебаунс поиска
+   useEffect(() => {
+      const t = setTimeout(() => setSearch(searchTerm), 500);
+      return () => clearTimeout(t);
+   }, [searchTerm]);
+
+   const handleLoadMore = () => {
+      loadFlowers(page + 1, true); // Грузим следующую страницу и добавляем в хвост
+   };
 
    const toggleFilter = useCallback((category, id) => {
       setSelectedFilters(prev => ({
@@ -126,53 +149,41 @@ const Catalog = () => {
          ...prev,
          priceRange: prev.priceRange === rangeId ? '' : rangeId
       }))
-   }, [])
+   }, []);
 
    return (
       <div className={styles.catalogContainer}>
-         {/* Мобильная кнопка фильтров (видна только на мобилках) */}
          <div className={styles.mobileFilterToggle} onClick={() => setIsMenuOpen(!isMenuOpen)}>
             <span>{isMenuOpen ? "Закрыть фильтры" : "Сортировка/фильтр/поиск"}</span>
             {isMenuOpen ? <X size={20} /> : <SlidersHorizontal size={20} />}
          </div>
 
          <div className={styles.catalogLayout}>
-
-
             <main className={styles.main}>
                <div className={styles.grid}>
-                  {flowers.length > 0 ? (
-                     flowers.map(item => (
-                        <ProductCard key={item.flower_id} data={item} isLoading={isLoading} />
-                     ))
-                  ) : (
-                     !isLoading && <p className={styles.empty}>Букеты не найдены</p>
-                  )}
+                  {flowers.map(item => (
+                     <ProductCard key={`${item.flower_id}-${item.name}`} data={item} isLoading={isLoading} />
+                  ))}
+                  {flowers.length === 0 && !isLoading && <p className={styles.empty}>Букеты не найдены</p>}
                </div>
 
-               {/* КНОПКА С ЛОАДЕРОМ */}
                <div className={styles.paginationWrapper}>
                   {isLoading ? (
                      <div className={styles.loader}>
-                        <Loader2 className={`spinner`} size={32} />
+                        <Loader2 className="spinner" size={32} />
                         <span>Загружаем букеты...</span>
                      </div>
                   ) : (
                      hasMore && flowers.length > 0 && (
-                        <button
-                           className={styles.loadMore}
-                           onClick={() => setPage(p => p + 1)}
-                        >
+                        <button className={styles.loadMore} onClick={handleLoadMore}>
                            Показать еще
                         </button>
                      )
                   )}
                </div>
             </main>
-            
-            {/* Сайдбар теперь будет иметь класс открытого состояния */}
-            <aside className={`${styles.aside} ${isMenuOpen ? styles.asideOpen : ''}`}>
 
+            <aside className={`${styles.aside} ${isMenuOpen ? styles.asideOpen : ''}`}>
                <div className={styles.searchBox}>
                   <input
                      type="text"
@@ -185,6 +196,7 @@ const Catalog = () => {
                </div>
 
                <div className={styles.filterGroupsContainer}>
+                  {/* ... (блоки фильтров без изменений) ... */}
                   <div className={styles.filterBlock}>
                      <h4 className={styles.filterTitle}>Стоимость:</h4>
                      {priceRanges.map(range => (
@@ -194,72 +206,37 @@ const Catalog = () => {
                               checked={selectedFilters.priceRange === range.id}
                               onChange={() => handlePriceChange(range.id)}
                            />
-                           <span className={selectedFilters.priceRange === range.id ? styles.activeText : ''}>
-                              {range.name}
-                           </span>
+                           <span className={selectedFilters.priceRange === range.id ? styles.activeText : ''}>{range.name}</span>
                         </label>
                      ))}
                   </div>
 
-                  <FilterGroup
-                     title="Букет с..."
-                     items={directories.species}
-                     selected={selectedFilters.species}
-                     onToggle={(id) => toggleFilter('species', id)}
-                     idKey='species_id'
-                  />
-
-                  <FilterGroup
-                     title="Цветы упаковано"
-                     items={directories.packaging}
-                     selected={selectedFilters.packaging}
-                     onToggle={(id) => toggleFilter('packaging', id)}
-                     idKey='packaging_id'
-                  />
-
-                  <FilterGroup
-                     title="Цветовая гамма"
-                     items={directories.palettes}
-                     selected={selectedFilters.palettes}
-                     onToggle={(id) => toggleFilter('palettes', id)}
-                     idKey='palette_id'
-                  />
+                  <FilterGroup title="Букет с..." items={directories.species} selected={selectedFilters.species} onToggle={(id) => toggleFilter('species', id)} idKey='species_id' />
+                  <FilterGroup title="Цветы упаковано" items={directories.packaging} selected={selectedFilters.packaging} onToggle={(id) => toggleFilter('packaging', id)} idKey='packaging_id' />
+                  <FilterGroup title="Цветовая гамма" items={directories.palettes} selected={selectedFilters.palettes} onToggle={(id) => toggleFilter('palettes', id)} idKey='palette_id' />
                </div>
             </aside>
-            
          </div>
       </div>
    );
 };
 
-// Вспомогательный компонент для группы фильтров
+// Вспомогательный компонент FilterGroup как в твоем коде
 function FilterGroup({ title, items, selected, onToggle, idKey }) {
-
    return (
       <div className={styles.filterBlock}>
          <h4 className={styles.filterTitle}>{title}</h4>
-         {
-            items.length > 0 && (
-               items.map(item => {
-                  const itemId = item[idKey];
-                  return (
-                     <label key={itemId} className={styles.label}>
-                        <input
-                           type="checkbox"
-                           checked={selected.includes(itemId)}
-                           onChange={() => onToggle(itemId)}
-                        />
-                        <span className={selected.includes(itemId) ? styles.activeText : ''}>
-                           {item.name}
-                        </span>
-                     </label>
-                  )
-               }
-               )
+         {items.map(item => {
+            const itemId = item[idKey];
+            return (
+               <label key={itemId} className={styles.label}>
+                  <input type="checkbox" checked={selected.includes(itemId)} onChange={() => onToggle(itemId)} />
+                  <span className={selected.includes(itemId) ? styles.activeText : ''}>{item.name}</span>
+               </label>
             )
-         }
+         })}
       </div>
    );
 }
 
-export default Catalog
+export default Catalog;
