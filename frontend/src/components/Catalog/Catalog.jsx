@@ -24,8 +24,6 @@ const Catalog = () => {
 
    const gridRef = useRef(null);
 
-   console.log(flowers)
-
    const [directories, setDirectories] = useState({ species: [], packaging: [], palettes: [] });
    const [selectedFilters, setSelectedFilters] = useState({ species: [], packaging: [], palettes: [], priceRange: '' });
 
