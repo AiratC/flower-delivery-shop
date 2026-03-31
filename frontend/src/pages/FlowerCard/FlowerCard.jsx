@@ -16,17 +16,19 @@ const FlowerCard = () => {
 
    // eslint-disable-next-line react-hooks/preserve-manual-memoization
    const onAddMain = useCallback(async () => {
+      if (!flower || !selectedVariant) return;
+
       dispatch(addToCart({
          itemId: flower.flower_id,
          itemType: 'flower',
-         selectedSize: selectedVariant,
+         selectedSize: selectedVariant.size_name,
          quantity: quantity
       }))
    }, [dispatch, flower?.flower_id, quantity, selectedVariant]);
 
    // Функция для добавления доп товара которую потом перемещю в копонент AddonCard
    // const addToAddon = useCallback(async () => {
-   //    itemId: addonRouter.addon_id,
+   //    itemId: addon.addon_id,
    //    itemType: 'addon',
    //    selectedSize: null,
    //    quantity: 1

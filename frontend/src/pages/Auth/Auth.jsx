@@ -6,6 +6,7 @@ import { fetchAuth } from '../../redux/slices/authSlice';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { fetchCart } from '../../redux/slices/cartSlice';
 
 const Auth = () => {
    const [isLogin, setIsLogin] = useState(true);
@@ -52,6 +53,10 @@ const Auth = () => {
 
       try {
          const response = await dispatch(fetchAuth({ formData: payload, endpoint })).unwrap();
+
+         // СРАЗУ ПОСЛЕ ВХОДА обновляем корзину, чтобы увидеть объединенные товары
+         dispatch(fetchCart());
+         
          toast.success(response.message);
          navigate('/profile');
       } catch (error) {

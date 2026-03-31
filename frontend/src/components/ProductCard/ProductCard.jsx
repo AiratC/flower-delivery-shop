@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { addToCart } from '../../redux/slices/cartSlice';
 
 const ProductCard = ({ data, isLoading }) => {
+   console.log(data)
    const navigate = useNavigate();
    // Состояние для отслеживания загрузки самой картинки
    const [isImageLoaded, setIsImageLoaded] = useState(false);

@@ -3,7 +3,6 @@ import fetchAxios from "../../api/axios";
 
 const getHeaders = () => ({
    headers: {
-      'Authorization': `Bearer ${localStorage.getItem('token')}`,
       'x-guest-token': localStorage.getItem('guest_token')
    }
 });
