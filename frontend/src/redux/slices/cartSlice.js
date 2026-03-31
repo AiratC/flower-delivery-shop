@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import fetchAxios from "../../api/axios";
 
-// Хелпер для заголовков
 const getHeaders = () => ({
    headers: {
       'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -13,11 +12,10 @@ export const fetchCart = createAsyncThunk(
    'cart/fetchCart',
    async (_, { rejectWithValue }) => {
       try {
-         console.log(`getHeaders() === `, getHeaders());
          const response = await fetchAxios.get('/cart', getHeaders());
          return response.data;
       } catch (error) {
-         return rejectWithValue(error.response.data);
+         return rejectWithValue(error.response?.data);
       }
    }
 );
@@ -30,27 +28,43 @@ export const addToCart = createAsyncThunk(
          dispatch(fetchCart());
          return response.data;
       } catch (error) {
-         return rejectWithValue(error.response.data);
+         return rejectWithValue(error.response?.data);
       }
    }
 );
 
 export const updateQty = createAsyncThunk(
    'cart/updateQty',
-   async ({ id, qty }, { dispatch, rejectWithValue }) => {
+   async ({ cartItemId, quantity }, { dispatch, rejectWithValue }) => {
       try {
-         const response = await fetchAxios.patch(`/cart/update-to-cart/${id}`, { quantity: qty }, getHeaders());
+         // Приводим в соответствие с контроллером: 
+         // Контроллер ждет cartItemId и quantity в body
+         const response = await fetchAxios.put('/cart/update-quantity', { cartItemId, quantity }, getHeaders());
          dispatch(fetchCart());
          return response.data;
       } catch (error) {
-         return rejectWithValue(error.response.data);
+         return rejectWithValue(error.response?.data);
+      }
+   }
+);
+
+export const removeItem = createAsyncThunk(
+   'cart/removeItem',
+   async (cartItemId, { dispatch, rejectWithValue }) => {
+      try {
+         const response = await fetchAxios.delete(`/cart/remove/${cartItemId}`, getHeaders());
+         dispatch(fetchCart());
+         return response.data;
+      } catch (error) {
+         return rejectWithValue(error.response?.data);
       }
    }
 );
 
 const initialState = {
    items: [],
-   loading: false
+   loading: false,
+   error: null
 };
 
 const cartSlice = createSlice({
@@ -59,9 +73,17 @@ const cartSlice = createSlice({
    reducers: {},
    extraReducers: (builder) => {
       builder
+         .addCase(fetchCart.pending, (state) => {
+            state.loading = true;
+         })
          .addCase(fetchCart.fulfilled, (state, action) => {
+            state.loading = false;
             state.items = action.payload;
          })
+         .addCase(fetchCart.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+         });
    }
 });
 

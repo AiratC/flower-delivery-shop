@@ -11,6 +11,7 @@ import { fetchUserStats } from './redux/slices/authSlice';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import FlowerCard from './pages/FlowerCard/FlowerCard';
 import useScrollRestoration from './hooks/useScrollRestoration';
+import { v4 as uuidv4 } from 'uuid';
 
 
 function App() {
@@ -20,6 +21,15 @@ function App() {
    useEffect(() => {
       dispatch(fetchUserStats())
    }, [dispatch]);
+
+   useEffect(() => {
+      const guestToken = localStorage.getItem('guest_token');
+
+      if(!guestToken) {
+         const guest_token = uuidv4();
+         localStorage.setItem('guest_token', guest_token);
+      }
+   }, [])
 
    return (
       <>

@@ -14,6 +14,7 @@ const FlowerCard = () => {
 
    const dispatch = useDispatch();
 
+   // eslint-disable-next-line react-hooks/preserve-manual-memoization
    const onAddMain = useCallback(async () => {
       dispatch(addToCart({
          itemId: flower.flower_id,
@@ -21,7 +22,7 @@ const FlowerCard = () => {
          selectedSize: selectedVariant,
          quantity: quantity
       }))
-   }, [dispatch, flower.flower_id, quantity, selectedVariant]);
+   }, [dispatch, flower?.flower_id, quantity, selectedVariant]);
 
    // Функция для добавления доп товара которую потом перемещю в копонент AddonCard
    // const addToAddon = useCallback(async () => {

@@ -14,8 +14,15 @@ const ProductCard = ({ data, isLoading }) => {
    const handleQuickAdd = useCallback(async (e) => {
          e.stopPropagation();
    
-         // Ищем дефолтный вариант (например, "Средний")
-         const defaultSize = data.variants.find(v => v.is_default)?.size_name || data.variants[0].size_name;
+         // дефолтный вариант
+         const defaultSize = {
+            flower_id: data.flower_id,
+            is_default: true,
+            price_new: 1040,
+            price_old: null,
+            size_name: "Малый",
+            variant_id: 37
+         }
    
          dispatch(addToCart({
             itemId: data.flower_id,
