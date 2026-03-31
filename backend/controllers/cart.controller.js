@@ -10,18 +10,18 @@ export const addToCart = async (req, res) => {
       // Логика "Upsert" (Insert or Update)
       // Мы ищем товар с таким же ID, типом и размером для конкретного юзера или гостя
       const querySQL = `
-            INSERT INTO Cart (user_id, guest_token, item_id, item_type, selected_size, quantity)
-            VALUES ($1, $2, $3, $4, $5, $6)
-            ON CONFLICT (
-                  COALESCE(user_id, 0), 
-                  COALESCE(guest_token, ''), 
-                  item_id, 
-                  item_type, 
-                  COALESCE(selected_size, '')
-               )
-               DO UPDATE SET quantity = Cart.quantity + EXCLUDED.quantity
-               RETURNING *;
-         `;
+         INSERT INTO Cart (user_id, guest_token, item_id, item_type, selected_size, quantity)
+         VALUES ($1, $2, $3, $4, $5, $6)
+         ON CONFLICT (
+            (COALESCE(user_id, 0)), 
+            (COALESCE(guest_token, '')), 
+            item_id, 
+            item_type, 
+            (COALESCE(selected_size, ''))
+         )
+         DO UPDATE SET quantity = Cart.quantity + EXCLUDED.quantity
+         RETURNING *;
+`;
 
       const values = [
          userId,
@@ -57,21 +57,19 @@ export const getCart = async (req, res) => {
    try {
       const querySQL = `
          SELECT 
-               c.cart_item_id, c.item_id, c.item_type, c.selected_size, c.quantity,
-               CASE 
+            c.cart_item_id, c.item_id, c.item_type, c.selected_size, c.quantity,
+            CASE 
                   WHEN c.item_type = 'flower' THEN f.title 
                   ELSE a.title 
-               END as title,
-               CASE 
-                  WHEN c.item_type = 'flower' THEN (SELECT price_new FROM Flower_Variants WHERE flower_id = f.flower_id AND size_name = c.selected_size)
-                  ELSE a.price 
-               END as price,
-               CASE 
+            END as title,
+            COALESCE(fv.price_new, a.price) as price, -- Берем цену либо из вариантов, либо из аддонов
+            CASE 
                   WHEN c.item_type = 'flower' THEN f.images->>0 
                   ELSE a.image->>0 
-               END as image
+            END as image
          FROM Cart c
          LEFT JOIN Flowers f ON c.item_id = f.flower_id AND c.item_type = 'flower'
+         LEFT JOIN Flower_Variants fv ON f.flower_id = fv.flower_id AND fv.size_name = c.selected_size
          LEFT JOIN Addons a ON c.item_id = a.addon_id AND c.item_type = 'addon'
          WHERE (c.user_id = $1 OR c.guest_token = $2)
       `;

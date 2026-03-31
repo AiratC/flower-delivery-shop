@@ -1,11 +1,29 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import styles from './ProductCard.module.css'
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { addToCart } from '../../redux/slices/cartSlice';
 
 const ProductCard = ({ data, isLoading }) => {
    const navigate = useNavigate();
    // Состояние для отслеживания загрузки самой картинки
    const [isImageLoaded, setIsImageLoaded] = useState(false);
+
+   const dispatch = useDispatch();
+
+   const handleQuickAdd = useCallback(async (e) => {
+         e.stopPropagation();
+   
+         // Ищем дефолтный вариант (например, "Средний")
+         const defaultSize = data.variants.find(v => v.is_default)?.size_name || data.variants[0].size_name;
+   
+         dispatch(addToCart({
+            itemId: data.flower_id,
+            itemType: 'flower',
+            selectedSize: defaultSize,
+            quantity: 1
+         }));
+      }, [dispatch, data.flower_id, data.variants])
 
    const fullImageUrl = useMemo(() => {
       const imageUrl = data?.images && data?.images.length > 0 ? data?.images[0] : '/placeholder.webp';
@@ -18,15 +36,6 @@ const ProductCard = ({ data, isLoading }) => {
          navigate(`/flower-card/${data.flower_id}`);
       }
    }, [navigate, data?.flower_id, isLoading]);
-
-   // eslint-disable-next-line react-hooks/preserve-manual-memoization
-   const handleClickAddToCart = useCallback(async (event) => {
-      event.stopPropagation();
-      if(data?.flower_id) {
-         console.log('add to cart', data.flower_id)
-      }
-      
-   }, [data?.flower_id]);
 
    // Функция обработки успешной загрузки изображения
    const handleImageLoad = () => {
@@ -116,7 +125,7 @@ const ProductCard = ({ data, isLoading }) => {
                showSkeleton ? (
                   <div className={styles.buttonSkeleton} />
                ) : (
-                  <button onClick={handleClickAddToCart} className={styles.button}>
+                  <button onClick={handleQuickAdd} className={styles.button}>
                      В корзину
                   </button>
                )

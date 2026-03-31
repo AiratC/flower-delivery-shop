@@ -1,14 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styles from './FlowerCard.module.css';
 import { useParams } from 'react-router-dom';
 import fetchAxios from '../../api/axios';
+import { useDispatch } from 'react-redux';
+import { addToCart } from '../../redux/slices/cartSlice';
 
 const FlowerCard = () => {
    const { flowerId } = useParams();
    const [flower, setFlower] = useState(null);
    const [selectedVariant, setSelectedVariant] = useState(null);
    const [quantity, setQuantity] = useState(1);
-   const [indexImg, setIndexImg] = useState(0)
+   const [indexImg, setIndexImg] = useState(0);
+
+   const dispatch = useDispatch();
+
+   const onAddMain = useCallback(async () => {
+      dispatch(addToCart({
+         itemId: flower.flower_id,
+         itemType: 'flower',
+         selectedSize: selectedVariant,
+         quantity: quantity
+      }))
+   }, [dispatch, flower.flower_id, quantity, selectedVariant]);
+
+   // Функция для добавления доп товара которую потом перемещю в копонент AddonCard
+   // const addToAddon = useCallback(async () => {
+   //    itemId: addonRouter.addon_id,
+   //    itemType: 'addon',
+   //    selectedSize: null,
+   //    quantity: 1
+   // });
 
    const getOneFlower = async (flowerId) => {
       try {
@@ -29,7 +50,7 @@ const FlowerCard = () => {
 
    useEffect(() => {
       window.scrollTo({ behavior: 'smooth', top: 0 })
-   }, [])
+   }, []);
 
 
    return (
@@ -86,7 +107,12 @@ const FlowerCard = () => {
                   <div className={styles.totalPrice}>
                      Сумма: <span>{(selectedVariant?.price_new * quantity).toLocaleString()} руб.</span>
                   </div>
-                  <button className={styles.addToCart}>В корзину</button>
+                  <button
+                     onClick={onAddMain}
+                     className={styles.addToCart}
+                  >
+                     В корзину
+                  </button>
                </div>
             </div>
          </div>

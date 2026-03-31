@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt'
 import { query } from '../config/db.js';
 import jwt from 'jsonwebtoken';
+import { mergeGuestCart } from '../service/cart.service.js';
 
 // ! Регистрация пользователя
 export const registerUser = async (req, res) => {
@@ -88,7 +89,7 @@ export const registerUser = async (req, res) => {
 
 // !!! Вход
 export const loginUser = async (req, res) => {
-   const { userEmail, password } = req.body;
+   const { userEmail, password, guestToken } = req.body; // Фронтенд должен прислать guestToken
 
    // 1. Предварительная обработка email
    if (!userEmail.trim() || !password.trim()) {
@@ -132,6 +133,8 @@ export const loginUser = async (req, res) => {
             error: true
          });
       };
+
+      await mergeGuestCart(user.user_id, guestToken);
 
       // 4. Генерируем JWT-токен
       // В полезную нагрузку (payload) кладем id и роль
