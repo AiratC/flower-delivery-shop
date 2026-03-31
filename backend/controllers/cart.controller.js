@@ -72,6 +72,7 @@ export const getCart = async (req, res) => {
          LEFT JOIN Flower_Variants fv ON f.flower_id = fv.flower_id AND fv.size_name = c.selected_size
          LEFT JOIN Addons a ON c.item_id = a.addon_id AND c.item_type = 'addon'
          WHERE (c.user_id = $1 OR c.guest_token = $2)
+         ORDER BY c.created_at DESC
       `;
 
       const result = await query(querySQL, [userId, guestToken]);
@@ -86,4 +87,44 @@ export const getCart = async (req, res) => {
          success: false
       })
    }
-}
+};
+
+// !!! Удаление товара из корзины
+export const removeFromCart = async (req, res) => {
+   const { cartItemId } = req.params; // ID конкретной строки в корзине
+   const userId = req.user ? req.user.userId : null; // Добавляем проверку
+   const guestToken = req.headers['x-guest-token'];
+
+   try {
+      await query(`
+         DELETE FROM Cart 
+               WHERE cart_item_id = $1 
+               AND (user_id = $2 OR guest_token = $3)`,
+         [cartItemId, userId, guestToken]);
+      return res.status(200).json({ success: true, message: 'Удалено' });
+   } catch (error) {
+      return res.status(500).json({ success: false, message: 'Ошибка сервера' });
+   }
+};
+
+// !!! Обновление количества (кнопки + и -)
+export const updateQuantity = async (req, res) => {
+   const { cartItemId, quantity } = req.body;
+   const userId = req.user ? req.user.userId : null; // Добавляем проверку
+   const guestToken = req.headers['x-guest-token'];
+
+   try {
+      if (quantity < 1) {
+         return res.status(400).json({ message: 'Количество не может быть меньше 1' });
+      }
+
+      await query(
+         `UPDATE Cart SET quantity = $1 WHERE cart_item_id = $2 AND (user_id = $3 OR guest_token = $4)`,
+         [quantity, cartItemId, userId, guestToken]
+      );
+
+      return res.status(200).json({ success: true });
+   } catch (error) {
+      return res.status(500).json({ success: false });
+   }
+};
