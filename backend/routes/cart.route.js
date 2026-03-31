@@ -4,14 +4,13 @@ import { userCartMiddleware } from '../middleware/cartMiddleware.js';
 
 const cartRouter = express.Router();
 
-// Добавление в корзину
+// Обрати внимание: здесь мы используем GET /
+// В слайсе это будет fetchAxios.get('/cart')
+cartRouter.get('/', userCartMiddleware, getCart); 
+
 cartRouter.post('/add-to-cart', userCartMiddleware, addToCart);
-
-// Получение корзины с данными о товарах (JOIN)
-cartRouter.get('/get-cart', userCartMiddleware, getCart);
-
-// Обновляем данные
-cartRouter.patch('/update-to-cart/:id', userCartMiddleware, addToCart);
+cartRouter.delete('/remove/:cartItemId', userCartMiddleware, removeFromCart);
+cartRouter.put('/update-quantity', userCartMiddleware, updateQuantity);
 
 
 export default cartRouter;
