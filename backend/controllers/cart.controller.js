@@ -3,43 +3,42 @@ import { query } from "../config/db.js";
 // !!! Добавление в корзину
 export const addToCart = async (req, res) => {
    const { itemId, itemType, selectedSize, quantity } = req.body;
-   const userId = req.user ? req.user.userId : null;
-   const guestToken = req.headers['x-guest-token'];
+
+   // Новая логика: используем 0 и пустые строки вместо NULL
+   const userId = req.user ? req.user.userId : 0;
+   const guestToken = req.headers['x-guest-token'] || '';
+   const size = selectedSize || '';
 
    try {
-      // Логика "Upsert" (Insert or Update)
-      // Мы ищем товар с таким же ID, типом и размером для конкретного юзера или гостя
       const querySQL = `
             INSERT INTO "Cart" (user_id, guest_token, item_id, item_type, selected_size, quantity)
             VALUES ($1, $2, $3, $4, $5, $6)
             ON CONFLICT (item_id, item_type, user_id, guest_token, selected_size)
             DO UPDATE SET quantity = "Cart".quantity + EXCLUDED.quantity
-            RETURNING *
+            RETURNING *;
       `;
 
-      const values = [
-         userId,
-         userId ? null : guestToken,
-         itemId,
-         itemType,
-         selectedSize || '', // Для аддонов записываем пустую строку вместо null для корректного UNIQUE
-         quantity
-      ];
+      const values = [userId, guestToken, itemId, itemType, size, quantity];
 
       await query(querySQL, values);
 
+      // ВАЖНО: return прерывает выполнение функции
       return res.status(200).json({
-         message: 'Добавлено в корзину',
-         error: false,
-         success: true
-      })
+         success: true,
+         message: 'Товар добавлен в корзину'
+      });
+
    } catch (error) {
-      console.log(error);
-      return res.status(500).json({
-         message: 'Ошибка сервера',
-         error: true,
-         success: false
-      })
+      console.error("Cart Controller Error:", error);
+
+      // Проверяем, не был ли ответ уже отправлен (защита от двойного res.json)
+      if (!res.headersSent) {
+         return res.status(500).json({
+            success: false,
+            message: 'Ошибка сервера при добавлении в корзину',
+            error: error.message
+         });
+      }
    }
 };
 
