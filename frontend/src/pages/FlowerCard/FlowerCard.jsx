@@ -1,18 +1,35 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import styles from './FlowerCard.module.css';
 import { useParams } from 'react-router-dom';
 import fetchAxios from '../../api/axios';
-import { useDispatch } from 'react-redux';
-import { addToCart } from '../../redux/slices/cartSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToCart, removeItem, updateQty } from '../../redux/slices/cartSlice';
 
 const FlowerCard = () => {
    const { flowerId } = useParams();
    const [flower, setFlower] = useState(null);
    const [selectedVariant, setSelectedVariant] = useState(null);
-   const [quantity, setQuantity] = useState(1);
    const [indexImg, setIndexImg] = useState(0);
+   const cartItems = useSelector(state => state.cart.items);
 
    const dispatch = useDispatch();
+
+   // Ищем товар в корзине при условии выбранного размера
+   const cartItem = useMemo(() => {
+      return cartItems.find(item =>
+         item.item_id === Number(flowerId) &&
+         item.selected_size === selectedVariant?.size_name
+      )
+   }, [cartItems, flowerId, selectedVariant]);
+
+   // Если товар уже в корзине, функции управления кол-вом
+   const handleInCartQty = (newQty) => {
+      if (newQty < 1) {
+         dispatch(removeItem(cartItem.cart_item_id));
+      } else {
+         dispatch(updateQty({ cartItemId: cartItem.cart_item_id, quantity: newQty }))
+      }
+   }
 
    // eslint-disable-next-line react-hooks/preserve-manual-memoization
    const onAddMain = useCallback(async () => {
@@ -22,9 +39,9 @@ const FlowerCard = () => {
          itemId: flower.flower_id,
          itemType: 'flower',
          selectedSize: selectedVariant.size_name,
-         quantity: quantity
+         quantity: 1
       }))
-   }, [dispatch, flower?.flower_id, quantity, selectedVariant]);
+   }, [dispatch, flower, selectedVariant]);
 
    // Функция для добавления доп товара которую потом перемещю в копонент AddonCard
    // const addToAddon = useCallback(async () => {
@@ -102,20 +119,37 @@ const FlowerCard = () => {
                </ul>
 
                <div className={styles.footerAction}>
-                  <div className={styles.counter}>
-                     <button onClick={() => setQuantity(q => Math.max(1, q - 1))}>-</button>
-                     <span>{quantity}</span>
-                     <button onClick={() => setQuantity(q => q + 1)}>+</button>
-                  </div>
-                  <div className={styles.totalPrice}>
-                     Сумма: <span>{(selectedVariant?.price_new * quantity).toLocaleString()} руб.</span>
-                  </div>
-                  <button
-                     onClick={onAddMain}
-                     className={styles.addToCart}
-                  >
-                     В корзину
-                  </button>
+                  {
+                     cartItem ? (
+                        // Вариант 1: Товар уже в корзине
+                        <div className={styles.inCartControls}>
+                           <div className={styles.counter}>
+                              <button onClick={() => handleInCartQty(cartItem.quantity - 1)}>-</button>
+                              <span>{cartItem.quantity}</span>
+                              <button onClick={() => handleInCartQty(cartItem.quantity + 1)}>+</button>
+                           </div>
+                           <div className={styles.inCartPrice}>
+                              В корзине: <span>{(cartItem.price * cartItem.quantity).toLocaleString()} руб.</span>
+                           </div>
+                           <div className={styles.inCartText}>
+                              Товар добавлен
+                           </div>
+                        </div>
+                     ) : (
+                        // Вариант 2: Товара нет в корзине 
+                        <>
+                           <div className={styles.totalPrice}>
+                              Цена: <span>{selectedVariant?.price_new.toLocaleString()} руб.</span>
+                           </div>
+                           <button
+                              onClick={onAddMain}
+                              className={styles.addToCart}
+                           >
+                              В корзину
+                           </button>
+                        </>
+                     )
+                  }
                </div>
             </div>
          </div>

@@ -12,6 +12,7 @@ import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import FlowerCard from './pages/FlowerCard/FlowerCard';
 import useScrollRestoration from './hooks/useScrollRestoration';
 import { v4 as uuidv4 } from 'uuid';
+import { fetchCart } from './redux/slices/cartSlice';
 
 
 function App() {
@@ -19,7 +20,8 @@ function App() {
    const dispatch = useDispatch();
 
    useEffect(() => {
-      dispatch(fetchUserStats())
+      dispatch(fetchUserStats());
+      dispatch(fetchCart());
    }, [dispatch]);
 
    useEffect(() => {

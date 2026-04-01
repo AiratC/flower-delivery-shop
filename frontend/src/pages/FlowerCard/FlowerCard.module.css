@@ -175,10 +175,12 @@
 
 .counter {
    display: flex;
+   justify-content: space-between;
    align-items: center;
    background: #eee;
    border-radius: 8px;
    overflow: hidden;
+   margin-bottom: 10px;
 }
 
 .counter button {
@@ -221,6 +223,19 @@
 
 .addToCart:hover {
    background: #66a356;
+}
+
+.inCartPrice {
+   margin-top: 10px;
+   font-size: 18px;
+   font-weight: bold;
+}
+
+.inCartText {
+   text-align: center;
+   font-size: 18px;
+   font-weight: bold;
+   margin-top: 10px;
 }
 
 /* Адаптив */

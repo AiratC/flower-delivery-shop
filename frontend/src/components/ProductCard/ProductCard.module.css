@@ -115,9 +115,11 @@
    0% {
       background-color: #f0f0f0;
    }
+
    50% {
       background-color: #e0e0e0;
    }
+
    100% {
       background-color: #f0f0f0;
    }
@@ -177,4 +179,30 @@
 .isLoading {
    pointer-events: none;
    cursor: default;
+}
+
+.counterWrapper {
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   background: #f0f0f0;
+   border-radius: 8px;
+   padding: 5px;
+   height: 40px;
+   /* Высота как у кнопки */
+}
+
+.countBtn {
+   background: #fff;
+   border: 1px solid #ddd;
+   border-radius: 4px;
+   width: 30px;
+   height: 30px;
+   cursor: pointer;
+   font-weight: bold;
+}
+
+.countValue {
+   font-weight: 600;
+   font-size: 1.1rem;
 }

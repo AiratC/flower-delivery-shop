@@ -1,15 +1,44 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import styles from './ProductCard.module.css'
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { addToCart } from '../../redux/slices/cartSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToCart, removeItem, updateQty } from '../../redux/slices/cartSlice';
 
 const ProductCard = ({ data, isLoading }) => {
-   const navigate = useNavigate();
    // Состояние для отслеживания загрузки самой картинки
    const [isImageLoaded, setIsImageLoaded] = useState(false);
-
    const dispatch = useDispatch();
+   const navigate = useNavigate();
+
+   // Получаем айтемы из стора
+   const cartItems = useSelector(state => state.cart.items);
+
+   // Ищем, есть ли этот конкретный товар в корзине
+   // Для ProductCard мы берём размер по умолчанию (Малый или из данных)
+   const cartItem = useMemo(() => {
+      return cartItems.find(item => {
+         return item.item_id === data?.flower_id &&
+         item.item_type === 'flower' &&
+         item.selected_size === (data.size_name || 'Малый')
+      })
+   }, [cartItems, data]);
+
+   // Увеличиваем кол-во товара в корзине
+   const handleIncrease = (e) => {
+      e.stopPropagation();
+      dispatch(updateQty({ cartItemId: cartItem.cart_item_id, quantity: cartItem.quantity + 1 }));
+   };
+
+   // Уменьшаем кол-во товара в корзине
+   const handleDecrease = (e) => {
+      e.stopPropagation();
+      if(cartItem.quantity > 1) {
+         dispatch(updateQty({ cartItemId: cartItem.cart_item_id, quantity: cartItem.quantity - 1 }));
+      } else {
+         dispatch(removeItem(cartItem.cart_item_id));
+      }
+   }
+
 
    const handleQuickAdd = useCallback(async (e) => {
       e.stopPropagation();
@@ -126,6 +155,13 @@ const ProductCard = ({ data, isLoading }) => {
             {
                showSkeleton ? (
                   <div className={styles.buttonSkeleton} />
+               ) : cartItem ? (
+                  // Если товар в корзине показываем счетчик
+                  <div className={styles.counterWrapper} onClick={(e) => e.stopPropagation()}>
+                     <button className={styles.countBtn} onClick={handleDecrease}>-</button>
+                     <span>{cartItem.quantity}</span>
+                     <button className={styles.countBtn} onClick={handleIncrease}>+</button>
+                  </div>
                ) : (
                   <button onClick={handleQuickAdd} className={styles.button}>
                      В корзину
