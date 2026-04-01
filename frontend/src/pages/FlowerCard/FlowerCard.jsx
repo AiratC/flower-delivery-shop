@@ -31,7 +31,6 @@ const FlowerCard = () => {
       }
    }
 
-   // eslint-disable-next-line react-hooks/preserve-manual-memoization
    const onAddMain = useCallback(async () => {
       if (!flower || !selectedVariant) return;
 
