@@ -12,25 +12,20 @@ const ProductCard = ({ data, isLoading }) => {
    const dispatch = useDispatch();
 
    const handleQuickAdd = useCallback(async (e) => {
-         e.stopPropagation();
-   
-         // дефолтный вариант
-         const defaultSize = {
-            flower_id: data.flower_id,
-            is_default: true,
-            price_new: 1040,
-            price_old: null,
-            size_name: "Малый",
-            variant_id: 37
-         }
-   
-         dispatch(addToCart({
-            itemId: data.flower_id,
-            itemType: 'flower',
-            selectedSize: defaultSize,
-            quantity: 1
-         }));
-      }, [dispatch, data.flower_id, data.variants])
+      e.stopPropagation();
+
+      // Проверяем наличие id, чтобы избежать ошибок на пустых данных
+      if (!data?.flower_id) return;
+
+      dispatch(addToCart({
+         itemId: data.flower_id,
+         itemType: 'flower',
+         // ПЕРЕДАЕМ СТРОКУ, А НЕ ОБЪЕКТ
+         // На твоем скриншоте это поле называлось "size_name"
+         selectedSize: data.size_name || "Малый",
+         quantity: 1
+      }));
+   }, [dispatch, data]); // В зависимостях достаточно самого data
 
    const fullImageUrl = useMemo(() => {
       const imageUrl = data?.images && data?.images.length > 0 ? data?.images[0] : '/placeholder.webp';
@@ -60,9 +55,9 @@ const ProductCard = ({ data, isLoading }) => {
 
    // eslint-disable-next-line react-hooks/preserve-manual-memoization
    const displayTitle = useMemo(() => {
-      if(!data?.title) return '';
+      if (!data?.title) return '';
       return data.title.length > 28 ? `${data.title.slice(0, 28)}...` : data.title;
-   }, [data?.title]) 
+   }, [data?.title])
 
    return (
       <div

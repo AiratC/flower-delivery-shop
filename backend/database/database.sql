@@ -249,12 +249,3 @@ CREATE TABLE Product_Recommendations (
    addon_id INT REFERENCES Addons(addon_id) ON DELETE CASCADE,
    PRIMARY KEY (flower_id, addon_id)
 );
-
--- Уникаьный индекс
-CREATE UNIQUE INDEX IF NOT EXISTS idx_cart_upsert_logic ON Cart (
-      (COALESCE(user_id, 0)), 
-      (COALESCE(guest_token, '')), 
-      item_id, 
-      item_type, 
-      (COALESCE(selected_size, ''))
-);

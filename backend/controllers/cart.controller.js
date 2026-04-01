@@ -10,18 +10,12 @@ export const addToCart = async (req, res) => {
       // Логика "Upsert" (Insert or Update)
       // Мы ищем товар с таким же ID, типом и размером для конкретного юзера или гостя
       const querySQL = `
-         INSERT INTO Cart (user_id, guest_token, item_id, item_type, selected_size, quantity)
-         VALUES ($1, $2, $3, $4, $5, $6)
-         ON CONFLICT (
-            (COALESCE(user_id, 0)), 
-            (COALESCE(guest_token, '')), 
-            item_id, 
-            item_type, 
-            (COALESCE(selected_size, ''))
-         )
-         DO UPDATE SET quantity = Cart.quantity + EXCLUDED.quantity
-         RETURNING *;
-`;
+            INSERT INTO "Cart" (user_id, guest_token, item_id, item_type, selected_size, quantity)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            ON CONFLICT (item_id, item_type, user_id, guest_token, selected_size)
+            DO UPDATE SET quantity = "Cart".quantity + EXCLUDED.quantity
+            RETURNING *
+      `;
 
       const values = [
          userId,
@@ -67,10 +61,10 @@ export const getCart = async (req, res) => {
                   WHEN c.item_type = 'flower' THEN f.images->>0 
                   ELSE a.image->>0 
             END as image
-         FROM Cart c
-         LEFT JOIN Flowers f ON c.item_id = f.flower_id AND c.item_type = 'flower'
-         LEFT JOIN Flower_Variants fv ON f.flower_id = fv.flower_id AND fv.size_name = c.selected_size
-         LEFT JOIN Addons a ON c.item_id = a.addon_id AND c.item_type = 'addon'
+         FROM "Cart" c
+         LEFT JOIN "Flowers" f ON c.item_id = f.flower_id AND c.item_type = 'flower'
+         LEFT JOIN "Flower_Variants" fv ON f.flower_id = fv.flower_id AND fv.size_name = c.selected_size
+         LEFT JOIN "Addons" a ON c.item_id = a.addon_id AND c.item_type = 'addon'
          WHERE (c.user_id = $1 OR c.guest_token = $2)
          ORDER BY c.created_at DESC
       `;
@@ -97,7 +91,7 @@ export const removeFromCart = async (req, res) => {
 
    try {
       await query(`
-         DELETE FROM Cart 
+         DELETE FROM "Cart" 
                WHERE cart_item_id = $1 
                AND (user_id = $2 OR guest_token = $3)`,
          [cartItemId, userId, guestToken]);
@@ -119,7 +113,7 @@ export const updateQuantity = async (req, res) => {
       }
 
       await query(
-         `UPDATE Cart SET quantity = $1 WHERE cart_item_id = $2 AND (user_id = $3 OR guest_token = $4)`,
+         `UPDATE "Cart" SET quantity = $1 WHERE cart_item_id = $2 AND (user_id = $3 OR guest_token = $4)`,
          [quantity, cartItemId, userId, guestToken]
       );
 
