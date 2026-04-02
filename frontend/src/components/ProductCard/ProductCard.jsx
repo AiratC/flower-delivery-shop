@@ -198,4 +198,4 @@ const ProductCard = ({ data, isLoading }) => {
    );
 }
 
-export default React.memo(ProductCard);
+export default ProductCard;
