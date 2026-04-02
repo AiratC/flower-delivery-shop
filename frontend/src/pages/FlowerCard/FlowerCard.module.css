@@ -167,6 +167,7 @@
 .footerAction {
    display: flex;
    align-items: center;
+   justify-content: center;
    background: #fdfdfd;
    padding: 20px;
    border-radius: 16px;
