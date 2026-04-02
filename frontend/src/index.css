@@ -40,6 +40,29 @@ body {
    display: inline-block;
 }
 
+/* Для блокировки кнопок */
+.button:disabled,
+.countBtn:disabled,
+.addToCart:disabled {
+   opacity: 0.6;
+   cursor: not-allowed;
+   pointer-events: none;
+   /* Защита от лишних кликов на уровне браузера */
+}
+
+/* Эффект прозрачности для всего блока управления, пока идет запрос */
+.updating {
+   opacity: 0.7;
+   transition: opacity 0.2s ease;
+}
+
+/* Чтобы текст количества не прыгал при появлении лоадера */
+.qtyText {
+   display: inline-block;
+   min-width: 20px;
+   text-align: center;
+}
+
 @keyframes rotate {
 	from {
 		transform: rotate(0deg);

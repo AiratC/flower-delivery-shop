@@ -4,14 +4,18 @@ import { useParams } from 'react-router-dom';
 import fetchAxios from '../../api/axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart, removeItem, updateQty } from '../../redux/slices/cartSlice';
+import { Loader } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const FlowerCard = () => {
    const { flowerId } = useParams();
    const [flower, setFlower] = useState(null);
    const [selectedVariant, setSelectedVariant] = useState(null);
    const [indexImg, setIndexImg] = useState(0);
-   const cartItems = useSelector(state => state.cart.items);
+   // Локальный индикатор
+   const [isUpdating, setIsUpdating] = useState(false);
 
+   const cartItems = useSelector(state => state.cart.items);
    const dispatch = useDispatch();
 
    // Ищем товар в корзине при условии выбранного размера
@@ -22,25 +26,45 @@ const FlowerCard = () => {
       )
    }, [cartItems, flowerId, selectedVariant]);
 
+   // Общая функция для обработки экшенов с лоадером
+   const handleCartAction = useCallback(async (action) => {
+      if(isUpdating) return;
+
+      setIsUpdating(true);
+      try {
+         const response = await dispatch(action).unwrap();
+         if(response.success) {
+            toast.success(response.message);
+         }
+      } catch (error) {
+         console.log(error);
+         toast.error(error.response.message)
+      } finally {
+         setIsUpdating(false);
+      }
+   }, [isUpdating, dispatch])
+
    // Если товар уже в корзине, функции управления кол-вом
    const handleInCartQty = (newQty) => {
+      if(isUpdating) return;
+
       if (newQty < 1) {
-         dispatch(removeItem(cartItem.cart_item_id));
+         handleCartAction(removeItem(cartItem.cart_item_id));
       } else {
-         dispatch(updateQty({ cartItemId: cartItem.cart_item_id, quantity: newQty }))
+         handleCartAction(updateQty({ cartItemId: cartItem.cart_item_id, quantity: newQty }))
       }
    }
 
    const onAddMain = useCallback(async () => {
       if (!flower || !selectedVariant) return;
 
-      dispatch(addToCart({
+      handleCartAction(addToCart({
          itemId: flower.flower_id,
          itemType: 'flower',
          selectedSize: selectedVariant.size_name,
          quantity: 1
       }))
-   }, [dispatch, flower, selectedVariant]);
+   }, [flower, handleCartAction, selectedVariant]);
 
    // Функция для добавления доп товара которую потом перемещю в копонент AddonCard
    // const addToAddon = useCallback(async () => {
@@ -63,7 +87,6 @@ const FlowerCard = () => {
 
    // Загрузка данных (в реальности через useEffect или RTK Query)
    useEffect(() => {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       getOneFlower(flowerId)
    }, [flowerId]);
 
@@ -73,7 +96,7 @@ const FlowerCard = () => {
 
 
    return (
-      <div className={styles.productPage}>
+      <div className={styles.flowerCardPage}>
          <div className={`container ${styles.containerFlowerCard}`}>
             {/* Левая часть: Изображения */}
             <div className={styles.imageSection}>
@@ -121,11 +144,14 @@ const FlowerCard = () => {
                   {
                      cartItem ? (
                         // Вариант 1: Товар уже в корзине
-                        <div className={styles.inCartControls}>
+                        <div className={`
+                           ${styles.inCartControls}
+                           ${isUpdating ? 'updating' : ''}
+                           `}>
                            <div className={styles.counter}>
-                              <button onClick={() => handleInCartQty(cartItem.quantity - 1)}>-</button>
-                              <span>{cartItem.quantity}</span>
-                              <button onClick={() => handleInCartQty(cartItem.quantity + 1)}>+</button>
+                              <button disabled={isUpdating} onClick={() => handleInCartQty(cartItem.quantity - 1)}>-</button>
+                              <span>{isUpdating ? <Loader className='spinner'/> : cartItem.quantity}</span>
+                              <button disabled={isUpdating} onClick={() => handleInCartQty(cartItem.quantity + 1)}>+</button>
                            </div>
                            <div className={styles.inCartPrice}>
                               В корзине: <span>{(cartItem.price * cartItem.quantity).toLocaleString()} руб.</span>
@@ -143,8 +169,9 @@ const FlowerCard = () => {
                            <button
                               onClick={onAddMain}
                               className={styles.addToCart}
+                              disabled={isUpdating}
                            >
-                              В корзину
+                              { isUpdating ? <Loader className='spinner'/> : 'В корзину' }
                            </button>
                         </>
                      )

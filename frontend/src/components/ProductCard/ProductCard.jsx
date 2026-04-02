@@ -3,10 +3,14 @@ import styles from './ProductCard.module.css'
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart, removeItem, updateQty } from '../../redux/slices/cartSlice';
+import { Loader } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const ProductCard = ({ data, isLoading }) => {
    // Состояние для отслеживания загрузки самой картинки
    const [isImageLoaded, setIsImageLoaded] = useState(false);
+   // Локальный индикатор для кнопок
+   const [isUpdating, setIsUpdating] = useState(false);
    const dispatch = useDispatch();
    const navigate = useNavigate();
 
@@ -23,19 +27,40 @@ const ProductCard = ({ data, isLoading }) => {
       })
    }, [cartItems, data]);
 
+   // Оптимизированная функция действий
+   const handleCartAction = useCallback(async (action) => {
+      if(isUpdating) return;
+
+      // Если переданы данные для немедленного обновления (количество)
+      //  можно было диспатчить их сразу здесь, но мы сделаем это в функциях ниже
+
+      setIsUpdating(true);
+      try {
+         const response = await dispatch(action).unwrap();
+         if(response.success) {
+            toast.success(response.message);
+         };
+      } catch (error) {
+         toast.error(error?.response?.data?.message || 'Ошибка');
+      } finally {
+         setIsUpdating(false);
+      }
+   }, [isUpdating, dispatch])
+
    // Увеличиваем кол-во товара в корзине
    const handleIncrease = (e) => {
       e.stopPropagation();
-      dispatch(updateQty({ cartItemId: cartItem.cart_item_id, quantity: cartItem.quantity + 1 }));
+      const nextQty = cartItem.quantity + 1;
+      handleCartAction(updateQty({ cartItemId: cartItem.cart_item_id, quantity: nextQty }));
    };
 
    // Уменьшаем кол-во товара в корзине
    const handleDecrease = (e) => {
       e.stopPropagation();
       if(cartItem.quantity > 1) {
-         dispatch(updateQty({ cartItemId: cartItem.cart_item_id, quantity: cartItem.quantity - 1 }));
+         handleCartAction(updateQty({ cartItemId: cartItem.cart_item_id, quantity: cartItem.quantity - 1 }));
       } else {
-         dispatch(removeItem(cartItem.cart_item_id));
+         handleCartAction(removeItem(cartItem.cart_item_id));
       }
    }
 
@@ -46,7 +71,7 @@ const ProductCard = ({ data, isLoading }) => {
       // Проверяем наличие id, чтобы избежать ошибок на пустых данных
       if (!data?.flower_id) return;
 
-      dispatch(addToCart({
+      handleCartAction(addToCart({
          itemId: data.flower_id,
          itemType: 'flower',
          // ПЕРЕДАЕМ СТРОКУ, А НЕ ОБЪЕКТ
@@ -54,7 +79,7 @@ const ProductCard = ({ data, isLoading }) => {
          selectedSize: data.size_name || "Малый",
          quantity: 1
       }));
-   }, [dispatch, data]); // В зависимостях достаточно самого data
+   }, [data.flower_id, data.size_name, handleCartAction]); // В зависимостях достаточно самого data
 
    const fullImageUrl = useMemo(() => {
       const imageUrl = data?.images && data?.images.length > 0 ? data?.images[0] : '/placeholder.webp';
@@ -81,8 +106,6 @@ const ProductCard = ({ data, isLoading }) => {
    // Внешний флаг isLoading (если данные ещё не пришли)
    const showSkeleton = isLoading || !isImageLoaded;
 
-
-   // eslint-disable-next-line react-hooks/preserve-manual-memoization
    const displayTitle = useMemo(() => {
       if (!data?.title) return '';
       return data.title.length > 28 ? `${data.title.slice(0, 28)}...` : data.title;
@@ -157,14 +180,16 @@ const ProductCard = ({ data, isLoading }) => {
                   <div className={styles.buttonSkeleton} />
                ) : cartItem ? (
                   // Если товар в корзине показываем счетчик
-                  <div className={styles.counterWrapper} onClick={(e) => e.stopPropagation()}>
-                     <button className={styles.countBtn} onClick={handleDecrease}>-</button>
-                     <span>{cartItem.quantity}</span>
-                     <button className={styles.countBtn} onClick={handleIncrease}>+</button>
+                  <div className={`
+                  ${styles.counterWrapper} ${isUpdating ? 'updating' : ''}`} 
+                  onClick={(e) => e.stopPropagation()}>
+                     <button disabled={isUpdating} className={`${styles.countBtn}`} onClick={handleDecrease}>-</button>
+                     <span>{isUpdating ? <Loader className='spinner'/> : cartItem.quantity}</span>
+                     <button disabled={isUpdating} className={`${styles.countBtn}`} onClick={handleIncrease}>+</button>
                   </div>
                ) : (
-                  <button onClick={handleQuickAdd} className={styles.button}>
-                     В корзину
+                  <button disabled={isUpdating} onClick={handleQuickAdd} className={`${styles.button}`}>
+                     { isUpdating ? <Loader className='spinner'/> : 'В корзину' }
                   </button>
                )
             }

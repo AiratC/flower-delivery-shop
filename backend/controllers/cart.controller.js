@@ -116,7 +116,7 @@ export const updateQuantity = async (req, res) => {
          [quantity, cartItemId, userId, guestToken]
       );
 
-      return res.status(200).json({ success: true });
+      return res.status(200).json({ success: true, message: 'Кол-во обновлено' });
    } catch (error) {
       return res.status(500).json({ success: false });
    }
