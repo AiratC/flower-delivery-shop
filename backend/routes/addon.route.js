@@ -1,6 +1,6 @@
 import express from 'express';
 import { upload } from '../middleware/upload.js';
-import { createAddon, deleteAddon, getAddons } from '../controllers/addon.controller.js';
+import { createAddon, deleteAddon, getAddons, getAllAddons } from '../controllers/addon.controller.js';
 
 const addonRouter = express.Router();
 
@@ -12,6 +12,9 @@ addonRouter.get('/get-addons', getAddons);
 
 // Удаление доп продукта
 addonRouter.delete('/delete-addons/:id', deleteAddon);
+
+// Получаем все аддоны
+addonRouter.get('/get-all-addons', getAllAddons);
 
 
 export default addonRouter;

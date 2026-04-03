@@ -1,4 +1,4 @@
-import pool from '../config/db.js';
+import pool, { query } from '../config/db.js';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -70,11 +70,11 @@ export const deleteAddon = async (req, res) => {
    try {
       // 1. Получаем данные о дополнении, чтобы забрать пути к картинкам
       const addonRes = await pool.query('SELECT image FROM "Addons" WHERE addon_id = $1', [id]);
-      
+
       if (addonRes.rowCount === 0) {
-         return res.status(404).json({ 
-            message: 'Дополнение не найдено', 
-            success: false 
+         return res.status(404).json({
+            message: 'Дополнение не найдено',
+            success: false
          });
       }
 
@@ -100,7 +100,7 @@ export const deleteAddon = async (req, res) => {
             // убедись, что путь в БД совпадает с путем на диске.
             const fullPath = path.join(process.cwd(), imgPath);
             console.log(`path.join(process.cwd(), imgPath): `, path.join(process.cwd(), imgPath))
-            
+
             try {
                await fs.unlink(fullPath);
                console.log(`Файл дополнения удален: ${fullPath}`);
@@ -117,9 +117,32 @@ export const deleteAddon = async (req, res) => {
 
    } catch (error) {
       console.error("Ошибка при удалении дополнения:", error);
-      return res.status(500).json({ 
-         message: 'Ошибка сервера', 
-         success: false 
+      return res.status(500).json({
+         message: 'Ошибка сервера',
+         success: false
+      });
+   }
+};
+
+// !!! Получаем все аддоны
+export const getAllAddons = async (req, res) => {
+   try {
+      // В PostgreSQL метод всегда .query()
+      const result = await query('SELECT * FROM "Addons" ORDER BY price ASC');
+
+      // В pg данные лежат в свойстве .rows
+      const addons = result.rows;
+
+      if (!addons || addons.length === 0) {
+         return res.status(200).json([]);
+      }
+
+      res.status(200).json(addons);
+   } catch (error) {
+      console.error('Ошибка в getAllAddons:', error);
+      res.status(500).json({
+         success: false,
+         message: 'Ошибка базы данных'
       });
    }
 };

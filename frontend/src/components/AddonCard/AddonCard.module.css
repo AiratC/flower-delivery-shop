@@ -1,0 +1,81 @@
+.addonCard {
+   display: flex;
+   gap: 15px;
+   background: #fff;
+   padding: 10px;
+   border-radius: 12px;
+   border: 1px solid #f0f0f0;
+}
+
+.imageWrapper img {
+   width: 120px;
+   height: 100%;
+   object-fit: cover;
+   border-radius: 10px;
+}
+
+.info {
+   flex: 1;
+   display: flex;
+   flex-direction: column;
+   justify-content: space-between;
+}
+
+.title {
+   font-size: 18px;
+   color: #4a3f44;
+   margin: 0 0 5px 0;
+}
+
+.price {
+   font-weight: bold;
+   font-size: 16px;
+   margin-bottom: 8px;
+}
+
+.controlsRow {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   gap: 10px;
+   margin-bottom: 12px;
+}
+
+.counter {
+   display: flex;
+   padding: 4px 17px;
+   align-items: center;
+   background: #e9e9e9;
+   border-radius: 6px;
+}
+
+.counter button {
+   border: none;
+   background: none;
+   padding: 4px 10px;
+   cursor: pointer;
+}
+
+.unit {
+   color: #888;
+   font-size: 14px;
+}
+
+.addBtn {
+   background: #77b567;
+   color: #fff;
+   border: none;
+   padding: 8px;
+   border-radius: 8px;
+   cursor: pointer;
+   font-weight: 600;
+}
+
+.addedBtn {
+   background: #c2c2c2;
+   color: #fff;
+   border: none;
+   padding: 8px;
+   border-radius: 8px;
+   font-weight: 600;
+}
