@@ -61,7 +61,8 @@ export const removeItem = createAsyncThunk(
 const initialState = {
    items: [],
    loading: false,
-   error: null
+   error: null,
+   totalPrice: 0
 };
 
 const cartSlice = createSlice({
