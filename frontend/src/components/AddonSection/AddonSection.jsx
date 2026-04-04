@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import styles from './AddonSection.module.css';
 import AddonCard from '../AddonCard/AddonCard';
+import { Link } from 'react-router-dom';
 
 const ITEMS_PER_PAGE = 6; // 2 ряда по 3 крточки на десктопе
 
@@ -13,9 +14,9 @@ const AddonSection = ({ addons = [] }) => {
    // Получаем товары для текущей страницы
    const currentItems = useMemo(() => {
       return addons.slice(
-      (currentPage - 1) * ITEMS_PER_PAGE,
-      currentPage * ITEMS_PER_PAGE
-   )
+         (currentPage - 1) * ITEMS_PER_PAGE,
+         currentPage * ITEMS_PER_PAGE
+      )
    }, [addons, currentPage]);
 
    // Логика отображения номеров страниц (умная пагинация)
@@ -41,11 +42,11 @@ const AddonSection = ({ addons = [] }) => {
    };
 
    useEffect(() => {
-   if (currentPage > totalPages && totalPages > 0) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setCurrentPage(totalPages);
-   }
-}, [totalPages, currentPage]);
+      if (currentPage > totalPages && totalPages > 0) {
+         // eslint-disable-next-line react-hooks/set-state-in-effect
+         setCurrentPage(totalPages);
+      }
+   }, [totalPages, currentPage]);
 
    if (!addons.length) return null;
 
@@ -93,11 +94,12 @@ const AddonSection = ({ addons = [] }) => {
             }
 
             <div className={styles.footerAction}>
-               <button
+               <Link
+                  to={`/checkout`}
                   className={styles.checkoutBtn}
                >
                   Оформить заказ
-               </button>
+               </Link>
             </div>
          </div>
       </section>

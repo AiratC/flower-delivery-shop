@@ -47,6 +47,7 @@
 }
 
 .checkoutBtn {
+   display: inline-block;
    background: #77b567;
    color: white;
    border: none;
