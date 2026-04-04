@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './PageNotFound.module.css';
 // Импортируй подготовленную картинку 404
 import image404 from '../../assets/images/404.webp';
 
 const PageNotFound = () => {
+
+   useEffect(() => {
+      window.scrollTo({ behavior: 'smooth', top: 0 })
+   }, []);
+
+   
    return (
       <main className={styles.wrapper}>
          <div className={`container ${styles.container}`}>
