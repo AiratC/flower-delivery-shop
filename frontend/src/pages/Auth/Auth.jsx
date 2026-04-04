@@ -38,11 +38,9 @@ const Auth = () => {
          return;
       }
 
-      const guestToken = localStorage.getItem('guest_token');
-
       const endpoint = isLogin ? '/auth/login' : '/auth/register';
       const payload = isLogin
-         ? { userEmail: formData.email, password: formData.password, guestToken }
+         ? { userEmail: formData.email, password: formData.password }
          : {
             name: formData.name,
             userEmail: formData.email,
