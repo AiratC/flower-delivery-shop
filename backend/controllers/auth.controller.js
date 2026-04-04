@@ -1,11 +1,12 @@
 import bcrypt from 'bcrypt'
 import { query } from '../config/db.js';
 import jwt from 'jsonwebtoken';
-import { mergeGuestCart } from '../service/cart.service.js';
+import { mergeGuestCart, syncOrders } from '../service/cart.service.js';
 
 // ! Регистрация пользователя
 export const registerUser = async (req, res) => {
    const { name, userEmail, password, repeatPassword, agree } = req.body;
+   const guestToken = req.headers['x-guest-token'] || '';
    // Чтоб пользователь не регистрировал аккаунты например user@gmail.com и User@gmail.com
    let email = userEmail.toLowerCase().trim();
 
@@ -68,9 +69,15 @@ export const registerUser = async (req, res) => {
       // Добавляем пользователя в БД
       let sqlAddUser = `
       INSERT INTO "Users" (role_id, name, email, password_hash, is_agreed_terms) 
-      VALUES ($1, $2, $3, $4, $5)
+      VALUES ($1, $2, $3, $4, $5) RETURNING *
       `;
-      await query(sqlAddUser, [roleId, name, email, hashPassword, agree]);
+      const user = await query(sqlAddUser, [roleId, name, email, hashPassword, agree]);
+
+      // Слияние корзины
+      await mergeGuestCart(user.rows[0].user_id, guestToken);
+
+     // Слияние заказов
+      await syncOrders(user.rows[0].user_id, user.rows[0].phone || null, guestToken);
 
       return res.status(201).json({
          message: roleId === 1 ? 'Первый админ успешно зарегистрирован!' : 'Регистрация прошла успешно',
@@ -89,8 +96,8 @@ export const registerUser = async (req, res) => {
 
 // !!! Вход
 export const loginUser = async (req, res) => {
-   const { userEmail, password, guestToken } = req.body; // Фронтенд должен прислать guestToken
-
+   const { userEmail, password } = req.body;
+   const guestToken = req.headers['x-guest-token'] || '';
    // 1. Предварительная обработка email
    if (!userEmail.trim() || !password.trim()) {
       return res.status(400).json({
@@ -134,7 +141,11 @@ export const loginUser = async (req, res) => {
          });
       };
 
+      // Слияние корзины
       await mergeGuestCart(user.user_id, guestToken);
+
+      // Слияние заказов
+      await syncOrders(user.user_id, user.phone || null, guestToken);
 
       // 4. Генерируем JWT-токен
       // В полезную нагрузку (payload) кладем id и роль
@@ -197,7 +208,7 @@ export const getMe = async (req, res) => {
          success: true,
          user: userData
       });
-      
+
    } catch (error) {
       res.status(500).json({ message: 'Ошибка сервера', error: true });
    }

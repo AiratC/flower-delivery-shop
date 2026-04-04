@@ -2,7 +2,7 @@ import { query } from "../config/db.js";
 
 
 export const mergeGuestCart = async (userId, guestToken) => {
-   if(!guestToken) return;
+   if (!guestToken) return;
 
    try {
       // 1. Переносим товары от гостя к пользователю.
@@ -22,12 +22,21 @@ export const mergeGuestCart = async (userId, guestToken) => {
                )
                DO UPDATE SET quantity = Cart.quantity + EXCLUDED.quantity;
          `;
-      
-         await query(mergeQuery, [userId, guestToken]);
 
-         // 2. Удаляем старые записи гостя, так как они теперь перенесены
-         await query(`DELETE FROM Cart WHERE guest_token = $1`, [guestToken]);
+      await query(mergeQuery, [userId, guestToken]);
+
+      // 2. Удаляем старые записи гостя, так как они теперь перенесены
+      await query(`DELETE FROM Cart WHERE guest_token = $1`, [guestToken]);
    } catch (error) {
       console.log('Ошибка при слиянии корзины: ', error)
    }
-}
+};
+
+export const syncOrders = async (userId, userPhone, guestToken) => {
+   await query(`
+         UPDATE "Orders" 
+         SET user_id = $1 
+         WHERE (guest_token = $2 OR customer_phone = $3) 
+            AND user_id IS NULL
+      `, [userId, guestToken, userPhone]);
+};

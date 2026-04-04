@@ -1,11 +1,17 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import fetchAxios from "../../api/axios";
 
+const getHeaders = () => ({
+   headers: {
+      'x-guest-token': localStorage.getItem('guest_token')
+   }
+});
+
 export const fetchAuth = createAsyncThunk(
    "auth/fetchAuth",
    async ({ formData, endpoint }, thunkAPI) => {
       try {
-         const response = await fetchAxios.post(endpoint, formData);
+         const response = await fetchAxios.post(endpoint, formData, getHeaders());
          return response.data;
       } catch (error) {
          return thunkAPI.rejectWithValue(
