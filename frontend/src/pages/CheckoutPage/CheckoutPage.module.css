@@ -1,0 +1,245 @@
+/* Контейнер страницы */
+.checkoutContainer {
+   padding: 40px 0;
+   background-color: #fcfcfc;
+   min-height: 100vh;
+}
+
+.mainTitle {
+   font-size: 32px;
+   margin-bottom: 30px;
+   color: #4a3f3f;
+   font-weight: 600;
+}
+
+/* Основная сетка: 1 колонка на мобилках, 2 на десктопе */
+.contentGrid {
+   display: grid;
+   grid-template-columns: 1fr;
+   gap: 30px;
+   align-items: start;
+}
+
+/* Левая колонка с формами */
+.formsColumn {
+   display: flex;
+   flex-direction: column;
+   gap: 20px;
+}
+
+/* Карточки секций */
+.sectionCard {
+   background: white;
+   padding: 25px;
+   border-radius: 15px;
+   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.sectionHeader {
+   font-size: 18px;
+   margin-bottom: 20px;
+   color: #6d5d5d;
+   text-transform: uppercase;
+   letter-spacing: 1px;
+   border-bottom: 1px solid #f0f0f0;
+   padding-bottom: 10px;
+}
+
+/* Поля ввода */
+.fieldBlock {
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+}
+
+.fieldBlock label {
+   font-size: 14px;
+   font-weight: 600;
+   color: #4a3f3f;
+}
+
+.fieldBlock input,
+.fieldsGrid input,
+.textarea {
+   width: 100%;
+   padding: 12px 15px;
+   border: 1px solid #e0e0e0;
+   border-radius: 8px;
+   background: #fafafa;
+   font-size: 15px;
+   transition: border-color 0.2s;
+}
+
+.fieldBlock input:focus,
+.textarea:focus {
+   border-color: #7eb36a;
+   outline: none;
+}
+
+.textarea {
+   min-height: 100px;
+   resize: vertical;
+   margin-top: 15px;
+}
+
+/* Сетки для полей */
+.inputRow {
+   display: grid;
+   grid-template-columns: 1fr 1fr;
+   gap: 15px;
+}
+
+.fieldsGrid {
+   display: grid;
+   grid-template-columns: 1fr 1fr;
+   gap: 15px;
+   margin-top: 15px;
+}
+
+.fieldsGrid3 {
+   display: grid;
+   grid-template-columns: 1fr;
+   /* По умолчанию в колонку */
+   gap: 15px;
+}
+
+/* Радио и чекбоксы */
+.radioGroupVertical,
+.paymentOptions {
+   display: flex;
+   flex-direction: column;
+   gap: 12px;
+}
+
+.radioLabel,
+.paymentRadio {
+   display: flex;
+   align-items: center;
+   gap: 12px;
+   padding: 12px;
+   border: 1px solid #f0f0f0;
+   border-radius: 10px;
+   cursor: pointer;
+   transition: background 0.2s;
+}
+
+.radioLabel:hover,
+.paymentRadio:hover {
+   background: #fdfdfd;
+}
+
+.radioText {
+   display: flex;
+   flex-direction: column;
+}
+
+.radioText span {
+   font-size: 13px;
+   color: #888;
+}
+
+.checkboxLabel {
+   display: flex;
+   align-items: flex-start;
+   gap: 10px;
+   font-size: 14px;
+   margin-top: 12px;
+   cursor: pointer;
+}
+
+/* Правая колонка (Корзина) */
+.cartStickyCard {
+   background: #f8f8f8;
+   padding: 25px;
+   border-radius: 15px;
+   position: relative;
+}
+
+.cartTitle {
+   font-size: 20px;
+   margin-bottom: 20px;
+   text-align: center;
+}
+
+.totalBlock {
+   margin: 20px 0;
+   padding-top: 15px;
+   border-top: 2px dashed #e0e0e0;
+}
+
+.totalAmount {
+   font-size: 28px;
+   font-weight: bold;
+   color: #4a3f3f;
+}
+
+.submitBtn {
+   width: 100%;
+   background-color: #7eb36a;
+   color: white;
+   padding: 16px;
+   border: none;
+   border-radius: 10px;
+   font-size: 18px;
+   font-weight: 600;
+   cursor: pointer;
+   transition: transform 0.1s, background 0.2s;
+}
+
+.submitBtn:hover {
+   background-color: #6a9a58;
+}
+
+.submitBtn:active {
+   transform: scale(0.98);
+}
+
+/* ============================================= */
+/* АДАПТИВНОСТЬ (Media Queries)                  */
+/* ============================================= */
+
+/* Планшеты и Десктопы */
+@media (min-width: 992px) {
+   .contentGrid {
+      grid-template-columns: 1fr 400px;
+      /* Возвращаем 2 колонки */
+   }
+
+   .fieldsGrid3 {
+      grid-template-columns: repeat(3, 1fr);
+      /* 3 поля в ряд */
+   }
+
+   .cartStickyCard {
+      position: sticky;
+      top: 20px;
+   }
+}
+
+/* Мобильные устройства (маленькие экраны) */
+@media (max-width: 600px) {
+   .mainTitle {
+      font-size: 24px;
+      padding-left: 10px;
+   }
+
+   .sectionCard {
+      padding: 15px;
+      border-radius: 0;
+      /* На мобилках часто лучше смотрятся карточки на всю ширину */
+   }
+
+   .inputRow,
+   .fieldsGrid {
+      grid-template-columns: 1fr;
+      /* Поля встают друг под друга */
+   }
+
+   .fieldsGrid3 {
+      grid-template-columns: 1fr;
+   }
+
+   .totalAmount {
+      font-size: 24px;
+   }
+}

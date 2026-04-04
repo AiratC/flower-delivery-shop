@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import styles from './CheckoutPage.module.css';
 import { useSelector } from 'react-redux';
+import CartItemCheckout from '../../components/CartItemCheckout/CartItemCheckout';
+import { selectTotalPrice } from '../../redux/slices/cartSlice';
 
 const CheckoutPage = () => {
-   const { items, totalPrice } = useSelector(state => state.cart);
+   const { items } = useSelector(state => state.cart);
+   const totalPrice = useSelector(selectTotalPrice)
 
    // Инициализируем состояние всеми полями из таблицы Orders
    const [formData, setFormData] = useState({
@@ -21,7 +24,9 @@ const CheckoutPage = () => {
       customer_name: '',
       customer_phone: '',
       customer_city: 'Владивосток',
-      payment_method: 'Онлайн оплата — Сбербанк'
+      payment_method: 'Онлайн оплата — Сбербанк',
+      total_price: 0,
+      status: 'Новый'
    });
 
    // Универсальный обработчик для всех типов инпутов
@@ -38,7 +43,7 @@ const CheckoutPage = () => {
       // Формируем итоговый объект для отправки в базу (Orders + Order_Items);
       const finalOrder = {
          ...formData,
-         totalPrice: totalPrice,
+         total_price: totalPrice,
          items: items.map((item) => ({
             item_id: item.item_id,
             item_type: item.item_type,
@@ -64,11 +69,10 @@ const CheckoutPage = () => {
                <section className={styles.sectionCard}>
                   <h3 className={styles.sectionHeader}>Способ доставки</h3>
                   <div className={styles.radioGroupVertical}>
-                     <label htmlFor="delivery_method" className={styles.radioLabel}>
+                     <label className={styles.radioLabel}>
                         <input
                            type="radio"
                            name='delivery_method'
-                           id='delivery_method'
                            value={`Доставка по Владивостоку`}
                            checked={formData.delivery_method === 'Доставка по Владивостоку'}
                            onChange={handleChange}
@@ -77,11 +81,10 @@ const CheckoutPage = () => {
                            <strong>Доставка по Владивостоку</strong>
                         </div>
                      </label>
-                     <label htmlFor="self" className={styles.radioLabel}>
+                     <label className={styles.radioLabel}>
                         <input
                            type="radio"
                            name='delivery_method'
-                           id='self'
                            value={`Самовывоз`}
                            checked={formData.delivery_method === 'Самовывоз'}
                            onChange={handleChange}
@@ -93,9 +96,190 @@ const CheckoutPage = () => {
                      </label>
                   </div>
                </section>
+
+               {/* 2. Дата и время */}
+               <section className={styles.sectionCard}>
+                  <h3 className={styles.sectionHeader}>Дата и время</h3>
+                  <div className={styles.inputRow}>
+                     <div className={styles.fieldBlock}>
+                        <label>Дата</label>
+                        <input
+                           type="date"
+                           name="delivery_date"
+                           required
+                           value={formData.delivery_date}
+                           onChange={handleChange}
+                        />
+                     </div>
+                     <div className={styles.fieldBlock}>
+                        <label>Время</label>
+                        <input
+                           type="time"
+                           name="delivery_time_slot"
+                           value={formData.delivery_time_slot}
+                           onChange={handleChange}
+                        />
+                     </div>
+                  </div>
+                  <div className={styles.optionsList}>
+                     <label className={styles.checkboxLabel}>
+                        <input
+                           type="checkbox"
+                           name="call_recipient"
+                           checked={formData.call_recipient}
+                           onChange={handleChange}
+                        />
+                        <span>Позвонить получателю для уточнения времени и адреса</span>
+                     </label>
+                     <label className={styles.checkboxLabel}>
+                        <input
+                           type="checkbox"
+                           name="keep_secret"
+                           checked={formData.keep_secret}
+                           onChange={handleChange}
+                        />
+                        <span>По телефону <strong>не говорить</strong> что это цветы</span>
+                     </label>
+                  </div>
+               </section>
+
+               {/* 3. Получатель */}
+               <section className={styles.sectionCard}>
+                  <h3 className={styles.sectionHeader}>Получатель</h3>
+                  <div className={styles.radioGroupInline}>
+                     <label>
+                        <input
+                           type="radio"
+                           name="recipient_type"
+                           value="Self"
+                           checked={formData.recipient_type === 'Self'}
+                           onChange={handleChange}
+                        /> Я получатель
+                     </label>
+                     <label>
+                        <input
+                           type="radio"
+                           name="recipient_type"
+                           value="Other"
+                           checked={formData.recipient_type === 'Other'}
+                           onChange={handleChange}
+                        /> Получатель другой человек
+                     </label>
+                  </div>
+                  <div className={styles.fieldsGrid}>
+                     <input
+                        name="recipient_name"
+                        placeholder="Имя и фамилия"
+                        required
+                        value={formData.recipient_name}
+                        onChange={handleChange}
+                     />
+                     <input
+                        name="recipient_phone"
+                        placeholder="Моб. номер"
+                        required
+                        value={formData.recipient_phone}
+                        onChange={handleChange}
+                     />
+                     <input
+                        name="recipient_city"
+                        placeholder="Город"
+                        value={formData.recipient_city}
+                        onChange={handleChange}
+                     />
+                     <input
+                        name="delivery_address"
+                        placeholder="Адрес"
+                        required
+                        value={formData.delivery_address}
+                        onChange={handleChange}
+                     />
+                  </div>
+                  <textarea
+                     name="order_note"
+                     placeholder="Примечание"
+                     className={styles.textarea}
+                     value={formData.order_note}
+                     onChange={handleChange}
+                  />
+               </section>
+
+               {/* 4. Ваши контакты */}
+               <section className={styles.sectionCard}>
+                  <h3 className={styles.sectionHeader}>Ваши контакты</h3>
+                  <div className={styles.fieldsGrid3}>
+                     <div className={styles.fieldBlock}>
+                        <label>Имя и фамилия</label>
+                        <input
+                           name="customer_name"
+                           placeholder="Анатолий Петров"
+                           required
+                           value={formData.customer_name}
+                           onChange={handleChange}
+                        />
+                     </div>
+                     <div className={styles.fieldBlock}>
+                        <label>Моб. номер</label>
+                        <input
+                           name="customer_phone"
+                           placeholder="+7 (___) ___ - __ - __"
+                           required
+                           value={formData.customer_phone}
+                           onChange={handleChange}
+                        />
+                     </div>
+                     <div className={styles.fieldBlock}>
+                        <label>Город</label>
+                        <input
+                           name="customer_city"
+                           value={formData.customer_city}
+                           onChange={handleChange}
+                        />
+                     </div>
+                  </div>
+               </section>
+
+               {/* 5. Способ оплаты */}
+               <section className={styles.sectionCard}>
+                  <h3 className={styles.sectionHeader}>Способ оплаты</h3>
+                  <div className={styles.paymentOptions}>
+                     {['Наличными при самовывозе', 'Наличными курьеру', 'Онлайн оплата — Сбербанк'].map((method) => (
+                        <label key={method} className={styles.paymentRadio}>
+                           <input
+                              type="radio"
+                              name="payment_method"
+                              value={method}
+                              checked={formData.payment_method === method}
+                              onChange={handleChange}
+                           />
+                           <span>{method}</span>
+                        </label>
+                     ))}
+                  </div>
+               </section>
             </div>
-         </form>
-      </div>
+
+            {/* ПРАВАЯ КОЛОНКА */}
+            <aside className={styles.cartColumn}>
+               <div className={styles.cartStickyCard}>
+                  <h2 className={styles.cartTitle}>КОРЗИНА</h2>
+                  <div className={styles.itemsList}>
+                     {items.map((item) => (
+                        <CartItemCheckout key={item.cart_item_id} item={item} />
+                     ))}
+                  </div>
+                  <div className={styles.totalBlock}>
+                     <p>Итоговая стоимость:</p>
+                     <div className={styles.totalAmount}>{totalPrice.toLocaleString()} руб.</div>
+                  </div>
+                  <button type="submit" className={styles.submitBtn}>
+                     Оформить заказ
+                  </button>
+               </div>
+            </aside>
+
+         </form >
+      </div >
    )
 }
 

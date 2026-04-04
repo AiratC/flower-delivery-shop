@@ -1,0 +1,127 @@
+.cartItemCard {
+   background: white;
+   border-radius: 12px;
+   padding: 15px;
+   margin-bottom: 15px;
+   position: relative;
+   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.removeBtn {
+   position: absolute;
+   top: 10px;
+   right: 10px;
+   background: none;
+   border: none;
+   cursor: pointer;
+   padding: 5px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   z-index: 2;
+}
+
+.itemMain {
+   display: flex;
+   gap: 15px;
+   margin-bottom: 15px;
+   padding-right: 20px;
+   /* Отступ от крестика */
+}
+
+.imageWrapper {
+   width: 80px;
+   height: 80px;
+   flex-shrink: 0;
+}
+
+.itemImage {
+   width: 100%;
+   height: 100%;
+   object-fit: cover;
+   border-radius: 10px;
+}
+
+.itemDetails {
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+}
+
+.itemName {
+   font-size: 16px;
+   font-weight: 700;
+   color: #4a3f3f;
+   margin: 0 0 5px 0;
+   line-height: 1.2;
+}
+
+.itemMeta {
+   font-size: 14px;
+   color: #888;
+   margin: 0;
+}
+
+/* Нижняя часть с кнопками и ценой */
+.itemFooter {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   padding-top: 15px;
+   border-top: 1px solid #f0f0f0;
+}
+
+.quantityControls {
+   display: flex;
+   align-items: center;
+   background: #f0f0f0;
+   border-radius: 6px;
+   padding: 2px;
+}
+
+.controlBtn {
+   background: #d9d9d9;
+   border: none;
+   width: 24px;
+   height: 24px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   border-radius: 4px;
+   cursor: pointer;
+   color: #666;
+   transition: background 0.2s;
+}
+
+.controlBtn:hover:not(:disabled) {
+   background: #cccccc;
+}
+
+.controlBtn:disabled {
+   opacity: 0.5;
+   cursor: not-allowed;
+}
+
+.quantityText {
+   padding: 0 10px;
+   font-size: 14px;
+   color: #4a3f3f;
+}
+
+.itemSum {
+   display: flex;
+   flex-direction: column;
+   align-items: flex-end;
+}
+
+.sumLabel {
+   font-size: 11px;
+   color: #999;
+   text-transform: uppercase;
+}
+
+.sumValue {
+   font-size: 16px;
+   font-weight: 700;
+   color: #4a3f3f;
+}
