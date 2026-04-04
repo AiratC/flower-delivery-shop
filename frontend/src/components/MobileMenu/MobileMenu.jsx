@@ -65,7 +65,7 @@ const MobileMenu = ({ isOpen, onClose }) => {
                   </div>
 
                   <div>
-                     <Link onClick={onClose} to={`/cart`} className={`navLink`}>
+                     <Link onClick={onClose} to={`/checkout`} className={`navLink`}>
                         <ShoppingCart size={25} />
                      </Link>
                   </div>

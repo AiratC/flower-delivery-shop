@@ -118,7 +118,7 @@ const Navbar = () => {
                      </div>
 
                      <div>
-                        <Link to={`/cart`} className={`navLink`}>
+                        <Link to={`/checkout`} className={`navLink`}>
                            <ShoppingCart size={18} />
                         </Link>
                      </div>
