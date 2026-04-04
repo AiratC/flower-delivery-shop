@@ -13,6 +13,7 @@ import FlowerCard from './pages/FlowerCard/FlowerCard';
 import useScrollRestoration from './hooks/useScrollRestoration';
 import { v4 as uuidv4 } from 'uuid';
 import { fetchCart } from './redux/slices/cartSlice';
+import CheckoutPage from './pages/CheckoutPage/CheckoutPage';
 
 
 function App() {
@@ -42,6 +43,7 @@ function App() {
                   <Route path='auth' element={<Auth/>}/>
                   <Route path='profile' element={<ProtectedRoute><Profile/></ProtectedRoute>}/>
                   <Route path='flower-card/:flowerId' element={<FlowerCard/>}/>
+                  <Route path='checkout' element={<CheckoutPage />}/>
 
                   <Route path="*" element={<PageNotFound />} />
                </Route>
