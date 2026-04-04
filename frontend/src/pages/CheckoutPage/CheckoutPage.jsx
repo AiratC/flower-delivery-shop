@@ -27,7 +27,6 @@ const CheckoutPage = () => {
    // Универсальный обработчик для всех типов инпутов
    const handleChange = (e) => {
       const { name, value, type, checked } = e.target;
-      console.log({ name, value, type, checked })
       setFormData(prevData => (
          { ...prevData, [name]: type === 'checkbox' ? checked : value }
       ));
