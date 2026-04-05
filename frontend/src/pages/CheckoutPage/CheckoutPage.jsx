@@ -67,33 +67,35 @@ const CheckoutPage = () => {
             price_at_purchase: item.price
          })),
          delivery_address: formData.delivery_method === 'Самовывоз' ?
-         'Самовывоз: ул. Пушкинская, 17А' : formData.delivery_address
+            'Самовывоз: ул. Пушкинская, 17А' : formData.delivery_address
       };
 
       try {
          const response = await dispatch(createOrderThunk(finalOrder)).unwrap();
-         console.log(response);
          if (response.success) {
             toast.success(response.message || 'Заказ оформлен!');
             dispatch(clearCart());
             navigate(`/order-success/${response.orderId}`);
          }
       } catch (error) {
-         console.log(error);
          toast.error(error.message || 'Ошибка при оформлении заказа');
       }
    };
 
    useEffect(() => {
-   if (formData.recipient_type === 'Self') {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setFormData(prev => ({
-         ...prev,
-         recipient_name: formData.customer_name,
-         recipient_phone: formData.customer_phone
-      }));
-   }
-}, [formData.customer_name, formData.customer_phone, formData.recipient_type]);
+      if (formData.recipient_type === 'Self') {
+         // eslint-disable-next-line react-hooks/set-state-in-effect
+         setFormData(prev => ({
+            ...prev,
+            recipient_name: formData.customer_name,
+            recipient_phone: formData.customer_phone
+         }));
+      }
+   }, [formData.customer_name, formData.customer_phone, formData.recipient_type]);
+
+   useEffect(() => {
+      window.scrollTo({ behavior: 'smooth', top: 0 })
+   }, []);
 
    if (items.length === 0) return <div className={`container`}>Корзина пуста</div>
 

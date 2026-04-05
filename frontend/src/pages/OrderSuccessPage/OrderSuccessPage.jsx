@@ -7,7 +7,7 @@ import styles from './OrderSuccessPage.module.css';
 const OrderSuccessPage = () => {
    const { orderId } = useParams();
    const dispatch = useDispatch();
-   
+
    // Берем данные об авторизации из стора (название слайса может быть auth или user)
    const { user } = useSelector(state => state.auth);
 
@@ -17,6 +17,10 @@ const OrderSuccessPage = () => {
          dispatch(resetCheckoutState());
       };
    }, [dispatch]);
+
+   useEffect(() => {
+      window.scrollTo({ behavior: 'smooth', top: 0 })
+   }, []);
 
    return (
       <div className={`container ${styles.successContainer}`}>
@@ -36,7 +40,7 @@ const OrderSuccessPage = () => {
                   // ВАРИАНТ 1: ПОЛЬЗОВАТЕЛЬ АВТОРИЗОВАН
                   <>
                      <p className={styles.description}>
-                        Благодарим за заказ! Мы уже начали его подготовку. 
+                        Благодарим за заказ! Мы уже начали его подготовку.
                         Все детали и история изменений доступны в вашем профиле.
                      </p>
                      <div className={styles.actions}>
@@ -48,7 +52,7 @@ const OrderSuccessPage = () => {
                   // ВАРИАНТ 2: ГОСТЬ
                   <>
                      <p className={styles.description}>
-                        Ваш заказ принят! Чтобы иметь возможность <strong>отслеживать статус</strong> и 
+                        Ваш заказ принят! Чтобы иметь возможность <strong>отслеживать статус</strong> и
                         копить бонусы, рекомендуем зарегистрироваться.
                      </p>
                      <div className={styles.guestNotice}>
