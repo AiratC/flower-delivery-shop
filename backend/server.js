@@ -11,6 +11,7 @@ import directoryRouter from "./routes/directory.routes.js";
 import messageRouter from "./routes/message.route.js";
 import userRouter from "./routes/user.route.js";
 import cartRouter from "./routes/cart.route.js";
+import checkoutRouter from "./routes/checkout.route.js";
 
 const app = express();
 
@@ -41,6 +42,7 @@ app.use('/api/directories', directoryRouter);
 app.use('/api/messages', messageRouter);
 app.use('/api/users', userRouter);
 app.use('/api/cart', cartRouter);
+app.use('/api/checkout', checkoutRouter);
 
 
 // Запуск сервера с обработкой ошибок
