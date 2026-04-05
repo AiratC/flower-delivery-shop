@@ -1,12 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './CheckoutPage.module.css';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import CartItemCheckout from '../../components/CartItemCheckout/CartItemCheckout';
-import { selectTotalPrice } from '../../redux/slices/cartSlice';
+import { clearCart, selectTotalPrice } from '../../redux/slices/cartSlice';
+import { createOrderThunk } from '../../redux/slices/checkoutSlice';
+import { toast } from 'react-toastify';
+// import { useNavigate } from 'react-router-dom';
 
 const CheckoutPage = () => {
    const { items } = useSelector(state => state.cart);
-   const totalPrice = useSelector(selectTotalPrice)
+   const { loading } = useSelector(state => state.checkout);
+   const totalPrice = useSelector(selectTotalPrice);
+
+   const dispatch = useDispatch();
+   // const navigate = useNavigate();
 
    // Инициализируем состояние всеми полями из таблицы Orders
    const [formData, setFormData] = useState({
@@ -25,16 +32,24 @@ const CheckoutPage = () => {
       customer_phone: '',
       customer_city: 'Владивосток',
       payment_method: 'Онлайн оплата — Сбербанк',
-      total_price: 0,
-      status: 'Новый'
    });
 
    // Универсальный обработчик для всех типов инпутов
    const handleChange = (e) => {
       const { name, value, type, checked } = e.target;
-      setFormData(prevData => (
-         { ...prevData, [name]: type === 'checkbox' ? checked : value }
-      ));
+
+      if (name === 'recipient_type' && value === 'Self') {
+         setFormData(prev => ({
+            ...prev,
+            recipient_name: prev.customer_name,
+            recipient_phone: prev.customer_phone
+         }))
+      } else {
+         setFormData(prevData => (
+            { ...prevData, [name]: type === 'checkbox' ? checked : value }
+         ));
+      }
+
    };
 
    const handleSubmit = async (e) => {
@@ -50,13 +65,38 @@ const CheckoutPage = () => {
             selected_size: item.selected_size,
             quantity: item.quantity,
             price_at_purchase: item.price
-         }))
+         })),
+         delivery_address: formData.delivery_method === 'Самовывоз' ?
+         'Самовывоз: ул. Пушкинская, 17А' : formData.delivery_address
       };
 
-      console.log(`Готовый объект для backend: `, finalOrder)
+      try {
+         const response = await dispatch(createOrderThunk(finalOrder)).unwrap();
+         console.log(response);
+         if (response.success) {
+            toast.success(response.message || 'Заказ оформлен!');
+            dispatch(clearCart());
+            // navigate('/orders');
+         }
+      } catch (error) {
+         console.log(error);
+         toast.error(error.message || 'Ошибка при оформлении заказа');
+      }
    };
 
+   useEffect(() => {
+   if (formData.recipient_type === 'Self') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setFormData(prev => ({
+         ...prev,
+         recipient_name: formData.customer_name,
+         recipient_phone: formData.customer_phone
+      }));
+   }
+}, [formData.customer_name, formData.customer_phone, formData.recipient_type]);
+
    if (items.length === 0) return <div className={`container`}>Корзина пуста</div>
+
    return (
       <div className={`container ${styles.checkoutContainer}`}>
          <h1 className={styles.mainTitle}>Оформление заказа</h1>
@@ -272,8 +312,12 @@ const CheckoutPage = () => {
                      <p>Итоговая стоимость:</p>
                      <div className={styles.totalAmount}>{totalPrice.toLocaleString()} руб.</div>
                   </div>
-                  <button type="submit" className={styles.submitBtn}>
-                     Оформить заказ
+                  <button
+                     type="submit"
+                     className={styles.submitBtn}
+                     disabled={loading}
+                  >
+                     {loading ? 'Оформление...' : 'Оформить заказ'}
                   </button>
                </div>
             </aside>

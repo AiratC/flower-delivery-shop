@@ -3,8 +3,6 @@ import { useDispatch } from 'react-redux';
 import { X, Minus, Plus } from 'lucide-react';
 import styles from './CartItemCheckout.module.css';
 import { removeItem, updateQty } from '../../redux/slices/cartSlice';
-// Импортируй свои экшены корзины
-// import { removeItem, updateQuantity } from '../store/cartSlice';
 
 const CartItemCheckout = ({ item }) => {
    const dispatch = useDispatch();
@@ -44,7 +42,7 @@ const CartItemCheckout = ({ item }) => {
 
             {/* Инфо о товаре */}
             <div className={styles.itemDetails}>
-               <h4 className={styles.itemName}>{item.name}</h4>
+               <h4 className={styles.itemName}>{item.title}</h4>
                <p className={styles.itemMeta}>
                   {item.selected_size ? `${item.selected_size} ` : ''}
                   ({item.price.toLocaleString()} руб.)

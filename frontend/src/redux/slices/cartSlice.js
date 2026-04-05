@@ -3,7 +3,7 @@ import fetchAxios from "../../api/axios";
 
 const getHeaders = () => ({
    headers: {
-      'x-guest-token': localStorage.getItem('guest_token')
+      'x-guest-token': localStorage.getItem('guest_token') || ''
    }
 });
 
@@ -67,7 +67,11 @@ const initialState = {
 const cartSlice = createSlice({
    name: 'cart',
    initialState,
-   reducers: {},
+   reducers: {
+      clearCart: (state) => {
+         state.items = []
+      }
+   },
    extraReducers: (builder) => {
       builder
          .addCase(fetchCart.pending, (state) => {
@@ -107,5 +111,7 @@ const cartSlice = createSlice({
 export const selectTotalPrice = (state) => state.cart.items.reduce((sum, item) => sum + (
    item.price * item.quantity
 ), 0);
+
+export const {  clearCart } = cartSlice.actions;
 
 export default cartSlice.reducer;
