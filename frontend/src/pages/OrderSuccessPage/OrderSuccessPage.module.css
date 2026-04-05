@@ -1,0 +1,162 @@
+.successContainer {
+   min-height: 70vh;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   padding: 20px;
+}
+
+.card {
+   background: #ffffff;
+   border-radius: 16px;
+   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+   padding: 40px;
+   max-width: 550px;
+   width: 100%;
+   text-align: center;
+   transition: transform 0.3s ease;
+}
+
+/* Иконка с анимацией появления */
+.iconWrapper {
+   width: 80px;
+   height: 80px;
+   background-color: #e6f9ed;
+   color: #28a745;
+   border-radius: 50%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   margin: 0 auto 24px;
+}
+
+.successIcon {
+   width: 45px;
+   height: 45px;
+}
+
+.title {
+   font-size: 28px;
+   color: #1a1a1a;
+   margin-bottom: 8px;
+   font-weight: 700;
+}
+
+.orderNumber {
+   font-size: 18px;
+   color: #666;
+   margin-bottom: 24px;
+}
+
+.orderNumber strong {
+   color: #000;
+   background: #f0f0f0;
+   padding: 2px 8px;
+   border-radius: 4px;
+}
+
+.description {
+   font-size: 16px;
+   line-height: 1.6;
+   color: #555;
+   margin-bottom: 20px;
+}
+
+/* Блок для гостей */
+.guestNotice {
+   background-color: #f8fbff;
+   border-left: 4px solid #007bff;
+   padding: 16px;
+   margin: 24px 0;
+   font-size: 14px;
+   color: #444;
+   text-align: left;
+   line-height: 1.5;
+}
+
+/* Кнопки */
+.actions {
+   display: flex;
+   gap: 12px;
+   justify-content: center;
+   margin-top: 32px;
+}
+
+.primaryBtn, .secondaryBtn {
+   padding: 12px 24px;
+   border-radius: 8px;
+   font-weight: 600;
+   font-size: 15px;
+   text-decoration: none;
+   transition: all 0.2s ease;
+   display: inline-block;
+   flex: 1; /* Кнопки будут равной ширины */
+}
+
+.primaryBtn {
+   background-color: #000; /* Или твой основной цвет */
+   color: #fff;
+   border: 1px solid #000;
+}
+
+.primaryBtn:hover {
+   background-color: #333;
+   transform: translateY(-2px);
+}
+
+.secondaryBtn {
+   background-color: #fff;
+   color: #000;
+   border: 1px solid #e0e0e0;
+}
+
+.secondaryBtn:hover {
+   background-color: #f9f9f9;
+   border-color: #ccc;
+}
+
+.backLink {
+   margin-top: 24px;
+}
+
+.backLink a {
+   color: #888;
+   font-size: 14px;
+   text-decoration: none;
+   border-bottom: 1px dashed #ccc;
+}
+
+.backLink a:hover {
+   color: #000;
+   border-bottom-style: solid;
+}
+
+/* --- АДАПТИВНОСТЬ --- */
+
+@media (max-width: 600px) {
+   .card {
+      padding: 30px 20px;
+   }
+
+   .title {
+      font-size: 22px;
+   }
+
+   .actions {
+      flex-direction: column; /* Кнопки одна под другой на мобилках */
+   }
+
+   .primaryBtn, .secondaryBtn {
+      width: 100%;
+   }
+
+   .iconWrapper {
+      width: 60px;
+      height: 60px;
+   }
+
+   .successIcon {
+      width: 35px;
+      height: 35px;
+   }
+}

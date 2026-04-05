@@ -14,6 +14,7 @@ import useScrollRestoration from './hooks/useScrollRestoration';
 import { v4 as uuidv4 } from 'uuid';
 import { fetchCart } from './redux/slices/cartSlice';
 import CheckoutPage from './pages/CheckoutPage/CheckoutPage';
+import OrderSuccessPage from './pages/OrderSuccessPage/OrderSuccessPage';
 
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
                   <Route path='profile' element={<ProtectedRoute><Profile/></ProtectedRoute>}/>
                   <Route path='flower-card/:flowerId' element={<FlowerCard/>}/>
                   <Route path='checkout' element={<CheckoutPage />}/>
+                  <Route path='order-success/:orderId' element={<OrderSuccessPage/>}/>
 
                   <Route path="*" element={<PageNotFound />} />
                </Route>

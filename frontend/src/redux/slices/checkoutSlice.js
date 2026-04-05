@@ -61,5 +61,6 @@ const checkoutSlice = createSlice({
    }
 });
 
+export const { resetCheckoutState } = checkoutSlice.actions;
 
 export default checkoutSlice.reducer;

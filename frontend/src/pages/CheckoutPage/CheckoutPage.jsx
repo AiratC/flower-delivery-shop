@@ -5,7 +5,7 @@ import CartItemCheckout from '../../components/CartItemCheckout/CartItemCheckout
 import { clearCart, selectTotalPrice } from '../../redux/slices/cartSlice';
 import { createOrderThunk } from '../../redux/slices/checkoutSlice';
 import { toast } from 'react-toastify';
-// import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const CheckoutPage = () => {
    const { items } = useSelector(state => state.cart);
@@ -13,7 +13,7 @@ const CheckoutPage = () => {
    const totalPrice = useSelector(selectTotalPrice);
 
    const dispatch = useDispatch();
-   // const navigate = useNavigate();
+   const navigate = useNavigate();
 
    // Инициализируем состояние всеми полями из таблицы Orders
    const [formData, setFormData] = useState({
@@ -76,7 +76,7 @@ const CheckoutPage = () => {
          if (response.success) {
             toast.success(response.message || 'Заказ оформлен!');
             dispatch(clearCart());
-            // navigate('/orders');
+            navigate(`/order-success/${response.orderId}`);
          }
       } catch (error) {
          console.log(error);
