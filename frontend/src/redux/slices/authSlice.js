@@ -34,6 +34,19 @@ export const fetchUserStats = createAsyncThunk(
    },
 );
 
+// Выход
+export const fetchUserLogout = createAsyncThunk(
+   "auth/fetchUserLogout",
+   async (_, thunkAPI) => {
+      try {
+         const response = await fetchAxios.post("/auth/logout");
+         return response.data;
+      } catch (error) {
+         return thunkAPI.rejectWithValue(error.response.data.message)
+      }
+   },
+);
+
 const initialState = {
    user: null,
    loading: false,
@@ -67,11 +80,20 @@ export const authSlice = createSlice({
          .addCase(fetchUserStats.rejected, (state) => {
             state.loading = false;
             state.user = null;
+         })
+         // !!! Выход
+         .addCase(fetchUserLogout.pending, (state) => {
+            state.loading = true;
+         })
+         .addCase(fetchUserLogout.fulfilled, (state, action) => {
+            console.log(action.payload)
+            state.loading = false;
+            state.user = action.payload.user;
+         })
+         .addCase(fetchUserLogout.rejected, (state) => {
+            state.loading = false;
          });
    },
 });
-
-// Action creators are generated for each case reducer function
-// export const { increment, decrement, incrementByAmount } = counterSlice.actions
 
 export default authSlice.reducer;

@@ -1,13 +1,19 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { SquarePen, ShoppingBag, Lock } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { SquarePen, ShoppingBag, Lock, Loader } from 'lucide-react';
 import styles from './Profile.module.css';
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { fetchUserLogout } from '../../redux/slices/authSlice';
+import { toast } from 'react-toastify';
+import { clearCart } from '../../redux/slices/cartSlice';
+import { resetCheckoutState } from '../../redux/slices/checkoutSlice';
 
 const Profile = () => {
    // 1. Получаем данные пользователя из Redux
    // Предположим, в объекте user есть поле totalOrdersSum
-   const { user } = useSelector((state) => state.auth);
+   const { user, loading } = useSelector((state) => state.auth);
+   const dispatch = useDispatch();
+   const navigate = useNavigate();
 
    // 2. Состояние для переключения вкладок
    const [activeTab, setActiveTab] = useState('profile'); // 'profile', 'orders', 'password'
@@ -59,6 +65,31 @@ const Profile = () => {
          });
       }
    }, [user]);
+
+   const handleLogout = async () => {
+      try {
+         const response = await dispatch(fetchUserLogout()).unwrap();
+         console.log(response)
+         if (response.success) {
+            toast.success(response.message);
+            dispatch(clearCart());
+            dispatch(resetCheckoutState());
+            navigate('/');
+         }
+      } catch (error) {
+         console.log(error);
+         toast.error(error.message);
+      }
+   }
+
+   // Если юзера еще нет в сторе И идет загрузка — показываем Loader вместо нулей
+   if (!user && loading) {
+      return (
+         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }}>
+            <Loader className='spinner' size={60} />
+         </div>
+      );
+   }
 
    return (
       <div className={styles.profilePage}>
@@ -193,6 +224,13 @@ const Profile = () => {
                               </div>
                            </div>
                         </section>
+                        <button
+                           className={`${styles.logoutBtn} ${loading && 'opacity-50'}`}
+                           onClick={handleLogout}
+                           disabled={loading}
+                        >
+                           { loading ? <Loader className={`spinner`} size={23}/> : 'Выйти' }
+                        </button>
                      </>
                   )}
 

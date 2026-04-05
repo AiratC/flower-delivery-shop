@@ -226,7 +226,8 @@ export const logoutUser = async (req, res) => {
 
       return res.status(200).json({
          success: true,
-         message: 'Вы успешно вышли из системы'
+         message: 'Вы успешно вышли из системы',
+         user: null
       });
    } catch (error) {
       return res.status(500).json({ message: 'Ошибка при выходе', error: true });

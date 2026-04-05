@@ -10,8 +10,8 @@ const ProtectedRoute = ({ children }) => {
    // Это предотвращает редирект на Home до того, как мы узнали статус юзера
    if (loading) {
       return (
-         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
-            <Loader size={40} />
+         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh' }}>
+            <Loader className='spinner' size={60} />
          </div>
       ); // Или <Loader />
    }

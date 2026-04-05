@@ -166,6 +166,18 @@
    cursor: not-allowed;
 }
 
+.logoutBtn {
+   font-size: 18px;
+   font-weight: bold;
+   background-color: #0e0d0d;
+   color: #ffffff;
+   padding: 11px 35px;
+   border-radius: 7px;
+   margin-top: 20px;
+}
+
+
+
 /* Основной контейнер адаптива */
 @media (max-width: 1024px) {
    .layout {
