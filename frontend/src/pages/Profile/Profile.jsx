@@ -69,7 +69,6 @@ const Profile = () => {
    const handleLogout = async () => {
       try {
          const response = await dispatch(fetchUserLogout()).unwrap();
-         console.log(response)
          if (response.success) {
             toast.success(response.message);
             dispatch(clearCart());
@@ -77,7 +76,6 @@ const Profile = () => {
             navigate('/');
          }
       } catch (error) {
-         console.log(error);
          toast.error(error.message);
       }
    }

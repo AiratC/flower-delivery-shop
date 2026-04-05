@@ -86,7 +86,6 @@ export const authSlice = createSlice({
             state.loading = true;
          })
          .addCase(fetchUserLogout.fulfilled, (state, action) => {
-            console.log(action.payload)
             state.loading = false;
             state.user = action.payload.user;
          })
