@@ -6,6 +6,7 @@ import { clearCart, selectTotalPrice } from '../../redux/slices/cartSlice';
 import { createOrderThunk } from '../../redux/slices/checkoutSlice';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import EmptyCart from '../../components/EmptyCart/EmptyCart';
 
 const CheckoutPage = () => {
    const { items } = useSelector(state => state.cart);
@@ -97,7 +98,7 @@ const CheckoutPage = () => {
       window.scrollTo({ behavior: 'smooth', top: 0 })
    }, []);
 
-   if (items.length === 0) return <div className={`container`}>Корзина пуста</div>
+   if (items.length === 0) return <EmptyCart />
 
    return (
       <div className={`container ${styles.checkoutContainer}`}>
