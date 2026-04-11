@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './Auth.module.css';
 import authImg from './../../assets/images/authImage.webp'
 import { useDispatch, useSelector } from 'react-redux';
@@ -17,9 +17,13 @@ const Auth = () => {
       repeatPassword: '',
       agree: false
    });
-   const { loading } = useSelector(state => state.auth);
+   const { loading, user } = useSelector(state => state.auth);
    const dispatch = useDispatch();
    const navigate = useNavigate();
+
+   useEffect(() => {
+      if(user) return navigate('/profile');
+   }, [user, navigate]);
 
    const handleChange = (e) => {
       const { name, value, type, checked } = e.target;

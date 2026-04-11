@@ -49,7 +49,7 @@ export const fetchUserLogout = createAsyncThunk(
 
 const initialState = {
    user: null,
-   loading: false,
+   loading: true,
 };
 
 export const authSlice = createSlice({

@@ -12,7 +12,6 @@ const Profile = () => {
    // 1. Получаем данные пользователя из Redux
    // Предположим, в объекте user есть поле totalOrdersSum
    const { user, loading } = useSelector((state) => state.auth);
-   console.log(user)
    const dispatch = useDispatch();
    const navigate = useNavigate();
 
