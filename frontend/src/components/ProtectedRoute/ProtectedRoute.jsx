@@ -4,6 +4,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 
 const ProtectedRoute = ({ children }) => {
    const { user, loading } = useSelector((state) => state.auth);
+   console.log(user)
    const location = useLocation();
 
    // Пока идет первичная проверка (fetchUserStats), ничего не рендерим

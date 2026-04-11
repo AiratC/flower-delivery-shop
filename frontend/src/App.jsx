@@ -18,7 +18,7 @@ import OrderSuccessPage from './pages/OrderSuccessPage/OrderSuccessPage';
 
 
 function App() {
-   useScrollRestoration()
+   useScrollRestoration();
    const dispatch = useDispatch();
 
    useEffect(() => {

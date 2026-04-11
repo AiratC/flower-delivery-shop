@@ -6,7 +6,9 @@ export const updateAndGetTotalSpent = async (req, res) => {
 
       // 1. Считаем сумму всех успешных заказов в таблице orders
       const result = await query(
-         `SELECT SUM(total_price) as total FROM "Orders" WHERE user_id = $1 AND status = 'Доставлено'`,
+         `SELECT SUM(total_price) as total 
+         FROM "Orders" 
+         WHERE user_id = $1 AND (status = 'Доставлено' OR status = 'Получен')`,
          [userId]
       );
 
