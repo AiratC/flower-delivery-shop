@@ -8,7 +8,7 @@ export const createOrder = async (req, res) => {
       recipient_type, recipient_name, recipient_phone,
       recipient_city, delivery_address, order_note,
       customer_name, customer_phone, customer_email, customer_city,
-      payment_method, items // items: [{ item_id, item_type, quantity, selected_size }]
+      payment_method, items, discount_applied // items: [{ item_id, item_type, quantity, selected_size }]
    } = req.body;
 
    // Получаем токен гостя или userId
@@ -27,12 +27,12 @@ export const createOrder = async (req, res) => {
       // 1. Валидация возможности оплаты (ЛУЧШЕ ДО BEGIN)
       const initialStatus = payment_method === 'Онлайн оплата — Сбербанк' ? 'Ожидает оплаты' : 'Новый';
 
-      if(initialStatus === 'Ожидает оплаты') {
-            return res.status(400).json({
-               message: 'Онлайн оплата временно не работает',
-               success: false,
-               error: true
-            });
+      if (initialStatus === 'Ожидает оплаты') {
+         return res.status(400).json({
+            message: 'Онлайн оплата временно не работает',
+            success: false,
+            error: true
+         });
       }
       // Начинаем транзакцию
       await query('BEGIN');
@@ -65,7 +65,8 @@ export const createOrder = async (req, res) => {
                );
             }
 
-            dbPrice = flowerRes.rows[0].price_new;
+            dbPrice = Number(flowerRes.rows[0].price_new);
+            if(isNaN(dbPrice)) throw new Error('Invalid price in database');
          }
          // Если дополнительный товар
          else if (item.item_type === 'addon') {
@@ -86,7 +87,8 @@ export const createOrder = async (req, res) => {
                );
             };
 
-            dbPrice = addonRes.rows[0].price;
+            dbPrice = Number(addonRes.rows[0].price);
+            if(isNaN(dbPrice)) throw new Error('Invalid price in database');
          };
 
          // Накапливаем итоговую сумму на сервере
@@ -102,6 +104,18 @@ export const createOrder = async (req, res) => {
             price_at_purchase: dbPrice
          });
       };
+
+      // проверка скидки на сервере
+      let userDiscount = 0;
+      if (userId) {
+         const userRes = await query('SELECT total_spent FROM "Users" WHERE id = $1', [userId]);
+         const spent = userRes.rows[0]?.total_spent || 0;
+         if (spent >= 90000) userDiscount = 7;
+         else if (spent >= 50000) userDiscount = 5;
+         else if (spent >= 10000) userDiscount = 3;
+      }
+
+      serverTotal = Math.floor(serverTotal * (1 - userDiscount / 100));
 
       // ! 2. Создание заказа
       const orderSql = `
@@ -137,19 +151,19 @@ export const createOrder = async (req, res) => {
 
       for (const vItem of validatedItems) {
          await query(itemInsertSql, [
-                  newOrderId,
-                  vItem.item_type,
-                  vItem.item_id,
-                  vItem.selected_size || null,
-                  vItem.quantity,
-                  vItem.price_at_purchase
+            newOrderId,
+            vItem.item_type,
+            vItem.item_id,
+            vItem.selected_size || null,
+            vItem.quantity,
+            vItem.price_at_purchase
          ])
       };
 
       // ! 4. Очистка корзины
-      if(userId) {
+      if (userId) {
          await query(`DELETE FROM "Cart" WHERE user_id = $1`, [userId]);
-      } else if(guestToken) {
+      } else if (guestToken) {
          await query(`DELETE FROM "Cart" WHERE guest_token = $1`, [guestToken]);
       };
 
@@ -165,9 +179,9 @@ export const createOrder = async (req, res) => {
    } catch (error) {
       await query('ROLLBACK');
       console.error('Order Error:', error.message);
-      res.status(500).json({ 
-         success: false, 
-         message: error.message || 'Ошибка сервера при оформлении заказа' 
+      res.status(500).json({
+         success: false,
+         message: error.message || 'Ошибка сервера при оформлении заказа'
       });
    }
 }

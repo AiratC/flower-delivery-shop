@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import styles from './CheckoutPage.module.css';
 import { useDispatch, useSelector } from 'react-redux';
 import CartItemCheckout from '../../components/CartItemCheckout/CartItemCheckout';
@@ -11,6 +11,8 @@ import EmptyCart from '../../components/EmptyCart/EmptyCart';
 const CheckoutPage = () => {
    const { items } = useSelector(state => state.cart);
    const { loading } = useSelector(state => state.checkout);
+   // Получаем все данные пользователя чтоб узнать total_spent для расчета скидки
+   const { user } = useSelector(state => state.auth);
    const totalPrice = useSelector(selectTotalPrice);
 
    const dispatch = useDispatch();
@@ -35,22 +37,39 @@ const CheckoutPage = () => {
       payment_method: 'Онлайн оплата — Сбербанк',
    });
 
+   // Динамический расчет скидки
+   const totalSum = user?.total_spent || 0;
+
+   const discountData = useMemo(() => {
+      if (totalSum >= 90000) return 7;
+      if (totalSum >= 50000) return 5;
+      if (totalSum >= 10000) return 3;
+      return 0;
+   }, [totalSum]);
+
+   // Финальная цена после применения скидки
+   const finalPrice = useMemo(() => {
+      if (discountData > 0) {
+         return totalPrice - (totalPrice * (discountData / 100));
+      }
+      return totalPrice;
+   }, [totalPrice, discountData]);
+
    // Универсальный обработчик для всех типов инпутов
    const handleChange = (e) => {
       const { name, value, type, checked } = e.target;
+      const val = type === 'checkbox' ? checked : value
 
-      if (name === 'recipient_type' && value === 'Self') {
-         setFormData(prev => ({
-            ...prev,
-            recipient_name: prev.customer_name,
-            recipient_phone: prev.customer_phone
-         }))
-      } else {
-         setFormData(prevData => (
-            { ...prevData, [name]: type === 'checkbox' ? checked : value }
-         ));
-      }
+      setFormData(prevData => {
+         const newData = { ...prevData, [name]: val };
 
+         if (newData.recipient_type === 'Self') {
+            newData.recipient_name = newData.customer_name;
+            newData.recipient_phone = newData.customer_phone
+         };
+
+         return newData;
+      });
    };
 
    const handleSubmit = async (e) => {
@@ -59,7 +78,8 @@ const CheckoutPage = () => {
       // Формируем итоговый объект для отправки в базу (Orders + Order_Items);
       const finalOrder = {
          ...formData,
-         total_price: totalPrice,
+         total_price: finalPrice,
+         discount_applied: discountData, // Полезно передать процент скидки для истории
          items: items.map((item) => ({
             item_id: item.item_id,
             item_type: item.item_type,
@@ -82,17 +102,6 @@ const CheckoutPage = () => {
          toast.error(error.message || 'Ошибка при оформлении заказа');
       }
    };
-
-   useEffect(() => {
-      if (formData.recipient_type === 'Self') {
-         // eslint-disable-next-line react-hooks/set-state-in-effect
-         setFormData(prev => ({
-            ...prev,
-            recipient_name: formData.customer_name,
-            recipient_phone: formData.customer_phone
-         }));
-      }
-   }, [formData.customer_name, formData.customer_phone, formData.recipient_type]);
 
    useEffect(() => {
       window.scrollTo({ behavior: 'smooth', top: 0 })
@@ -312,8 +321,33 @@ const CheckoutPage = () => {
                      ))}
                   </div>
                   <div className={styles.totalBlock}>
-                     <p>Итоговая стоимость:</p>
-                     <div className={styles.totalAmount}>{totalPrice.toLocaleString()} руб.</div>
+                     <p>Итоговая стоимость {discountData > 0 && `со скидкой ${discountData}%`}:</p>
+                     {
+                        discountData > 0 ? (
+                           <div className={styles.priceWrapper}>
+                              {/* Старая цена зачеркнутая */}
+                              <span className={styles.oldPrice}>
+                                 {totalPrice.toLocaleString()} руб.
+                              </span>
+                              {/* Новая цена жирным */}
+                              <div
+                                 className={
+                                    `
+                                 ${styles.totalAmount}
+                                 ${discountData > 0 && styles.colorRed}
+                                 `
+                                 }
+                              >
+                                 {finalPrice.toLocaleString()} руб.
+                              </div>
+                           </div>
+                        ) : (
+                           /* Если скидки нет, просто обычная цена */
+                           <div className={styles.totalAmount}>
+                              {totalPrice.toLocaleString()} руб.
+                           </div>
+                        )
+                     }
                   </div>
                   <button
                      type="submit"

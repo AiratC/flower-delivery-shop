@@ -110,7 +110,8 @@ CREATE TABLE Flower_Variants (
 -- ====================================================================================
 CREATE TABLE Orders (
    order_id SERIAL PRIMARY KEY,
-   user_id INT REFERENCES Users(user_id) ON DELETE SET NULL, 
+   user_id INT REFERENCES Users(user_id) ON DELETE SET NULL,
+   guest_token VARCHAR(255),
    
    -- Способ доставки
    delivery_method VARCHAR(50) NOT NULL, -- 'Доставка по Владивостоку', 'Самовывоз'
