@@ -55,7 +55,11 @@ const initialState = {
 export const authSlice = createSlice({
    name: "auth",
    initialState,
-   reducers: {},
+   reducers: {
+      updateUser: (state, action) => {
+         state.user = action.payload;
+      }
+   },
    extraReducers: (builder) => {
       builder
          // !!! Вход и регистрация
@@ -85,14 +89,16 @@ export const authSlice = createSlice({
          .addCase(fetchUserLogout.pending, (state) => {
             state.loading = true;
          })
-         .addCase(fetchUserLogout.fulfilled, (state, action) => {
+         .addCase(fetchUserLogout.fulfilled, (state) => {
             state.loading = false;
-            state.user = action.payload.user;
+            state.user = null;
          })
          .addCase(fetchUserLogout.rejected, (state) => {
             state.loading = false;
          });
    },
 });
+
+export const { updateUser } = authSlice.actions;
 
 export default authSlice.reducer;

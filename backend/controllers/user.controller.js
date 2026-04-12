@@ -28,4 +28,41 @@ export const updateAndGetTotalSpent = async (req, res) => {
       console.error(e);
       res.status(500).json({ message: "Ошибка при подсчете суммы заказов" });
    }
+};
+
+// !!! Изменение данных
+export const changeData = async (req, res) => {
+   const { name = null, phone = null, city = null, delivery_address = null } = req.body;
+   const userId = req.user.userId;
+
+   try {
+      const result = await query(
+         `
+            UPDATE "Users"
+            SET name = $1, phone = $2, city = $3, delivery_address = $4
+            WHERE user_id = $5 RETURNING *
+         `,
+         [name, phone, city, delivery_address, userId]
+      );
+
+      const { password_hash, ...userData } = result.rows[0];
+
+      return res.status(200).json({
+         user: userData,
+         success: true,
+         error: false
+      })
+   } catch (error) {
+      if(error.code === '23505') {
+         return res.status(400).json({
+            message: 'Этот номер телефона уже используется',
+            success: false
+         });
+      }
+      return res.status(500).json({ 
+         message: "Server error: status 500",
+         success: false,
+         error: true
+      });
+   }
 }

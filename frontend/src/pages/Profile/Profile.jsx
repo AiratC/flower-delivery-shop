@@ -3,10 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { SquarePen, ShoppingBag, Lock, Loader } from 'lucide-react';
 import styles from './Profile.module.css';
 import { useNavigate } from 'react-router-dom';
-import { fetchUserLogout } from '../../redux/slices/authSlice';
+import { fetchUserLogout, updateUser } from '../../redux/slices/authSlice';
 import { toast } from 'react-toastify';
 import { clearCart } from '../../redux/slices/cartSlice';
 import { resetCheckoutState } from '../../redux/slices/checkoutSlice';
+import fetchAxios from '../../api/axios';
 
 const Profile = () => {
    // 1. Получаем данные пользователя из Redux
@@ -14,6 +15,7 @@ const Profile = () => {
    const { user, loading } = useSelector((state) => state.auth);
    const dispatch = useDispatch();
    const navigate = useNavigate();
+   const [isSaving, setIsSaving] = useState(false);
 
    // 2. Состояние для переключения вкладок
    const [activeTab, setActiveTab] = useState('profile'); // 'profile', 'orders', 'password'
@@ -77,6 +79,29 @@ const Profile = () => {
          }
       } catch (error) {
          toast.error(error.message);
+      }
+   };
+
+   const handleClickSave = async () => {
+      const data = {
+         name: formData.fullName,
+         phone: formData.phone,
+         city: formData.city,
+         delivery_address: formData.address,
+      };
+
+      try {
+         setIsSaving(true);
+         const response = await fetchAxios.put('/users/change-data', data);
+         if (response.data.success) {
+            setIsEditing(false);
+            dispatch(updateUser(response.data.user));
+         }
+      } catch (error) {
+         const msg = error.response?.data?.message || 'Server error';
+         toast.error(msg)
+      } finally {
+         setIsSaving(false);
       }
    }
 
@@ -175,12 +200,22 @@ const Profile = () => {
                         <section className={styles.infoCard}>
                            <div className={styles.cardHeader}>
                               <h3>Информация обо мне</h3>
-                              <button
-                                 className={styles.editBtn}
-                                 onClick={() => setIsEditing(!isEditing)}
-                              >
-                                 {isEditing ? 'Сохранить' : 'Редактировать'} <SquarePen size={16} />
-                              </button>
+                              {isEditing ?
+                                 <button
+                                    style={{ marginTop: '10px' }}
+                                    onClick={handleClickSave}
+                                    disabled={isSaving}
+                                 >
+                                    Сохранить
+                                 </button> :
+                                 <button
+                                    className={styles.editBtn}
+                                    style={{ marginTop: '10px' }}
+                                    onClick={() => setIsEditing(!isEditing)}
+                                    disabled={isSaving}
+                                 >
+                                    Редактировать <SquarePen size={16} />
+                                 </button>}
                            </div>
 
                            <div className={styles.formGrid}>
@@ -188,8 +223,9 @@ const Profile = () => {
                                  <label>Имя и фамилия</label>
                                  <input
                                     type="text"
-                                    value={formData.fullName}
+                                    value={formData.fullName || ''}
                                     disabled={!isEditing}
+                                    placeholder={'Имя'}
                                     onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                                  />
                               </div>
@@ -197,7 +233,8 @@ const Profile = () => {
                                  <label>Моб. номер</label>
                                  <input
                                     type="text"
-                                    value={formData.phone}
+                                    value={formData.phone || ''}
+                                    placeholder='Телефон'
                                     disabled={!isEditing}
                                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                                  />
@@ -206,7 +243,8 @@ const Profile = () => {
                                  <label>Город</label>
                                  <input
                                     type="text"
-                                    value={formData.city}
+                                    value={formData.city || ''}
+                                    placeholder='Город'
                                     disabled={!isEditing}
                                     onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                                  />
@@ -215,7 +253,8 @@ const Profile = () => {
                                  <label>Адрес</label>
                                  <input
                                     type="text"
-                                    value={formData.address}
+                                    value={formData.address || ''}
+                                    placeholder='Адрес'
                                     disabled={!isEditing}
                                     onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                                  />
@@ -227,7 +266,7 @@ const Profile = () => {
                            onClick={handleLogout}
                            disabled={loading}
                         >
-                           { loading ? <Loader className={`spinner`} size={23}/> : 'Выйти' }
+                           {loading ? <Loader className={`spinner`} size={23} /> : 'Выйти'}
                         </button>
                      </>
                   )}
