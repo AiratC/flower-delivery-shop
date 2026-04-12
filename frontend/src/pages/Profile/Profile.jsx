@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { clearCart } from '../../redux/slices/cartSlice';
 import { resetCheckoutState } from '../../redux/slices/checkoutSlice';
 import fetchAxios from '../../api/axios';
+import ChangePasswordSection from '../../components/ChangePasswordSection/ChangePasswordSection';
 
 const Profile = () => {
    // 1. Получаем данные пользователя из Redux
@@ -281,14 +282,7 @@ const Profile = () => {
 
                   {activeTab === 'password' && (
                      <section className={styles.infoCard}>
-                        <h3>Смена пароля</h3>
-                        <div className={styles.formGrid} style={{ gridTemplateColumns: '1fr' }}>
-                           <div className={styles.inputGroup}>
-                              <label>Новый пароль</label>
-                              <input type="password" placeholder="Введите новый пароль" />
-                           </div>
-                           <button className={styles.editBtn} style={{ width: 'fit-content' }}>Обновить пароль</button>
-                        </div>
+                        <ChangePasswordSection/>
                      </section>
                   )}
                </main>

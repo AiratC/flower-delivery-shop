@@ -42,7 +42,7 @@ export const registerUser = async (req, res) => {
 
       if (password.length < 12 || countSymbol < 4) {
          return res.status(400).json({
-            message: 'Пароль должен быть от 12 символов и содержать минимум 4 спецсимвола ~!@#$%^&*()',
+            message: 'Пароль должен быть от 12 символов и содержать минимум 4 спецсимвола ~!@#$%^&*()/',
             error: true,
             success: false
          });
