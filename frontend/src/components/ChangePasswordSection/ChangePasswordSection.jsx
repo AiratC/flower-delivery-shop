@@ -14,7 +14,7 @@ const ChangePasswordSection = () => {
    });
    const [isSaving, setIsSaving] = useState(false);
 
-   const specialChars = /[~!@#$%^&*()/ \\]/g;
+   const specialChars = /[~!@#$%^&*()/\\]/g;
    const countSymbol = (passwordData?.newPassword?.match(specialChars) || []).length;
 
    // Проверка условия пароля
