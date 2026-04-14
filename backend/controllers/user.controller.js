@@ -1,4 +1,5 @@
 import { query } from "../config/db.js";
+import bcrypt from 'bcrypt';
 
 export const updateAndGetTotalSpent = async (req, res) => {
    try {
@@ -64,5 +65,64 @@ export const changeData = async (req, res) => {
          success: false,
          error: true
       });
+   }
+};
+
+// !!! Изменение пароля
+export const changePassword = async (req, res) => {
+   const { currentPassword, newPassword } = req.body;
+   const userId = req.user.userId;
+
+   if(newPassword.length < 12 || (newPassword.match(/[~!@#$%^&*()/]/g) || []).length < 4) {
+      return res.status(400).json({
+         message: 'Пароль не соответствует требованиям безопасности',
+         success: false,
+         error: true
+      })
+   }
+
+   try {
+      // Ищем пользователя
+      const userResult = await query(`SELECT password_hash FROM "Users" WHERE user_id = $1`, [userId]);
+      const user = userResult.rows[0];
+
+      if(!user) {
+         return res.status(404).json({
+            message: 'Пользователь не найден',
+            success: false,
+            error: true
+         })
+      };
+
+      // Проверяем текущий пароль
+      const isMatch = await bcrypt.compare(currentPassword, user.password_hash);
+      if(!isMatch) {
+         return res.status(400).json({
+            message: 'Неверный текущий пароль',
+            success: false,
+            error: true
+         })
+      };
+
+      // Хешируем новый пароль
+      const salt = await bcrypt.genSalt(10);
+      const newHash = await bcrypt.hash(newPassword, salt);
+
+      // Обновляем в БД
+      await query(`UPDATE "Users" SET password_hash = $1 WHERE user_id = $2`, [newHash, userId]);
+
+      return res.status(200).json({
+         success: true,
+         message: 'Пароль успешно обновлен',
+         error: false
+      });
+
+   } catch (error) {
+      console.error(error);
+      return res.status(500).json({
+         message: 'Server error: status 500',
+         success: false,
+         error: true
+      })
    }
 }

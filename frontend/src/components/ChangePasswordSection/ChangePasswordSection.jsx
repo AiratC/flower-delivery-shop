@@ -14,11 +14,13 @@ const ChangePasswordSection = () => {
    });
    const [isSaving, setIsSaving] = useState(false);
 
-   const specialChars = /[~!@#$%^&*()/\\]/g;
+   const specialChars = /[~!@#$%^&*()/]/g;
    const countSymbol = (passwordData?.newPassword?.match(specialChars) || []).length;
 
    // Проверка условия пароля
-   const passwordConditionCheck = passwordData?.newPassword?.length < 12 || countSymbol < 4;
+   const isPasswordDirty = passwordData.newPassword.length > 0;
+   const isPasswordWeak = passwordData.newPassword.length < 12 || countSymbol < 4;
+   const passwordConditionCheck = isPasswordDirty && isPasswordWeak;
 
    const handlePasswordChange = useCallback(async (e) => {
       e.preventDefault();
@@ -28,12 +30,12 @@ const ChangePasswordSection = () => {
       };
 
       if (passwordData.newPassword !== passwordData.confirmPassword) {
-         return toast.error(`Пароли не совподают`);
+         return toast.error(`Пароли не совпадают`);
       };
 
       try {
          setIsSaving(true);
-         const response = await fetchAxios.put(`/users/change-pasword`, {
+         const response = await fetchAxios.put(`/users/change-password`, {
             currentPassword: passwordData.currentPassword,
             newPassword: passwordData.newPassword
          });
@@ -47,7 +49,7 @@ const ChangePasswordSection = () => {
             })
          }
       } catch (error) {
-         toast.error(error?.response?.data?.message || 'Error')
+         toast.error(error?.response?.data?.message || 'Ошибка при смене пароля')
       } finally {
          setIsSaving(false);
       }
@@ -69,14 +71,18 @@ const ChangePasswordSection = () => {
             </div>
             <div className={styles.inputGroup}>
                <label>Новый пароль</label>
-               <span style={{ color: 'red', fontSize: '16px', fontWeight: 'bold' }}>
-                  {passwordConditionCheck && info}
-               </span>
+               {
+                  passwordConditionCheck && (
+                     <span style={{ color: 'red', fontSize: '12px', fontWeight: 'bold', marginBottom: '5px' }}>
+                        {info}
+                     </span>
+                  )
+               }
                <input
                   type="password"
                   value={passwordData.newPassword}
                   onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                  placeholder="Минимум 12 символов"
+                  placeholder="Минимум 12 символов и 4 спецсимвола"
                   required
                />
             </div>
@@ -94,6 +100,7 @@ const ChangePasswordSection = () => {
                <button
                   type="button"
                   className={styles.cancelBtn}
+                  disabled={isSaving}
                   onClick={() => setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' })}
                >
                   Отмена

@@ -37,7 +37,7 @@ export const registerUser = async (req, res) => {
       }
 
       // Проверка пароля на надёжность
-      const specialChars = /[~!@#$%^&*()/ \\]/g;
+      const specialChars = /[~!@#$%^&*()/]/g;
       const countSymbol = (password.match(specialChars) || []).length;
 
       if (password.length < 12 || countSymbol < 4) {
