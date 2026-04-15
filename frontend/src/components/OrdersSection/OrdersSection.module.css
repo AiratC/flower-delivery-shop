@@ -1,0 +1,105 @@
+.container {
+   display: flex;
+   flex-direction: column;
+   gap: 16px;
+   width: 100%;
+}
+
+.orderCard {
+   background: #fff;
+   border-radius: 8px;
+   padding: 24px;
+   display: grid;
+   grid-template-columns: 150px 1fr 150px 120px;
+   gap: 20px;
+   align-items: start;
+   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+}
+
+.label {
+   display: block;
+   color: #999;
+   font-size: 13px;
+   margin-bottom: 6px;
+}
+
+.value {
+   font-weight: 500;
+   color: #333;
+}
+
+.itemsList {
+   display: flex;
+   flex-direction: column;
+   gap: 8px;
+}
+
+.itemRow {
+   display: flex;
+   justify-content: space-between;
+   border-bottom: 1px solid #f0f0f0;
+   padding-bottom: 8px;
+}
+
+.itemName {
+   color: #444;
+   font-size: 15px;
+   max-width: 70%;
+}
+
+.itemPrice {
+   color: #666;
+   font-size: 14px;
+}
+
+.totalValue {
+   font-size: 18px;
+   font-weight: 700;
+   color: #333;
+}
+
+.statusBadge {
+   font-weight: 600;
+   font-size: 15px;
+}
+
+.delivered { color: #6fb15a; }
+.paid { color: #f2994a; }
+.processing { color: #828282; }
+.received { color: #2b55eb; }
+.deliver { color: #276a13; }
+.new { color: #2d9cdb; }
+
+.center {
+   display: flex;
+   justify-content: center;
+   padding: 40px;
+}
+
+@media(max-width: 1024px) {
+   .orderCard {
+      grid-template-columns: 1fr 1fr;
+   }
+
+   .content {
+      grid-column: span 2;
+      order: -1;
+   }
+}
+
+@media(max-width: 600px) {
+   .orderCard {
+      grid-template-columns: 1fr;
+      padding: 16px;
+      gap: 15px;
+   }
+
+   .content {
+      grid-column: span 1;
+   }
+
+   .itemRow {
+      flex-direction: column;
+      gap: 4px;
+   }
+}

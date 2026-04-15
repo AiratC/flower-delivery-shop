@@ -108,7 +108,7 @@ export const createOrder = async (req, res) => {
       // проверка скидки на сервере
       let userDiscount = 0;
       if (userId) {
-         const userRes = await query('SELECT total_spent FROM "Users" WHERE id = $1', [userId]);
+         const userRes = await query('SELECT total_spent FROM "Users" WHERE user_id = $1', [userId]);
          const spent = userRes.rows[0]?.total_spent || 0;
          if (spent >= 90000) userDiscount = 7;
          else if (spent >= 50000) userDiscount = 5;
@@ -178,6 +178,7 @@ export const createOrder = async (req, res) => {
 
    } catch (error) {
       await query('ROLLBACK');
+      console.log(error)
       console.error('Order Error:', error.message);
       res.status(500).json({
          success: false,

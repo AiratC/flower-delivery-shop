@@ -9,6 +9,7 @@ import { clearCart } from '../../redux/slices/cartSlice';
 import { resetCheckoutState } from '../../redux/slices/checkoutSlice';
 import fetchAxios from '../../api/axios';
 import ChangePasswordSection from '../../components/ChangePasswordSection/ChangePasswordSection';
+import OrdersSection from '../../components/OrdersSection/OrdersSection';
 
 const Profile = () => {
    // 1. Получаем данные пользователя из Redux
@@ -275,8 +276,7 @@ const Profile = () => {
                   {/* Контент для других вкладок */}
                   {activeTab === 'orders' && (
                      <section className={styles.infoCard}>
-                        <h3>Мои заказы</h3>
-                        <p>Список ваших заказов пуст.</p>
+                        <OrdersSection />
                      </section>
                   )}
 
