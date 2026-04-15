@@ -28,8 +28,6 @@ const OrdersSection = () => {
    if (loading) return <div className={styles.center}><Loader className='spinner' /></div>
    if (!orders.length) return <div className={styles.center}>У вас ещё не было заказов</div>
 
-   // !!! Остановился тут
-
    return (
       <div className={`${styles.ordersList} ${styles.container}`}>
          {
