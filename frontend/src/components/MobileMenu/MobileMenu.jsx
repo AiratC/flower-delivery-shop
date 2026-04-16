@@ -17,9 +17,9 @@ const MobileMenu = ({ isOpen, onClose }) => {
             {/* Список навигации */}
             <nav className={styles.navList}>
                <div>
-                  <Link to="/catalog" className={styles.navItem}>Каталог</Link>
-                  <Link to="/reviews" className={styles.navItem}>Отзывы</Link>
-                  <Link to="/contacts" className={styles.navItem}>Контакты</Link>
+                  <Link onClick={onClose} to="/faq" className={styles.navItem}>FAQ</Link>
+                  <Link onClick={onClose} to="/reviews" className={styles.navItem}>Отзывы</Link>
+                  <Link onClick={onClose} to="/contacts" className={styles.navItem}>Контакты</Link>
                   <div className={styles.navItem}>
                      Информация для клиента
                      <ChevronDown size={18} />

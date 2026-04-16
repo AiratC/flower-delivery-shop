@@ -54,7 +54,7 @@ const Footer = () => {
             {/* Верхняя навигация */}
             <nav className={styles.nav}>
                <ul className={styles.navList}>
-                  <li><Link to={``}>Каталог</Link></li>
+                  <li><Link to={`/faq`}>FAQ</Link></li>
                   <li><Link to={``}>Скидки</Link></li>
                   <li><Link to={``}>Отзывы</Link></li>
                   <li><Link to={`/contacts`}>Контакты</Link></li>
