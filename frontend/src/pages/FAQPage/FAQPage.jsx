@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './FAQPage.module.css';
 import { ChevronRight } from 'lucide-react';
 import FeedbackForm from '../../components/FeedbackForm/FeedbackForm';
@@ -49,6 +49,10 @@ const faqData = [
 const FAQPage = () => {
    // Храним ID открытого вопроса. Если null — все закрыты.
    const [openId, setOpenId] = useState(1);
+
+   useEffect(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+   }, [])
 
    const toggleItem = (id) => {
       setOpenId(openId === id ? null : id);
