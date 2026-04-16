@@ -16,6 +16,7 @@ import { fetchCart } from './redux/slices/cartSlice';
 import CheckoutPage from './pages/CheckoutPage/CheckoutPage';
 import OrderSuccessPage from './pages/OrderSuccessPage/OrderSuccessPage';
 import ContactsPage from './pages/ContactsPage/ContactsPage';
+import FAQPage from './pages/FAQPage/FAQPage';
 
 
 function App() {
@@ -48,6 +49,7 @@ function App() {
                   <Route path='checkout' element={<CheckoutPage />}/>
                   <Route path='order-success/:orderId' element={<OrderSuccessPage/>}/>
                   <Route path='contacts' element={<ContactsPage />}/>
+                  <Route path='faq' element={<FAQPage />}/>
 
                   <Route path="*" element={<PageNotFound />} />
                </Route>

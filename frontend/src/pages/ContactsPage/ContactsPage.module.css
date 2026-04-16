@@ -5,6 +5,10 @@
    margin-top: 20px;
 }
 
+.contactsContainer {
+   padding-bottom: 50px;
+}
+
 .mainTitle {
    text-align: center;
    font-size: 28px;

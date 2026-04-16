@@ -6,7 +6,7 @@ const ContactsPage = () => {
 
 
    return (
-      <div className={`container`}>
+      <div className={`container ${styles.contactsContainer}`}>
          <nav className={styles.breadCrumb}>Главная &gt; Контакты</nav>
          <h1 className={styles.mainTitle}>КОНТАКТНАЯ ИНФОРМАЦИЯ</h1>
 
