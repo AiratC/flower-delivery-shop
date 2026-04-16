@@ -3,6 +3,7 @@ import styles from './Footer.module.css';
 import fetchAxios from '../../api/axios';
 import { toast } from 'react-toastify';
 import { Loader2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
    const [formData, setFormData] = useState({
@@ -53,12 +54,12 @@ const Footer = () => {
             {/* Верхняя навигация */}
             <nav className={styles.nav}>
                <ul className={styles.navList}>
-                  <li><a href="#">Каталог</a></li>
-                  <li><a href="#">Скидки</a></li>
-                  <li><a href="#">Отзывы</a></li>
-                  <li><a href="#">Контакты</a></li>
-                  <li><a href="#">Оферта</a></li>
-                  <li><a href="#">Информация для клиента</a></li>
+                  <li><Link to={``}>Каталог</Link></li>
+                  <li><Link to={``}>Скидки</Link></li>
+                  <li><Link to={``}>Отзывы</Link></li>
+                  <li><Link to={`/contacts`}>Контакты</Link></li>
+                  <li><Link to={``}>Оферта</Link></li>
+                  <li><Link to={``}>Информация для клиента</Link></li>
                </ul>
             </nav>
 

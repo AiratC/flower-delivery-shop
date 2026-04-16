@@ -1,0 +1,78 @@
+.breadCrumb {
+   font-size: 14px;
+   color: #888;
+   margin-bottom: 20px;
+   margin-top: 20px;
+}
+
+.mainTitle {
+   text-align: center;
+   font-size: 28px;
+   color: #4a3e3e;
+   margin-bottom: 40px;
+   letter-spacing: 2px;
+}
+
+.topGrid {
+   display: grid;
+   grid-template-columns: 350px 1fr;
+   gap: 30px;
+   margin-bottom: 40px;
+}
+
+.infoCard {
+   background: #fff;
+   border-radius: 12px;
+   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.infoSection {
+   padding: 20px 25px;
+   border-bottom: 1px solid #f0f0f0;
+}
+
+.infoSection:last-child {
+   border-bottom: none;
+}
+
+.label {
+   display: block;
+   font-size: 13px;
+   color: #999;
+   margin-bottom: 5px;
+}
+
+.value {
+   font-weight: 700;
+   color: #444;
+   margin: 0;
+   font-size: 16px;
+}
+
+.mapContainer {
+   height: 450px;
+   border-radius: 12px;
+   overflow: hidden;
+}
+
+/* --- АДАПТИВ --- */
+@media (max-width: 992px) {
+   .topGrid {
+      grid-template-columns: 1fr;
+   }
+
+   .mapContainer {
+      height: 350px;
+      order: 2;
+   }
+
+   .infoCard {
+      order: 1;
+   }
+}
+
+@media (max-width: 600px) {
+   .mainTitle {
+      font-size: 22px;
+   }
+}

@@ -15,6 +15,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { fetchCart } from './redux/slices/cartSlice';
 import CheckoutPage from './pages/CheckoutPage/CheckoutPage';
 import OrderSuccessPage from './pages/OrderSuccessPage/OrderSuccessPage';
+import ContactsPage from './pages/ContactsPage/ContactsPage';
 
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
                   <Route path='flower-card/:flowerId' element={<FlowerCard/>}/>
                   <Route path='checkout' element={<CheckoutPage />}/>
                   <Route path='order-success/:orderId' element={<OrderSuccessPage/>}/>
+                  <Route path='contacts' element={<ContactsPage />}/>
 
                   <Route path="*" element={<PageNotFound />} />
                </Route>
