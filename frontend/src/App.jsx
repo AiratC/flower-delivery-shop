@@ -17,6 +17,7 @@ import CheckoutPage from './pages/CheckoutPage/CheckoutPage';
 import OrderSuccessPage from './pages/OrderSuccessPage/OrderSuccessPage';
 import ContactsPage from './pages/ContactsPage/ContactsPage';
 import FAQPage from './pages/FAQPage/FAQPage';
+import StocksSection from './pages/StocksSection/StocksSection';
 
 
 function App() {
@@ -50,6 +51,7 @@ function App() {
                   <Route path='order-success/:orderId' element={<OrderSuccessPage/>}/>
                   <Route path='contacts' element={<ContactsPage />}/>
                   <Route path='faq' element={<FAQPage />}/>
+                  <Route path='stocks' element={<StocksSection/>}/>
 
                   <Route path="*" element={<PageNotFound />} />
                </Route>

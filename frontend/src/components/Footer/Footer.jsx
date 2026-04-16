@@ -55,7 +55,7 @@ const Footer = () => {
             <nav className={styles.nav}>
                <ul className={styles.navList}>
                   <li><Link to={`/faq`}>FAQ</Link></li>
-                  <li><Link to={``}>Скидки</Link></li>
+                  <li><Link to={`/stocks`}>Скидки</Link></li>
                   <li><Link to={``}>Отзывы</Link></li>
                   <li><Link to={`/contacts`}>Контакты</Link></li>
                   <li><Link to={``}>Оферта</Link></li>

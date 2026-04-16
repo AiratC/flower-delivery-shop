@@ -70,6 +70,7 @@ const Navbar = () => {
                   <nav className={styles.nav}>
                      <Link to="/faq" className={`navLink`}>FAQ</Link>
                      <Link to="/reviews" className={`navLink`}>Отзывы</Link>
+                     <Link to="/stocks" className={`navLink`}>Скидки</Link>
                      <Link to="/contacts" className={`navLink`}>Контакты</Link>
                   </nav>
 
