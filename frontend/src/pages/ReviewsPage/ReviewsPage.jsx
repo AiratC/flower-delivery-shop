@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Star, Loader2, Camera, X } from 'lucide-react';
+import { Star, Loader2, Camera, X, MessageSquare } from 'lucide-react';
 import styles from './ReviewsPage.module.css';
 import fetchAxios from '../../api/axios';
 import { toast } from 'react-toastify';
@@ -62,10 +62,10 @@ const ReviewsPage = () => {
       }
    }, [viewType, currentPage, LIMIT]);
 
-   // useEffect(() => {
-   //    loadReviews();
-   //    loadPurchasedItems();
-   // }, [loadReviews, loadPurchasedItems]);
+   useEffect(() => {
+      loadReviews();
+      loadPurchasedItems();
+   }, [loadReviews, loadPurchasedItems]);
 
    const handleTypeChange = (type) => {
       setViewType(type);
@@ -192,8 +192,8 @@ const ReviewsPage = () => {
 
             <div className={styles.contentArea}>
                {loading ? (
-                  <div className={styles.loader}><Loader2 className={`spinner`} size={50} /></div>
-               ) : (
+                  <div className={styles.loader}><Loader2 className="spinner" size={50} /></div>
+               ) : reviews.length > 0 ? (
                   <div className={viewType === 'text' ? styles.textGrid : styles.photoGrid}>
                      {reviews.map((rev) => (
                         viewType === 'text' ? (
@@ -215,6 +215,15 @@ const ReviewsPage = () => {
                            </div>
                         )
                      ))}
+                  </div>
+               ) : (
+                  /* Блок, если отзывов нет */
+                  <div className={styles.emptyState}>
+                     <div className={styles.emptyIcon}>
+                        <MessageSquare size={48} strokeWidth={1} />
+                     </div>
+                     <h3>Отзывов пока нет</h3>
+                     <p>Станьте первым, кто поделится своим впечатлением о наших цветах!</p>
                   </div>
                )}
 
