@@ -41,3 +41,33 @@ export const sendMessage = async (req, res) => {
       });
    }
 };
+
+export const getQuestions = async (req, res) => {
+   try {
+      const result = await query('SELECT * FROM "Ask_Question" ORDER BY created_at DESC');
+      res.json(result.rows);
+   } catch (err) {
+      res.status(500).json({ message: "Ошибка сервера" });
+   }
+};
+
+export const toggleProcessStatus = async (req, res) => {
+   const { id } = req.params;
+   const { is_processed } = req.body;
+   try {
+      await query('UPDATE "Ask_Question" SET is_processed = $1 WHERE ask_question_id = $2', [is_processed, id]);
+      res.json({ success: true });
+   } catch (err) {
+      res.status(500).json({ message: "Не удалось обновить статус" });
+   }
+};
+
+export const deleteQuestion = async (req, res) => {
+   const { id } = req.params;
+   try {
+      await query('DELETE FROM "Ask_Question" WHERE ask_question_id = $1', [id]);
+      res.json({ success: true });
+   } catch (err) {
+      res.status(500).json({ message: "Ошибка при удалении" });
+   }
+};
