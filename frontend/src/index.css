@@ -40,6 +40,7 @@ body {
    display: inline-block;
 }
 
+
 /* Для блокировки кнопок */
 .button:disabled,
 .countBtn:disabled,

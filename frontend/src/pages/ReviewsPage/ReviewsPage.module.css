@@ -146,14 +146,13 @@
 /* Сетка инпутов (Имя, Почта, Город) */
 .inputGroup {
    display: grid;
-   grid-template-columns: repeat(3, 1fr);
+   grid-template-columns: repeat(3, 32%);
    gap: 10px;
 }
 
 input,
 textarea,
 .itemSelect {
-   width: 100%;
    padding: 12px;
    border: 1px solid #eee;
    background: #fcfcfc;

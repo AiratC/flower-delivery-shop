@@ -44,3 +44,54 @@ export const getUserOrders = async (req, res) => {
       });
    };
 };
+
+// !!! Получение всех заказов для админки
+export const getAllOrders = async (req, res) => {
+   try {
+      const querySQL = `
+            SELECT * FROM "Orders" 
+            ORDER BY created_at DESC
+        `;
+      const result = await query(querySQL);
+      res.json(result.rows);
+   } catch (error) {
+      console.log(error)
+      res.status(500).json({ message: 'Ошибка при получении заказов' });
+   }
+};
+
+// !!! Обновление статуса
+export const updateStatus = async (req, res) => {
+   const { id } = req.params;
+   const { newStatus } = req.body;
+
+   const FINAL_STATUSES = ['Доставлен', 'Получен', 'Отменён'];
+
+   try {
+      // Проверяем текущий статус
+      const checkQuery = 'SELECT status FROM "Orders" WHERE order_id = $1';
+      const checkResult = await query(checkQuery, [id]);
+
+      if (checkResult.rows.length === 0) {
+         return res.status(404).json({ message: 'Заказ не найден' });
+      }
+
+      const currentStatus = checkResult.rows[0].status;
+
+      if (FINAL_STATUSES.includes(currentStatus)) {
+         return res.status(400).json({
+            message: `Нельзя изменить заказ со статусом "${currentStatus}"`
+         });
+      }
+
+      await query(
+         'UPDATE "Orders" SET status = $1 WHERE order_id = $2',
+         [newStatus, id]
+      );
+
+      res.json({ message: 'Статус обновлен' });
+   } catch (error) {
+      console.log(error)
+      res.status(500).json({ message: 'Ошибка сервера' });
+   }
+};

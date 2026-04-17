@@ -10,6 +10,7 @@ import { Loader2 } from 'lucide-react';
 import Catalog from './pages/Catalog';
 import Stocks from './pages/Stocks';
 import Messages from './pages/Messages';
+import AdminOrders from './pages/AdminOrders/AdminOrders';
 
 const Dashboard = () => (
    <div className="p-6">
@@ -58,7 +59,7 @@ function App() {
                   <Route path="catalog" element={<Catalog />} />
                   <Route path='stocks' element={<Stocks/>}/>
                   <Route path='messages' element={<Messages/>}/>
-                  <Route path="orders" element={<div>Заказы</div>} />
+                  <Route path="orders" element={<AdminOrders />} />
                </Route>
             </Route>
          </Routes>

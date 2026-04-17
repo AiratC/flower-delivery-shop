@@ -9,7 +9,7 @@ export const updateAndGetTotalSpent = async (req, res) => {
       const result = await query(
          `SELECT SUM(total_price) as total 
          FROM "Orders" 
-         WHERE user_id = $1 AND (status = 'Доставлено' OR status = 'Получен')`,
+         WHERE user_id = $1 AND (status = 'Доставлен' OR status = 'Получен')`,
          [userId]
       );
 

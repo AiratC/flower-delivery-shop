@@ -63,17 +63,104 @@
    font-size: 15px;
 }
 
-.delivered { color: #6fb15a; }
-.paid { color: #f2994a; }
-.processing { color: #828282; }
-.received { color: #2b55eb; }
-.deliver { color: #276a13; }
-.new { color: #2d9cdb; }
+.delivered {
+   color: #6fb15a;
+}
+
+.paid {
+   color: #f2994a;
+}
+
+.processing {
+   color: #828282;
+}
+
+.received {
+   color: #2b55eb;
+}
+
+.deliver {
+   color: #276a13;
+}
+
+.сanceled {
+   color: #e70505;
+}
+
+.new {
+   color: #2d9cdb;
+}
 
 .center {
    display: flex;
    justify-content: center;
    padding: 40px;
+}
+
+.emptyContainer {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   padding: 60px 20px;
+   text-align: center;
+   background: #fff;
+   border-radius: 20px;
+   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+   margin: 40px auto;
+   max-width: 500px;
+}
+
+.emptyContainer h3 {
+   margin: 20px 0 10px;
+   font-size: 20px;
+   color: #2d3748;
+}
+
+.emptyContainer p {
+   color: #718096;
+   margin-bottom: 25px;
+   font-size: 14px;
+}
+
+.shopBtn {
+   padding: 12px 30px;
+   background-color: #76bc21;
+   color: white;
+   border-radius: 50px;
+   text-decoration: none;
+   font-weight: 600;
+   transition: transform 0.2s;
+}
+
+.shopBtn:hover {
+   transform: scale(1.05);
+}
+
+/* Маленькая точка обновления, чтобы админ видел, что процесс идет */
+.silentUpdateDot {
+   position: fixed;
+   top: 20px;
+   right: 20px;
+   width: 8px;
+   height: 8px;
+   background-color: #76bc21;
+   border-radius: 50%;
+   animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+   0% {
+      opacity: 1;
+   }
+
+   50% {
+      opacity: 0.3;
+   }
+
+   100% {
+      opacity: 1;
+   }
 }
 
 @media(max-width: 1024px) {

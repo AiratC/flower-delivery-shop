@@ -1,0 +1,212 @@
+/* Основной контейнер страницы */
+.adminPage {
+   padding: 32px;
+   background-color: #f4f7f6;
+   min-height: 100vh;
+   font-family: 'Inter', -apple-system, sans-serif;
+}
+
+/* Шапка с заголовком и кнопкой */
+.headerRow {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin-bottom: 28px;
+}
+
+.title {
+   font-size: 26px;
+   font-weight: 800;
+   color: #2d3436;
+   margin: 0;
+   letter-spacing: -0.5px;
+}
+
+.refreshBtn {
+   background-color: #76bc21;
+   color: white;
+   padding: 10px 20px;
+   border: none;
+   border-radius: 8px;
+   font-weight: 600;
+   cursor: pointer;
+   transition: all 0.2s ease;
+   box-shadow: 0 4px 12px rgba(118, 188, 33, 0.2);
+}
+
+.refreshBtn:hover {
+   background-color: #65a31b;
+   transform: translateY(-1px);
+   box-shadow: 0 6px 15px rgba(118, 188, 33, 0.3);
+}
+
+/* Обертка таблицы */
+.tableWrapper {
+   background: #ffffff;
+   border-radius: 16px;
+   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+   overflow: hidden;
+   border: 1px solid #edf2f7;
+}
+
+.table {
+   width: 100%;
+   border-collapse: collapse;
+   background: white;
+}
+
+.table th {
+   background-color: #f8fafc;
+   padding: 18px 24px;
+   text-align: left;
+   font-size: 13px;
+   text-transform: uppercase;
+   letter-spacing: 1px;
+   color: #718096;
+   border-bottom: 2px solid #edf2f7;
+}
+
+.table td {
+   padding: 20px 24px;
+   border-bottom: 1px solid #f1f5f9;
+   vertical-align: middle;
+   font-size: 15px;
+}
+
+.table tr:last-child td {
+   border-bottom: none;
+}
+
+.table tr:hover {
+   background-color: #f9fbfd;
+}
+
+/* Стилизация данных внутри ячеек */
+.orderId {
+   font-weight: 700;
+   color: #4a5568;
+}
+
+.clientInfo {
+   display: flex;
+   flex-direction: column;
+   gap: 4px;
+}
+
+.clientInfo strong {
+   color: #2d3748;
+   font-size: 15px;
+}
+
+.clientInfo span {
+   color: #a0aec0;
+   font-size: 13px;
+}
+
+.price {
+   font-weight: 800;
+   color: #76bc21;
+   white-space: nowrap;
+}
+
+/* Выпадающий список статусов */
+.statusSelect {
+   width: 100%;
+   min-width: 150px;
+   padding: 8px 12px;
+   border-radius: 8px;
+   border: 1px solid #e2e8f0;
+   background-color: #fff;
+   font-size: 14px;
+   font-weight: 500;
+   color: #4a5568;
+   cursor: pointer;
+   transition: border-color 0.2s;
+   outline: none;
+}
+
+.statusSelect:focus {
+   border-color: #76bc21;
+}
+
+/* Подсветка новых заказов */
+.statusNew {
+   background-color: rgba(118, 188, 33, 0.05);
+}
+
+.statusNew td:first-child {
+   border-left: 5px solid #76bc21;
+}
+
+/* Неактивное состояние для финальных статусов */
+.statusSelect:disabled {
+   background-color: #f7fafc;
+   color: #cbd5e0;
+   cursor: not-allowed;
+   border-color: #edf2f7;
+}
+
+/* Лоадер */
+.loader {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   height: 100vh;
+   font-size: 18px;
+   color: #76bc21;
+   font-weight: 600;
+}
+
+/* Стили для состояния "Пусто" */
+.emptyState {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   padding: 80px 20px;
+   background: white;
+   border-radius: 16px;
+   border: 2px dashed #e2e8f0;
+   text-align: center;
+   color: #718096;
+}
+
+.emptyState h2 {
+   margin-top: 20px;
+   color: #2d3748;
+   font-size: 22px;
+}
+
+.emptyState p {
+   margin-top: 8px;
+   max-width: 300px;
+   line-height: 1.5;
+}
+
+.emptyRefreshBtn {
+   margin-top: 24px;
+   padding: 10px 24px;
+   background-color: transparent;
+   border: 1px solid #76bc21;
+   color: #76bc21;
+   border-radius: 8px;
+   font-weight: 600;
+   cursor: pointer;
+   transition: all 0.2s ease;
+}
+
+.emptyRefreshBtn:hover {
+   background-color: #76bc21;
+   color: white;
+}
+
+/* Дополнение для лоадера */
+.loader {
+   display: flex;
+   flex-direction: column;
+   gap: 15px;
+   justify-content: center;
+   align-items: center;
+   height: 100vh;
+   color: #76bc21;
+}
