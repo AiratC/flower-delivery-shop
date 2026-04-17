@@ -140,7 +140,11 @@ const ReviewsPage = () => {
       return () => {
          if (preview) URL.revokeObjectURL(preview);
       }
-   }, [preview])
+   }, [preview]);
+
+   useEffect(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+   }, [])
 
    // Логика пагинации "Окно" (чтобы кнопки не росли)
    const renderPagination = () => {
