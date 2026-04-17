@@ -18,6 +18,7 @@ import OrderSuccessPage from './pages/OrderSuccessPage/OrderSuccessPage';
 import ContactsPage from './pages/ContactsPage/ContactsPage';
 import FAQPage from './pages/FAQPage/FAQPage';
 import StocksSection from './pages/StocksSection/StocksSection';
+import ReviewsPage from './pages/ReviewsPage/ReviewsPage';
 
 
 function App() {
@@ -52,6 +53,7 @@ function App() {
                   <Route path='contacts' element={<ContactsPage />}/>
                   <Route path='faq' element={<FAQPage />}/>
                   <Route path='stocks' element={<StocksSection/>}/>
+                  <Route path='reviews' element={<ReviewsPage/>}/>
 
                   <Route path="*" element={<PageNotFound />} />
                </Route>

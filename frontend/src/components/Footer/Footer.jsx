@@ -56,10 +56,8 @@ const Footer = () => {
                <ul className={styles.navList}>
                   <li><Link to={`/faq`}>FAQ</Link></li>
                   <li><Link to={`/stocks`}>Скидки</Link></li>
-                  <li><Link to={``}>Отзывы</Link></li>
+                  <li><Link to={`/reviews`}>Отзывы</Link></li>
                   <li><Link to={`/contacts`}>Контакты</Link></li>
-                  <li><Link to={``}>Оферта</Link></li>
-                  <li><Link to={``}>Информация для клиента</Link></li>
                </ul>
             </nav>
 
@@ -92,10 +90,10 @@ const Footer = () => {
                <div className={styles.column}>
                   <h3 className={styles.title}>Для посетителей</h3>
                   <ul className={styles.linkList}>
-                     <li><a href="#">Оформление заказа</a></li>
-                     <li><a href="#">Вопросы и ответы</a></li>
-                     <li><a href="#">Изменение или отмена заказа</a></li>
-                     <li><a href="#">Способы доставки и оплаты</a></li>
+                     <li>Оформление заказа</li>
+                     <li>Вопросы и ответы</li>
+                     <li>Изменение или отмена заказа</li>
+                     <li>Способы доставки и оплаты</li>
                   </ul>
                </div>
 

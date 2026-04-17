@@ -13,6 +13,7 @@ import userRouter from "./routes/user.route.js";
 import cartRouter from "./routes/cart.route.js";
 import checkoutRouter from "./routes/checkout.route.js";
 import orderRouter from "./routes/orders.route.js";
+import reviewsRouter from "./routes/reviews.route.js";
 
 const app = express();
 
@@ -45,6 +46,7 @@ app.use('/api/users', userRouter);
 app.use('/api/cart', cartRouter);
 app.use('/api/checkout', checkoutRouter);
 app.use('/api/orders', orderRouter);
+app.use('/api/reviews', reviewsRouter);
 
 
 // Запуск сервера с обработкой ошибок

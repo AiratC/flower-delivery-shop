@@ -164,7 +164,8 @@ CREATE TABLE Order_Items (
 -- ====================================================================================
 CREATE TABLE Reviews (
    review_id SERIAL PRIMARY KEY,
-   user_id INT REFERENCES Users(user_id) ON DELETE CASCADE NOT NULL,
+   user_id INT REFERENCES Users(user_id) ON DELETE SET NULL,
+   guest_token VARCHAR(255),
    flower_id INT REFERENCES Flowers(flower_id) ON DELETE CASCADE,
    order_item_id INT REFERENCES Order_Items(order_item_id) ON DELETE CASCADE NOT NULL,
    
@@ -180,6 +181,12 @@ CREATE TABLE Reviews (
    
    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Разрешаем user_id быть NULL
+ALTER TABLE "Reviews" ALTER COLUMN user_id DROP NOT NULL;
+
+-- Добавляем колонку для гостевого токена
+ALTER TABLE "Reviews" ADD COLUMN guest_token VARCHAR(255);
 
 -- Таблица корзины (объединенная)
 CREATE TABLE Cart (
