@@ -55,13 +55,10 @@ function App() {
 
             <Route element={<ProtectedRoute />}>
                <Route path="/" element={<Layout />}>
-                  <Route index element={<Dashboard />} />
                   <Route path="catalog" element={<Catalog />} />
                   <Route path='stocks' element={<Stocks/>}/>
                   <Route path='messages' element={<Messages/>}/>
                   <Route path="orders" element={<div>Заказы</div>} />
-                  <Route path="users" element={<div>Пользователи</div>} />
-                  <Route path="settings" element={<div>Настройки</div>} />
                </Route>
             </Route>
          </Routes>
