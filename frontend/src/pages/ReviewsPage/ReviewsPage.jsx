@@ -9,7 +9,7 @@ const ReviewsPage = () => {
    const [reviews, setReviews] = useState([]);
    const [currentPage, setCurrentPage] = useState(1);
    const [totalPages, setTotalPages] = useState(1);
-   const [loading, setLoading] = useState(false);
+   const [loading, setLoading] = useState(true);
    const [purchasedItems, setPurchasedItems] = useState([]);
    const [loadingItems, setLoadingItems] = useState(false);
    const [preview, setPreview] = useState(null);
@@ -62,10 +62,10 @@ const ReviewsPage = () => {
       }
    }, [viewType, currentPage, LIMIT]);
 
-   useEffect(() => {
-      loadReviews();
-      loadPurchasedItems();
-   }, [loadReviews, loadPurchasedItems]);
+   // useEffect(() => {
+   //    loadReviews();
+   //    loadPurchasedItems();
+   // }, [loadReviews, loadPurchasedItems]);
 
    const handleTypeChange = (type) => {
       setViewType(type);
@@ -192,7 +192,7 @@ const ReviewsPage = () => {
 
             <div className={styles.contentArea}>
                {loading ? (
-                  <div className={styles.loader}><Loader2 className={styles.spin} /></div>
+                  <div className={styles.loader}><Loader2 className={`spinner`} size={50} /></div>
                ) : (
                   <div className={viewType === 'text' ? styles.textGrid : styles.photoGrid}>
                      {reviews.map((rev) => (
