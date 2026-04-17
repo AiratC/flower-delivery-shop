@@ -15,7 +15,6 @@ const Reviews = () => {
       const loadReviews = async () => {
          try {
             const res = await fetchAxios.get('/reviews/get-end-reviews?limit=10'); // или ваш эндпоинт
-            console.log(res)
             setReviews(res.data.data || res.data); // в зависимости от структуры ответа
          } catch (err) {
             console.error("Не удалось загрузить отзывы", err);
