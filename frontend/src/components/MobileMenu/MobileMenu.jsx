@@ -19,7 +19,7 @@ const MobileMenu = ({ isOpen, onClose }) => {
                <div>
                   <Link onClick={onClose} to="/faq" className={styles.navItem}>FAQ</Link>
                   <Link onClick={onClose} to="/reviews" className={styles.navItem}>Отзывы</Link>
-                  <Link onClick={onClose} to={`/stocks`}>Скидки</Link>
+                  <Link onClick={onClose} to={`/stocks`} className={styles.navItem}>Скидки</Link>
                   <Link onClick={onClose} to="/contacts" className={styles.navItem}>Контакты</Link>
                   <div className={styles.navItem}>
                      Информация для клиента
