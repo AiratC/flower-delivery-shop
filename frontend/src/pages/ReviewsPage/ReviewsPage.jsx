@@ -168,7 +168,7 @@ const ReviewsPage = () => {
    };
 
    return (
-      <div className={styles.wrapper}>
+      <div className={`${styles.wrapper} container`}>
          <aside className={styles.sidebar}>
             <h1 className={styles.mainTitle}>ОТЗЫВЫ</h1>
             <div className={styles.menu}>

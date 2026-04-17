@@ -1,21 +1,22 @@
 .wrapper {
    display: flex;
    min-height: 100vh;
-   background: #f9f9f9;
+   
 }
 
 .sidebar {
-    width: 250px;
-    background: #fff;
-    padding: 40px 20px;
-    border-right: 1px solid #eee;
-    flex-shrink: 0;
+   width: 250px;
+   background: #f9f9f9;
+   padding: 40px 20px;
+   border-right: 1px solid #eee;
+   flex-shrink: 0;
 }
 
 .container {
-    flex: 1;
-    padding: 20px 40px;
-    min-width: 0; /* Важно для flex-контейнеров */
+   flex: 1;
+   padding: 20px 40px;
+   min-width: 0;
+   /* Важно для flex-контейнеров */
 }
 
 .mainTitle {
@@ -37,7 +38,8 @@
    border: none;
    background: none;
    cursor: pointer;
-   font-size: 14px;
+   font-weight: 700;
+   font-size: 18px;
    transition: 0.3s;
 }
 
@@ -56,10 +58,27 @@
 }
 
 .textCard {
-   background: #fff;
+   display: flex;
+   flex-direction: column;
+   gap: 7px;
+   background: #fcfcfc;
    padding: 20px;
    border-radius: 8px;
    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+}
+
+.cardHeader {
+   display: flex;
+   justify-content: space-between;
+}
+
+.comment {
+   font-size: 18px;
+}
+
+.userName {
+   color: #6AAE55;
+   font-weight: 700;
 }
 
 .photoGrid {
@@ -79,27 +98,27 @@
 
 /* Форма */
 .formSection {
-    margin-top: 50px;
-    background: #fff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+   margin-top: 50px;
+   background: #fff;
+   padding: 30px;
+   border-radius: 12px;
+   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
 }
 
 .formGrid {
-    display: flex;
-    gap: 30px;
+   display: flex;
+   gap: 30px;
 }
 
 .uploadBox {
-    width: 200px;
-    height: 200px;
-    border: 2px dashed #ddd;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 8px;
-    flex-shrink: 0;
+   width: 200px;
+   height: 200px;
+   border: 2px dashed #ddd;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   border-radius: 8px;
+   flex-shrink: 0;
 }
 
 .uploadLabel {
@@ -112,59 +131,60 @@
 }
 
 .inputsColumn {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    min-width: 0;
+   flex: 1;
+   display: flex;
+   flex-direction: column;
+   gap: 15px;
+   min-width: 0;
 }
 
 /* Сетка инпутов (Имя, Почта, Город) */
 .inputGroup {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
+   display: grid;
+   grid-template-columns: repeat(3, 1fr);
+   gap: 10px;
 }
 
 input,
 textarea,
 .itemSelect {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #eee;
-    background: #fcfcfc;
-    border-radius: 4px;
-    font-size: 14px;
-    box-sizing: border-box; /* Чтобы padding не раздувал ширину */
+   width: 100%;
+   padding: 12px;
+   border: 1px solid #eee;
+   background: #fcfcfc;
+   border-radius: 4px;
+   font-size: 14px;
+   box-sizing: border-box;
+   /* Чтобы padding не раздувал ширину */
 }
 
 textarea {
-    min-height: 120px;
-    resize: vertical;
+   min-height: 120px;
+   resize: vertical;
 }
 
 .formFooter {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 20px;
-    gap: 20px;
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin-top: 20px;
+   gap: 20px;
 }
 
 .submitBtn {
-    background: #76bc21;
-    color: white;
-    padding: 12px 40px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background 0.3s;
-    white-space: nowrap;
+   background: #76bc21;
+   color: white;
+   padding: 12px 40px;
+   border: none;
+   border-radius: 4px;
+   cursor: pointer;
+   font-weight: 600;
+   transition: background 0.3s;
+   white-space: nowrap;
 }
 
 .submitBtn:hover {
-    background: #65a31b;
+   background: #65a31b;
 }
 
 /* Пагинация */
@@ -261,8 +281,8 @@ textarea {
 
 .closeBtn {
    position: absolute;
-   top: 15px;
-   right: 15px;
+   top: 6px;
+   right: 7px;
    background: rgba(255, 255, 255, 0.9);
    border: none;
    border-radius: 50%;
@@ -362,31 +382,31 @@ textarea {
 }
 
 @media (max-width: 992px) {
-    .wrapper {
-        flex-direction: column;
-    }
+   .wrapper {
+      flex-direction: column;
+   }
 
-    .sidebar {
-        width: 100%;
-        padding: 20px;
-        border-right: none;
-        border-bottom: 1px solid #eee;
-    }
+   .sidebar {
+      width: 100%;
+      padding: 20px;
+      border-right: none;
+      border-bottom: 1px solid #eee;
+   }
 
-    .container {
-        padding: 20px;
-    }
+   .container {
+      padding: 20px;
+   }
 
-    .formGrid {
-        flex-direction: column;
-        align-items: center;
-        gap: 64px;
-    }
+   .formGrid {
+      flex-direction: column;
+      align-items: center;
+      gap: 64px;
+   }
 
-    .uploadBox {
-        width: 100%;
-        max-width: 300px;
-    }
+   .uploadBox {
+      width: 100%;
+      max-width: 300px;
+   }
 }
 
 /* Адаптивность модалки */
@@ -412,43 +432,47 @@ textarea {
 
 /* Мобильные устройства (до 600px) */
 @media (max-width: 600px) {
-    .inputGroup {
-        grid-template-columns: 1fr; /* Инпуты встают в колонку */
-    }
+   .inputGroup {
+      grid-template-columns: 1fr;
+      /* Инпуты встают в колонку */
+   }
 
-    .formSection {
-        padding: 20px 15px;
-    }
+   .formSection {
+      padding: 20px 15px;
+   }
 
-    .formFooter {
-        flex-direction: column; /* Звезды и кнопка друг под другом */
-        align-items: stretch;
-        text-align: center;
-    }
+   .formFooter {
+      flex-direction: column;
+      /* Звезды и кнопка друг под другом */
+      align-items: stretch;
+      text-align: center;
+   }
 
-    .submitBtn {
-        width: 100%; /* Кнопка на всю ширину */
-        order: 2;   /* Кнопка ниже звезд */
-    }
+   .submitBtn {
+      width: 100%;
+      /* Кнопка на всю ширину */
+      order: 2;
+      /* Кнопка ниже звезд */
+   }
 
-    /* Чтобы звезды были по центру в мобилке */
-    .formFooter > div:first-child { 
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 8px;
-        order: 1;
-    }
+   /* Чтобы звезды были по центру в мобилке */
+   .formFooter>div:first-child {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      order: 1;
+   }
 }
 
 /* Совсем маленькие экраны (320px) */
 @media (max-width: 380px) {
-    .mainTitle {
-        font-size: 20px;
-    }
-    
-    .itemSelect {
-        font-size: 12px; /* Уменьшаем текст, если названия очень длинные */
-    }
-}
+   .mainTitle {
+      font-size: 20px;
+   }
 
+   .itemSelect {
+      font-size: 12px;
+      /* Уменьшаем текст, если названия очень длинные */
+   }
+}
