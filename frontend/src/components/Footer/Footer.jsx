@@ -149,7 +149,7 @@ const Footer = () => {
             </div>
 
             <div className={styles.copyright}>
-               © 2019 Цветочная лавка.
+               © Цветочная лавка.
             </div>
          </div>
       </footer>
