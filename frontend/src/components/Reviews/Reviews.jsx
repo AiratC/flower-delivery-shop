@@ -1,77 +1,49 @@
 import React, { useEffect, useState } from 'react';
 import styles from './Reviews.module.css';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
-
-const reviewsData = [
-   {
-      id: 1,
-      name: 'Анатолий Петров',
-      date: '20.08.19 22:32',
-      city: 'г. Москва',
-      rating: 4,
-      text: 'Огромное спасибо флористам! Остались очень довольны оказанными услугами, мастера своего дела! Букетик даже неожиданно красивее чем на картинке'
-   },
-   {
-      id: 2,
-      name: 'Анатолий Петров',
-      date: '20.08.19 22:32',
-      city: 'г. Москва',
-      rating: 4,
-      text: 'Огромное спасибо флористам! Остались очень довольны оказанными услугами, мастера своего дела! Букетик даже неожиданно красивее чем на картинке'
-   },
-   {
-      id: 3,
-      name: 'Анатолий Петров',
-      date: '20.08.19 22:32',
-      city: 'г. Москва',
-      rating: 5,
-      text: 'Огромное спасибо флористам! Остались очень довольны оказанными услугами, мастера своего дела! Букетик даже неожиданно красивее чем на картинке'
-   },
-   {
-      id: 4,
-      name: 'Анатолий Петров',
-      date: '20.08.19 22:32',
-      city: 'г. Москва',
-      rating: 4,
-      text: 'Огромное спасибо флористам! Остались очень довольны оказанными услугами, мастера своего дела! Букетик даже неожиданно красивее чем на картинке'
-   },
-   {
-      id: 5,
-      name: 'Анатолий Петров',
-      date: '20.08.19 22:32',
-      city: 'г. Москва',
-      rating: 4,
-      text: 'Огромное спасибо флористам! Остались очень довольны оказанными услугами, мастера своего дела! Букетик даже неожиданно красивее чем на картинке'
-   },
-   {
-      id: 6,
-      name: 'Анатолий Петров',
-      date: '20.08.19 22:32',
-      city: 'г. Москва',
-      rating: 5,
-      text: 'Огромное спасибо флористам! Остались очень довольны оказанными услугами, мастера своего дела! Букетик даже неожиданно красивее чем на картинке'
-   },
-   // Можно добавить еще объекты для примера
-];
+import { Link } from 'react-router-dom';
+import fetchAxios from '../../api/axios'; // Используем ваш настроенный axios
 
 const Reviews = () => {
+   const [reviews, setReviews] = useState([]);
    const [currentIndex, setCurrentIndex] = useState(0);
    const [itemsPerPage, setItemsPerPage] = useState(3);
+   const [loading, setLoading] = useState(true);
 
-   // Определяем сколько карточек показывать в зависимости от ширины экрана
+   // Загрузка данных с сервера
+   useEffect(() => {
+      const loadReviews = async () => {
+         try {
+            const res = await fetchAxios.get('/reviews/get-end-reviews?limit=10'); // или ваш эндпоинт
+            console.log(res)
+            setReviews(res.data.data || res.data); // в зависимости от структуры ответа
+         } catch (err) {
+            console.error("Не удалось загрузить отзывы", err);
+         } finally {
+            setLoading(false);
+         }
+      };
+      loadReviews();
+   }, []);
+
+   // Логика адаптивности слайдера
    useEffect(() => {
       const handleResize = () => {
-         if(window.innerWidth < 640) setItemsPerPage(1);
+         if (window.innerWidth < 640) setItemsPerPage(1);
          else if (window.innerWidth < 1024) setItemsPerPage(2);
          else setItemsPerPage(3);
       };
-
       handleResize();
       window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize)
+      return () => window.removeEventListener('resize', handleResize);
    }, []);
 
-   const maxIndex = Math.max(0, reviewsData.length - itemsPerPage);
+   // Если данных еще нет или идет загрузка, ничего не рендерим (или лоадер)
+   if (loading || reviews.length === 0) {
+      return null;
+   }
+
+   const maxIndex = Math.max(0, reviews.length - itemsPerPage);
 
    const next = () => setCurrentIndex(prev => (prev >= maxIndex ? 0 : prev + 1));
    const prev = () => setCurrentIndex(prev => (prev <= 0 ? maxIndex : prev - 1));
@@ -80,20 +52,19 @@ const Reviews = () => {
       <section className={`container ${styles.reviewsSection}`}>
          <div className={styles.header}>
             <h2 className={styles.title}>ОТЗЫВЫ</h2>
-            <a href="/reviews" className={styles.showAll}>Смотреть все</a>
-            
+            <Link to="/reviews" className={`navLink`}>Смотреть все</Link>
          </div>
 
          <div className={styles.viewport}>
-            <div 
-               className={styles.track} 
-               style={{ 
+            <div
+               className={styles.track}
+               style={{
                   transform: `translateX(-${currentIndex * (100 / itemsPerPage)}%)`,
                }}
             >
-               {reviewsData.map((review) => (
-                  <div 
-                     key={review.id} 
+               {reviews.map((review) => (
+                  <div
+                     key={review.review_id}
                      className={styles.slide}
                      style={{ flex: `0 0 ${100 / itemsPerPage}%` }}
                   >
@@ -101,25 +72,36 @@ const Reviews = () => {
                         <div className={styles.reviewHeader}>
                            <div className={styles.userInfo}>
                               <h4 className={styles.userName}>{review.name}</h4>
-                              <span className={styles.meta}>{review.date} {review.city}</span>
+                              <span className={styles.meta}>
+                                 {new Date(review.created_at).toLocaleDateString()} {review.city}
+                              </span>
                            </div>
                            <div className={styles.rating}>
                               {[...Array(5)].map((_, i) => (
-                                 <Star key={i} size={14} className={i < review.rating ? styles.starFilled : styles.starEmpty} />
+                                 <Star
+                                    key={i}
+                                    size={14}
+                                    className={i < review.rating ? styles.starFilled : styles.starEmpty}
+                                    fill={i < review.rating ? "#76bc21" : "none"} // Добавил заливку
+                                 />
                               ))}
                            </div>
                         </div>
-                        <p className={styles.text}>{review.text}</p>
+                        <p className={styles.text}>{review.comment}</p>
                      </div>
                   </div>
                ))}
             </div>
-            <div className={styles.controls}>
-               <div className={styles.navButtons}>
-                  <button onClick={prev} className={styles.navBtn}><ChevronLeft size={20} /></button>
-                  <button onClick={next} className={styles.navBtn}><ChevronRight size={20} /></button>
+
+            {/* Кнопки управления показываем только если отзывов больше, чем влезает на экран */}
+            {reviews.length > itemsPerPage && (
+               <div className={styles.controls}>
+                  <div className={styles.navButtons}>
+                     <button onClick={prev} className={styles.navBtn}><ChevronLeft size={20} /></button>
+                     <button onClick={next} className={styles.navBtn}><ChevronRight size={20} /></button>
+                  </div>
                </div>
-            </div>
+            )}
          </div>
       </section>
    );

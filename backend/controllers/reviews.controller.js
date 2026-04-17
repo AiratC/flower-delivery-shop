@@ -49,9 +49,9 @@ export const createReview = async (req, res) => {
    const guestToken = req.headers['x-guest-token'] || null;
 
    // Берем путь к фото, если оно было загружено
-      const imageUrl = req.files && req.files.length > 0
-         ? `/uploads/reviews/${req.files[0].filename}`
-         : null;
+   const imageUrl = req.files && req.files.length > 0
+      ? `/uploads/reviews/${req.files[0].filename}`
+      : null;
 
    try {
       // Проверка покупки (с учетом твоей структуры Order_Items и возможности гостя)
@@ -133,5 +133,26 @@ export const getPurchasedItemsWithoutReviews = async (req, res) => {
          message: 'Ошибка при получении списка товаров',
          error: true
       });
+   }
+};
+
+export const getSliderReviews = async (req, res) => {
+   try {
+      // Берем только последние 10 отзывов, чтобы слайдер был быстрым
+      const querySQL = `
+            SELECT review_id, name, city, comment, rating, created_at 
+            FROM "Reviews" 
+            ORDER BY created_at DESC 
+            LIMIT 10
+      `;
+
+      const result = await query(querySQL);
+
+      // Если отзывов нет, вернется пустой массив [], 
+      // и твой фронтенд (благодаря проверке reviews.length === 0) скроет секцию.
+      res.json(result.rows);
+   } catch (error) {
+      console.error('Ошибка при получении отзывов для слайдера:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
    }
 };
